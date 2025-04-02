@@ -1,0 +1,164 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	ViewData["Title"] = "Customer Form";
+}
+
+<div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('/img/curved-images/curved9.jpg');" );">
+	<span class="mask bg-gradient-dark opacity-6"></span>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-5 text-center mx-auto">
+				<h1 class="text-white mb-2 mt-5">Welcome!</h1>
+				<p class="text-lead text-white">Create a new case.</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid py-4">
+	<div class="row mt-lg-n12 mt-md-n13 mt-n12 justify-content-center">
+		<div class="col-12">
+			<div class="mb-5">
+				<!--form panels-->
+				<div class="row">
+					<div class="col-12 col-lg-8 m-auto">
+						<!--single form panel-->
+						<div class="card p-3 border-radius-xl bg-white mb-5">
+							<h5 class="font-weight-bolder mb-0">Customer Case Form</h5>
+							<p class="mb-0 text-sm">Please provide your details to help us process your case efficiently.</p>
+
+							@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+							{
+								<div class="alert alert-warning" role="alert">
+									@ViewBag.ErrorMessage
+								</div>
+							}
+
+							<form>
+								@Html.AntiForgeryToken();
+								<div class="row mt-3">
+									<div class="col-12 col-sm-6">
+										<label>First Name</label>
+										<input class="form-control" type="text" placeholder="eg. Juan" />
+									</div>
+									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
+										<label>Last Name</label>
+										<input class="form-control" type="text" placeholder="eg. dela Cruz" />
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col-12 col-sm-6">
+										<label>Contact Number</label>
+										<input class="form-control" type="password" placeholder="eg. 09171234567" />
+									</div>
+									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
+										<label>Email Address</label>
+										<input class="form-control" type="email" placeholder="eg. myemail@gmail.com" />
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col">
+										<label>Address</label>
+										<input class="form-control" type="text" placeholder="eg. 123 Ortigas" />
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col-12 col-sm-4">
+										<label>Province</label>
+										<select class="form-control" name="province" id="provinceSelect">
+											<option value="">Select Province</option>
+											@foreach (var province in Model.Provinces)
+											{
+												<option value="@province.Code">@province.Name</option>
+											}
+										</select>
+									</div>
+									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
+										<label>City/Municipality</label>
+										<select class="form-control" name="cityMunicipality" id="cityMunSelect">
+											<option value="">Select City/Municipality</option>
+										</select>
+									</div>
+									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
+										<label>Barangay</label>
+										<select class="form-control" name="barangay" id="barangaySelect">
+											<option value="">Select Barangay</option>
+										</select>
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
+										<label>Serial Number</label>
+										<input class="form-control" type="password" placeholder="eg. 987654321" />
+									</div>
+								</div>
+								<div class="text-left mt-4">
+									<button class="btn bg-gradient-dark ms-auto mb-0" type="button" title="Send">Submit</button>
+								</div>
+							</form>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$('#provinceSelect').change(function () {
+			var provinceCode = $(this).val();
+			var cityMunSelect = $('#cityMunSelect');
+			var barangaySelect = $('#barangaySelect');
+
+			// Clear dependent dropdowns
+			cityMunSelect.empty().append('<option value="">Select City/Municipality</option>');
+			barangaySelect.empty().append('<option value="">Select Barangay</option>');
+
+			if (provinceCode) {
+				$.ajax({
+					url: '/api/fetch/city',
+					type: 'GET',
+					data: { provinceCode: provinceCode },
+					success: function (data) {
+						$.each(data, function (index, city) {
+							cityMunSelect.append(
+								$('<option></option>').val(city.value).text(city.label)
+							);
+						});
+					},
+					error: function (xhr, status, error) {
+						console.log('Error fetching cities: ' + error);
+					}
+				});
+			}
+		});
+
+		$('#cityMunSelect').change(function () {
+			var cityMunCode = $(this).val();
+			var barangaySelect = $('#barangaySelect');
+
+			barangaySelect.empty().append('<option value="">Select Barangay</option>');
+
+			if (cityMunCode) {
+				$.ajax({
+					url: '/api/fetch/barangay',
+					type: 'GET',
+					data: { cityMunCode: cityMunCode },
+					success: function (data) {
+						$.each(data, function (index, barangay) {
+							barangaySelect.append(
+								$('<option></option>').val(barangay.value).text(barangay.label)
+							);
+						});
+					},
+					error: function (xhr, status, error) {
+						console.log('Error fetching barangays: ' + error);
+					}
+				});
+			}
+		});
+	});
+</script>

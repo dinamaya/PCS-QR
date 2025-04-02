@@ -1,0 +1,28 @@
+﻿@model string
+<div class="d-none">
+  Scanning QR
+</div>
+<script>
+  (async function generateToken(data) {
+    try {
+      const response = await fetch('/api/qr/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        window.location.href = '/Home/Index';
+        return;
+      }
+
+      const result = await response.json();
+      const token = result.token;
+
+      window.location.href = `/Customer/Register?token=${encodeURIComponent(token)}`;
+    } catch (error) {
+      console.error('Error generating token:', error);
+      window.location.href = '/Home/Index';
+    }
+  })('@Model');
+</script>

@@ -1,0 +1,52 @@
+﻿@using CCIMS.Web.Models.DTOs
+
+@model LoginRequestDto
+
+@{
+	ViewData["Title"] = "Login";
+}
+
+<div class="main-content mt-0">
+	<div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('/img/curved-images/curved9.jpg');" );">
+		<span class="mask bg-gradient-dark opacity-6"></span>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-5 text-center mx-auto">
+					<h1 class="text-white mb-2 mt-5">Welcome!</h1>
+					<p class="text-lead text-white">Login or create new account to your PCS QA System.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row mt-lg-n10 mt-md-n11 mt-n10 justify-content-center">
+			<div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+				<div class="card z-index-0">
+					<div class="card-header text-center pt-4">
+						<h5>Sign in</h5>
+					</div>
+					<div class="card-body">
+						<form asp-action="Login" asp-controller="Auth" method="post" role="form" class="text-start">
+							@Html.AntiForgeryToken()
+							<div class="mb-3">
+								<input class="form-control form-control-sm" type="text" aria-required="true" placeholder="Enter username..." asp-for="Username">
+								<span asp-validation-for="Username" class="text-danger"></span>
+							</div>
+							<div class="mb-3">
+								<input class="form-control form-control-sm" type="password" aria-required="true" placeholder="Enter Password..." asp-for="PlaintextPassword">
+								<span asp-validation-for="PlaintextPassword" class="text-danger"></span>
+							</div>
+							<div class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" asp-for="@Model.IsRemembered">
+								<label class="form-check-label" asp-for="@Model.IsRemembered">Remember me</label>
+							</div>
+							<div class="text-center">
+								<button type="submit" class="btn bg-gradient-info w-100 my-4 mb-2">Sign in</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

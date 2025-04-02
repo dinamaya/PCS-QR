@@ -1,0 +1,20 @@
+﻿@PCS QR_HostAddress = https://localhost:34881
+
+POST {{PCS QR_HostAddress}}/api/test/qrLink
+Content-Type: application/json
+
+{
+  "ServicePartnerId": "SVPc6c396bd9e4546c7900c24f7fc00c009b60324e335e44e6a89fac833e346402c9b5a7c98f5d6472da937a817f570a88e1aa77fe4b64c4a91a3afd94510d79500",
+  "Description": "Sample Description",
+
+}
+
+###
+
+POST {{PCS QR_HostAddress}}/api/test/qrLink
+Content-Type: application/json
+
+{
+  //QRCreationRequestDto
+}
+###
