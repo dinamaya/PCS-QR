@@ -1,74 +1,65 @@
-﻿@using CCIMS.Web.Models.ViewModels
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels
 @model IEnumerable<ServicePartnerRowViewModel>
 <div>
-	<form>
-		<input for="v" type="text" placeholder="Enter Service Partner">
-		<input type="submit" value="Search"/>
-	</form>
-  <div class="card">
-    <div class="table-responsive">
-      <table class="table align-items-center mb-0">
-        <thead>
-          <tr>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Author</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Function</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Technology</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Employed</th>
-            <th class="text-secondary opacity-7"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach(var row in Model)
-			    {
-            <tr>
-              <td class="align-middle">
-                <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                  Edit
-                </a>
-              </td>
-              <td>
-                <div class="d-flex px-2 py-1">
-                  <div>
-                    <img src="https://demos.creative-tim.com/soft-ui-design-system-pro/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                  </div>
-                  <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-xs">John Michael</h6>
-                    <p class="text-xs text-secondary mb-0">john@creative-tim.com</p>
-                  </div>
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header pb-0">
+            <div class="d-lg-flex">
+              <div>
+                <h5 class="mb-0">All Service Partners</h5>
+                <p class="text-sm mb-0">
+                  
+                </p>
+              </div>
+              <div class="ms-auto my-auto mt-lg-0 mt-4">
+                <div class="ms-auto my-auto">
+                  <button 
+                    class="btn bg-gradient-primary btn-sm mb-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-create">
+                    + New Service Partner
+                  </button>
+                  <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Export</button>
                 </div>
-              </td>
-              <td>
-                <p class="text-xs font-weight-bold mb-0">Manager</p>
-                <p class="text-xs text-secondary mb-0">Organization</p>
-              </td>
-              <td class="align-middle text-center text-sm">
-                <span class="badge badge-sm badge-success">Online</span>
-              </td>
-              <td class="align-middle text-center">
-                <span class="text-secondary text-xs font-weight-bold">23/04/18</span>
-              </td>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pb-0">
+            <div class="table-responsive">
+              <table class="table table-flush" id="products-list">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">QR Code</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Edit</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Partner Name</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company Name</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Number</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Email</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created By</th>
+                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
+                    <th class="text-secondary opacity-7"></th>
+                  </tr>
+                </thead>
 
-            </tr>
-          }
-        </tbody>
-      </table>
+                <tbody>
+                  @await Html.PartialAsync(Routes.Partials.SP.TROW, new ServicePartnerRowViewModel())
+                  @foreach (var row in Model)
+                  {
+                    @await Html.PartialAsync(Routes.Partials.SP.TROW, row)
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
-
-		@* <tbody>
-			@foreach(var row in Model)
-			{
-				<tr>
-					<td>
-						<a type="button" id="btn-view" href=""></a>
-					</td>
-					<td>Generate</td>
-					<td>Name</td>
-					<td>Contact Person</td>
-					<td>QR Description</td>
-					<td>Date Created</td>
-				</tr>
-			}
-		</tbody>*@
 </div>
+
+
+@await Html.PartialAsync(Routes.Partials.SP.MODAL_CREATE)
