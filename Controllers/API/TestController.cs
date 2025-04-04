@@ -23,31 +23,30 @@ namespace CCIMS.Web.Controllers.API
     public async Task<string> QrLink(string id)
     {
       string _id = await _secRepo.EncryptIDAsync(id);
-      return $"https://localhost:34881/Customer/Scan?data={_id}";
+      return $"https://localhost:8585/Customer/Scan?data={_id}";
     }
 
 
-    [HttpPost("qrLink")]
-    public async Task<string> QrLink([FromBody] QRCreationRequestDto creationDto)
-    {
-      try
-      {
-        var date = DateTime.Now;
+    //[HttpPost("qrLink")]
+    //public async Task<string> QrLink([FromBody] QRCreationRequestDto creationDto)
+    //{
+    //  try
+    //  {
+    //    var date = DateTime.Now;
 
-        await _qrRepo.CreateAsync(new QRCode()
-        {
-          ServicePartnerId = creationDto.ServicePartnerId,
-          Description = creationDto.Description,
-          DateCreated = date,
-          DateModified = date,
-          IsActive = true,
-        });
+    //    await _qrRepo.CreateAsync(new QRCode()
+    //    {
+    //      ServicePartnerId = creationDto.ServicePartnerId,
+    //      DateCreated = date,
+    //      DateModified = date,
+    //      IsActive = true,
+    //    });
 
-        return "Successfully Created: ";
-      }
-      catch (Exception ex) { 
-        return "Error: " + ex.Message;
-      }
-    }
+    //    return "Successfully Created: ";
+    //  }
+    //  catch (Exception ex) { 
+    //    return "Error: " + ex.Message;
+    //  }
+    //}
   }
 }

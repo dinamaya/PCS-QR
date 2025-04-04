@@ -1,12 +1,9 @@
-﻿using CCIMS.Web.App_Code._Globals;
-using CCIMS.Web.Context;
-using CCIMS.Web.Models.DTOs;
+﻿using CCIMS.Web.Context;
 using main =  CCIMS.Web.Models.Entities.Main;
-
 using CCIMS.Web.Repositories.Interfaces;
 using QRCoder;
 using CCIMS.Web.App_Code._Globals.Constants;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -27,6 +24,8 @@ namespace CCIMS.Web.Repositories.Implementations
 
     public async Task CreateAsync(main.QRCode data)
     {
+      await DeactivateActiveQRs(data.ServicePartnerId);
+
       await _mainDb.QRCodes.AddAsync(data);
       await _mainDb.SaveChangesAsync();
       InsertedId = data.Id;
@@ -43,6 +42,18 @@ namespace CCIMS.Web.Repositories.Implementations
       PngByteQRCode qrCode = new PngByteQRCode(qrCodeData);
 
       return qrCode.GetGraphic(20);
+    }
+
+    private async Task DeactivateActiveQRs(string spId)
+    {
+      var now = DateTime.Now;
+
+      await _mainDb.QRCodes
+          .Where(s => s.IsActive && s.ServicePartnerId == spId)
+          .ExecuteUpdateAsync(qr => qr
+              .SetProperty(p => p.IsActive, false)
+              .SetProperty(p => p.DateModified, now)
+          );
     }
   }
 }

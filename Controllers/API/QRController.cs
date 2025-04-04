@@ -46,26 +46,32 @@ namespace CCIMS.Web.Controllers.API
 		}
 
     [HttpPost]
-		public async Task<ActionResult<ResponseDto<byte[]>>> Post([FromBody] string data)
+		public async Task<ActionResult<ResponseDto<QrPostResponseDto>>> Post([FromBody] string data)
 		{
-      var _response = new ResponseDto<byte[]>();
+      var _response = new ResponseDto<QrPostResponseDto>();
       try
       {
 				if (data.IsNullOrEmpty())
 					throw new InvalidOperationException(Exceptions.Message.INVALID_SPREFERENCE);
 				
 				var date = DateTime.Now;
-
-				await _qrRepo.CreateAsync(new QRCode()
+				var addedQr = new QRCode()
 				{
 					ServicePartnerId = data,
 					DateCreated = date,
 					DateModified = date,
 					IsActive = true,
-				});
+				};
 
-        var qrResult = await _qrRepo.GetById(_qrRepo.InsertedId);
-        _response.Result = qrResult;
+				await _qrRepo.CreateAsync(addedQr);
+
+        var qrResult = await _qrRepo.GetById(addedQr.Id);
+				_response.Result = new()
+				{
+					QrId = addedQr.Id,
+          QrImage = qrResult
+				};
+
         _response.Message = "QR generated successfully";
 
         return Ok(_response);
