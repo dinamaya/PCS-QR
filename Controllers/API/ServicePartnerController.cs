@@ -20,10 +20,11 @@ namespace CCIMS.Web.Controllers.API
     public ServicePartnerController(IServicePartnerRepository spRepo)
     {
       _spRepo = spRepo;
-    }
+			_response = new ResponseDto();
+		}
 
-    [HttpPost("create"), Authorize]
-    public async Task<ResponseDto> Create([FromBody] SPCreationRequestDto creationDto)
+		[HttpPost("create"), Authorize]
+    public async Task<ActionResult<ResponseDto>> Create([FromBody] SPCreationRequestDto creationDto)
     {
       try
       {
@@ -42,20 +43,17 @@ namespace CCIMS.Web.Controllers.API
           IsActive = true,
         });
 
-        return new ResponseDto()
-        {
-          Result = null,
-          Message = "Created Service Partner"
-        };
+        _response.Message = "Service Partner created successfully";
+
+				return Ok(_response);
       }
       catch (Exception ex)
       {
-        return new ResponseDto()
-        {
-          Result = null,
-          Message = "Error: " + ex.Message
-        };
-      }
-    }
+        _response.Message = "Error: " + ex.Message;
+				_response.IsSuccess = false;
+				
+        return BadRequest(_response);
+			}
+		}
   }
 }

@@ -46,7 +46,6 @@
                 </thead>
 
                 <tbody>
-                  @await Html.PartialAsync(Routes.Partials.SP.TROW, new ServicePartnerRowViewModel())
                   @foreach (var row in Model)
                   {
                     @await Html.PartialAsync(Routes.Partials.SP.TROW, row)
@@ -63,3 +62,5 @@
 
 
 @await Html.PartialAsync(Routes.Partials.SP.MODAL_CREATE)
+@await Html.PartialAsync(Routes.Partials.SP.MODAL_QR)
+

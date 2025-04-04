@@ -38,7 +38,6 @@ namespace CCIMS.Web.Repositories.Implementations
           ContactNumber = s.ContactNumber,
           ContactEmail = s.Email,
           ContactPerson = s.ContactPerson,
-          QRDescription = s.QrDescription,
           CreatedBy = s.CreatorLastName.IsNullOrEmpty() || s.CreatorFirstName.IsNullOrEmpty() ? "" : s.CreatorLastName + ", " + s.CreatorFirstName,
           SpDateCreated = s.SpDateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           QrDateCreated = s.QrDateCreated.ToString(),

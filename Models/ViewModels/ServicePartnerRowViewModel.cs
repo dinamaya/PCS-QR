@@ -9,7 +9,6 @@
 		public string ContactNumber { get; set; }
 		public string ContactEmail { get; set; }
 		public string ContactPerson { get; set; }
-		public string QRDescription { get; set; }
 		public string CreatedBy { get; set; }
 		public string SpDateCreated { get; set; }
     public string QrDateCreated { get; set; }
