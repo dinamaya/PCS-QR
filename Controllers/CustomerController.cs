@@ -42,19 +42,19 @@ namespace CCIMS.Web.Controllers
 
 			try
 			{
-				QRTokenDto? qrToken = null;
-				if (!_tokenProvider.IsValidToken(token, out qrToken))
-					throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
+				//QRTokenDto? qrToken = null;
+				//if (!_tokenProvider.IsValidToken(token, out qrToken))
+				//	throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-				if(qrToken == null)
-					throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
+				//if(qrToken == null)
+				//	throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-				string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);
-				bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == origQrId);
-				if (!doesExist)
-					throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
+				//string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);
+				//bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == origQrId);
+				//if (!doesExist)
+				//	throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
 
-				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvines());
+				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
 				provinceResponse.EnsureSuccessStatusCode();
 				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
 				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();

@@ -58,9 +58,8 @@ using (var scope = app.Services.CreateScope())
 	if (app.Environment.IsDevelopment())
 	{
 		var services = scope.ServiceProvider;
-
-		await AccountSeeder.Run(services, user);
-    await ServicePartnerSeeder.Run(services, user);
+//await AccountSeeder.Run(services, user);
+//    await ServicePartnerSeeder.Run(services, user);
 	}
 }
 #endregion
