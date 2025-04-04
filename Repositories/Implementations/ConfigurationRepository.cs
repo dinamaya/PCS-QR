@@ -31,6 +31,9 @@ namespace CCIMS.Web.Repositories.Implementations
 		public string GetPSGCBarangaysByCityCode(string code) => 
 			Utils.Urls.Combine(GetPSGCBaseUrl(), $"cities-municipalities/{code}/barangays");
 
-    public ISysAdminSecurityDetails GetSysAdminPrivateDetails() => _config.GetSection("AdminSecurityConfig:Private").Get<SysAdminSecurityDetails>() ?? throw new InvalidCastException(Exceptions.Message.Config.INVALID_SYS_SECDETAILS);
+		public string GetPSGCCitiesByNCRRegion(string code) =>
+			Utils.Urls.Combine(GetPSGCBaseUrl(), $"regions/1300000000/cities-municipalities");
+
+		public ISysAdminSecurityDetails GetSysAdminPrivateDetails() => _config.GetSection("AdminSecurityConfig:Private").Get<SysAdminSecurityDetails>() ?? throw new InvalidCastException(Exceptions.Message.Config.INVALID_SYS_SECDETAILS);
   }
 }

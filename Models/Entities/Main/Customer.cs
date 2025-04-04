@@ -13,9 +13,11 @@ namespace CCIMS.Web.Models.Entities.Main
 		public string Address1 { get; set; }
 		public string Address2 { get; set; }
 		public string Province { get; set; }
-		public string City { get; set; }
+		public string CityMunicipality { get; set; }
+		public string Barangay { get; set; } 
 		public string ContactNumber { get; set; }
 		public string Email { get; set; }
+		public string SerialNumber { get; set; }
 
 		public string? ModifiedBy { get; set; }
 		public DateTime DateModified { get; set; }

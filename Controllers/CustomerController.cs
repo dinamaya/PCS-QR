@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
 using Microsoft.EntityFrameworkCore;
+using CCIMS.Web.Models.Entities.Main;
 
 namespace CCIMS.Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace CCIMS.Web.Controllers
 		private readonly ITokenProvider _tokenProvider;
 		private readonly ILogger<CustomerController> _logger;
 		private readonly ISecurityRepository _securityRepo;
-    private readonly MainDbContext _mainDb;
+		private readonly MainDbContext _mainDb;
 
 		public CustomerController(IHttpClientFactory httpClientFactory, IConfigurationRepository configRepo, ITokenProvider tokenProvider, ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo)
 		{
@@ -59,19 +60,88 @@ namespace CCIMS.Web.Controllers
 				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
 				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
 
-				var model = new RegistrationViewModel
+				
+				var ncrProvince = new ProvinceDto
 				{
-					Provinces = provinces
+					Id = 0, 
+					Name = "National Capital Region (NCR)",
+					Code = "1300000000", 
+					RegionId = 13 
+				};
+
+				
+				var provincesList = provinces.ToList();
+				provincesList.Add(ncrProvince);
+
+				var model = new ProvincesViewModel
+				{
+					Provinces = provincesList
 				};
 
 				return View(model);
 			}
 			catch (Exception ex)
 			{
-        _logger.LogError($"Error: {ex.Message}");
+				_logger.LogError($"Error: {ex.Message}");
 				ViewBag.ErrorMessage = ex.Message;
-        return RedirectToAction("Index", "Home");
-      }
+				return RedirectToAction("Index", "Home");
+			}
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Register(RegistrationViewModel model, string token)
+		{
+			var client = _httpClientFactory.CreateClient();
+			client.Timeout = TimeSpan.FromSeconds(30);
+
+			try
+			{
+				if (!ModelState.IsValid)
+				{
+					// Re-fetch provinces for the view
+					var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
+					provinceResponse.EnsureSuccessStatusCode();
+					var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
+					model.Provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
+					return View(model);
+				}
+
+				// Example: Save to database (adjust based on your entity model)
+				var customer = new Customer
+				{
+					FirstName = model.FirstName,
+					LastName = model.LastName,
+					ContactNumber = model.ContactNumber,
+					Email = model.Email,
+					Address1 = model.Address1,
+					Address2 = model.Address2,
+					Province = model.Province,
+					CityMunicipality = model.CityMunicipality,
+					Barangay = model.Barangay,
+					SerialNumber = model.SerialNumber,
+					DateCreated = DateTime.UtcNow
+				};
+
+				_mainDb.Customers.Add(customer);
+				await _mainDb.SaveChangesAsync();
+
+				// Redirect to a success page or home
+				return RedirectToAction("Index", "Home");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Error saving customer data: {ex.Message}");
+				ViewBag.ErrorMessage = "An error occurred while processing your request. Please try again.";
+
+				// Re-fetch provinces for the view
+				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
+				provinceResponse.EnsureSuccessStatusCode();
+				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
+				model.Provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
+
+				return View(model);
+			}
 		}
 
 		[HttpGet]
@@ -88,5 +158,42 @@ namespace CCIMS.Web.Controllers
 				return RedirectToAction("Index", "Home");
 			}
 		}
+
+		[HttpGet]
+		public async Task<IActionResult> FetchCities(string provinceCode)
+		{
+			var client = _httpClientFactory.CreateClient();
+			client.Timeout = TimeSpan.FromSeconds(30);
+
+			try
+			{
+				string requestUrl;
+
+				// Special case for NCR (Region 13, code 1300000000)
+				if (provinceCode == "1300000000")
+				{
+					requestUrl = _configRepo.GetPSGCCitiesByNCRRegion(provinceCode);
+				}
+				else
+				{
+					requestUrl = _configRepo.GetPSGCCitiesByProvinceCode(provinceCode);
+				}
+
+				var response = await client.GetAsync(requestUrl);
+				response.EnsureSuccessStatusCode();
+
+				var json = await response.Content.ReadAsStringAsync();
+				var cities = JsonSerializer.Deserialize<IEnumerable<CityDto>>(json) ?? Enumerable.Empty<CityDto>();
+
+				return Json(cities);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Error fetching cities: {ex.Message}");
+				return StatusCode(500, "Error fetching cities");
+			}
+		}
+
 	}
 }
+
