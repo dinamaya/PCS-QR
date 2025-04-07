@@ -5,10 +5,8 @@ let companyName = null;
 let contactPerson = null;
 let contactNumber = null;
 let email = null;
-let url = "";
 
 export function initModal(
-  urlCreate,
 	spNameId,
 	companyNameId,
 	contactPersonId,
@@ -20,7 +18,6 @@ export function initModal(
 	contactPerson = $(`#${contactPersonId}`);
 	contactNumber = $(`#${contactNumberId}`);
   email = $(`#${emailId}`);
-  url = urlCreate;
 }
 
 function post() {
@@ -33,12 +30,17 @@ function post() {
   );
 
   $.post({
-    url: url,
+    url: window.baseUrl,
     contentType: 'application/json',
     data: JSON.stringify(dto),
     success: function (response) {
-      console.log("Submission successful:", response);
-      alert("Submission successful!");
+      const modalEl = document.getElementById('modal-create');
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      modalInstance.hide();
+
+      setTimeout(() => {
+        location.reload();
+      }, 300);
     },
     error: function (error) {
       console.error("Submission failed:", error);

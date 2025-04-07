@@ -17,6 +17,7 @@
 			{
 				public const string TROW = @"../Shared/Tables/_SPTableRowPartial";
 				public const string MODAL_CREATE = @"../Shared/Modals/_SPModalCreatePartial";
+				public const string MODAL_EDIT = @"../Shared/Modals/_SPModalEditPartial";
 				public const string MODAL_QR = @"../Shared/Modals/_QRModalViewPartial";
 			}
 		}

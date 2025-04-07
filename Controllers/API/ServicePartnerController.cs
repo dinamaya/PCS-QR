@@ -16,18 +16,17 @@ namespace CCIMS.Web.Controllers.API
   public class ServicePartnerController : ControllerBase
   {
     private readonly IServicePartnerRepository _spRepo;
-    private ResponseDto _response;
     public ServicePartnerController(IServicePartnerRepository spRepo)
     {
       _spRepo = spRepo;
-			_response = new ResponseDto();
 		}
 
-		[HttpPost("create"), Authorize]
-    public async Task<ActionResult<ResponseDto>> Create([FromBody] SPCreationRequestDto creationDto)
+		[HttpPost, Authorize]
+    public async Task<ActionResult<ResponseDto>> Post([FromBody] SPCreationRequestDto creationDto)
     {
-      try
-      {
+			var response = new ResponseDto();
+			try
+			{
         var date = DateTime.Now;
         string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
         await _spRepo.CreateAsync(new ServicePartner()
@@ -43,17 +42,65 @@ namespace CCIMS.Web.Controllers.API
           IsActive = true,
         });
 
-        _response.Message = "Service Partner created successfully";
+        response.Message = "Service Partner created successfully";
 
-				return Ok(_response);
+				return Ok(response);
       }
       catch (Exception ex)
       {
-        _response.Message = "Error: " + ex.Message;
-				_response.IsSuccess = false;
+        response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
 				
-        return BadRequest(_response);
+        return BadRequest(response);
 			}
-		}
+		} 
+
+    [HttpGet, Authorize]
+    public async Task<ActionResult<ResponseDto<SPEditResponseDto>>> Get([FromQuery] string id)
+    {
+			var response = new ResponseDto<SPEditResponseDto>();
+			try
+			{
+
+				response.Result = await _spRepo.GetById(id) ?? throw new InvalidOperationException(Exceptions.Message.INVALID_SPREFERENCE);
+        
+        response.Message = "Service Partner (" + id+ ") found";
+				
+        return response;
+			}
+      catch (Exception ex)
+      {
+
+				response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
+			}
+    }
+
+    [HttpPut, Authorize]
+    public async Task<ActionResult<ResponseDto>> Put([FromBody] SPEditRequestDto requestDto)
+    {
+			var response = new ResponseDto<SPEditResponseDto>();
+      response.Result = null;
+			
+      try
+			{
+        string modifiedBy = User.GetClaim(AuthClaims.ACCOUNT_ID);
+
+				await _spRepo.EditAsync(requestDto, modifiedBy);
+        response.Message = "Service Partner Editted";
+				
+        return response;
+			}
+      catch (Exception ex)
+      {
+
+				response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
+			}
+    }
   }
 }

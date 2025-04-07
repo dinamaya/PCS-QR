@@ -1,16 +1,16 @@
 ﻿@using CCIMS.Web.Models.ViewModels
 @model ServicePartnerRowViewModel
 
-<tr>
+<tr
+  data-qr-id="@Model.QrId"
+  data-sp-id="@Model.SpId">
   <td class="align-middle">
     <button 
-      class="btn btn-transparent p-0 m-0" 
+      class="btn btn-transparent p-0 ms-3" 
       data-bs-toggle="modal"
       data-bs-target="#modal-qr"
-      data-qr-id="@Model.QrId"
-      data-sp-id="@Model.SpId"
       onclick="showQr(this)">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-qr-code" viewBox="0 0 16 16">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-qr-code" viewBox="0 0 16 16">
         <path d="M2 2h2v2H2z" />
         <path d="M6 0v6H0V0zM5 1H1v4h4zM4 12H2v2h2z" />
         <path d="M6 10v6H0v-6zm-5 1v4h4v-4zm11-9h2v2h-2z" />
@@ -21,8 +21,12 @@
   </td>
   
   <td class="align-middle">
-    <button class="btn btn-transparent p-0 m-0" data-toggle="tooltip" data-original-title="Edit Service Partner">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+    <button 
+      class="btn btn-transparent p-0 ms-3"
+      data-bs-toggle="modal"
+      data-bs-target="#modal-edit"
+      onclick="editSp(this)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
       </svg>
@@ -30,26 +34,26 @@
   </td>
 
   <td>
-    <h6 class="mb-0 text-xs">@Model.ServicePartnerName</h6>
+    <h6 class="text-xs font-weight-bold ms-3">@Model.ServicePartnerName</h6>
   </td>
 
   <td>
-    <p class="text-xs font-weight-bold mb-0">@Model.CompanyName</p>
+    <p class="text-xs font-weight-bold ms-3">@Model.CompanyName</p>
   </td>
 
   <td>
-    <p class="text-xs font-weight-bold mb-0">@Model.ContactNumber</p>
+    <p class="text-xs font-weight-bold ms-3">@Model.ContactNumber</p>
   </td>
 
   <td>
-    <p class="text-xs font-weight-bold mb-0">@Model.CreatedBy</p>
+    <p class="text-xs font-weight-bold ms-3">@Model.ContactEmail</p>
   </td>
 
   <td>
-    <p class="text-xs font-weight-bold mb-0">@Model.ContactEmail</p>
+    <p class="text-xs font-weight-bold ms-3">@Model.CreatedBy</p>
   </td>
 
   <td>
-    <p class="text-xs font-weight-bold mb-0">@Model.SpDateCreated</p>
+    <p class="text-xs font-weight-bold ms-3">@Model.SpDateCreated</p>
   </td>
 </tr>

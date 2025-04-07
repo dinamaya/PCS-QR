@@ -13,10 +13,12 @@ export function initQrModal(qrBaseUrl) {
 	hdnSpId = $("#hdn-spId");
 }
 
-export function showEdit(button) {
+export function viewQr(button)
+{
 	try {
-		const qrId = $(button).data('qr-id');
-		const spId = $(button).data('sp-id');
+		const row = button.closest("tr");
+		const qrId = row.dataset.qrId;
+		const spId = row.dataset.spId;
 
 		hdnQrId.val(qrId);
 		hdnSpId.val(spId);
@@ -116,4 +118,12 @@ export function downloadQr() {
 	catch (ex) {
 		console.error(ex);
 	}
+}
+
+export function resetQr() {
+	setTimeout(() => {
+		hdnQrId.val("");
+		hdnSpId.val("");
+		$("#img-qrCode").attr("src", "/img/qr_placeholder.png");
+	}, 800);
 }

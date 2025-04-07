@@ -82,6 +82,6 @@
 </div>
 
 <script type="module">
-	import { initModal } from '/js/components/spModalCreate.js';
-	initModal('@Url.Content("/api/sp/create")', '@spName.Id', '@compName.Id', '@contPerson.Id', '@contNo.Id', '@email.Id');
+	import { initModal as initCreateModal} from '/js/components/spModalCreate.js';
+	initCreateModal('@spName.Id', '@compName.Id', '@contPerson.Id', '@contNo.Id', '@email.Id');
 </script>

@@ -1,6 +1,9 @@
 ﻿@using CCIMS.Web.App_Code._Globals.Constants
 @using CCIMS.Web.Models.ViewModels
 @model IEnumerable<ServicePartnerRowViewModel>
+
+<script src="~/js/plugins/datatables.js"></script>
+
 <div>
   <div class="container-fluid py-4">
     <div class="row">
@@ -30,18 +33,17 @@
           </div>
           <div class="card-body px-0 pb-0">
             <div class="table-responsive">
-              <table class="table table-flush" id="products-list">
+              <table class="table table-flush" id="tbl-sp">
                 <thead>
                   <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">QR Code</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Edit</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Partner Name</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company Name</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Number</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Email</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created By</th>
-                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
-                    <th class="text-secondary opacity-7"></th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Partner Name</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company Name</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Number</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Email</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created By</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
                   </tr>
                 </thead>
 
@@ -60,7 +62,17 @@
   </div>
 </div>
 
+<script>
+  window.baseUrl = '@Url.Content("/api/sp")'
+
+  const dataTableSearch = new simpleDatatables.DataTable("#tbl-sp", {
+    searchable: true,
+    fixedHeight: true
+  });
+</script>
+
 
 @await Html.PartialAsync(Routes.Partials.SP.MODAL_CREATE)
+@await Html.PartialAsync(Routes.Partials.SP.MODAL_EDIT)
 @await Html.PartialAsync(Routes.Partials.SP.MODAL_QR)
 
