@@ -11,7 +11,7 @@ namespace CCIMS.Web.Models.Entities.Main
 		public string LastName { get; set; }
 
 		public string Address1 { get; set; }
-		public string Address2 { get; set; }
+		public string? Address2 { get; set; }
 		public string Province { get; set; }
 		public string CityMunicipality { get; set; }
 		public string Barangay { get; set; }

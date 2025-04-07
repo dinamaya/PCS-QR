@@ -23,7 +23,7 @@ namespace CCIMS.Web.Controllers
 		private readonly ITokenProvider _tokenProvider;
 		private readonly ILogger<CustomerController> _logger;
 		private readonly ISecurityRepository _securityRepo;
-    private readonly MainDbContext _mainDb;
+		private readonly MainDbContext _mainDb;
 
 		public CustomerController(IHttpClientFactory httpClientFactory, IConfigurationRepository configRepo, ITokenProvider tokenProvider, ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo)
 		{
@@ -80,74 +80,71 @@ namespace CCIMS.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-        _logger.LogError($"Error: {ex.Message}");
+				_logger.LogError($"Error: {ex.Message}");
 				ViewBag.ErrorMessage = ex.Message;
-        return RedirectToAction("Index", "Home");
-      }
+				return RedirectToAction("Index", "Home");
+			}
 		}
 
+
 		[HttpPost]
-		public async Task<IActionResult> Register(string token, [FromForm] Customer customer)
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Register(Customer customer)
 		{
-			if (!ModelState.IsValid)
-			{
-				// Reload provinces if validation fails
-				var client = _httpClientFactory.CreateClient();
-				client.Timeout = TimeSpan.FromSeconds(30);
-				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
-				provinceResponse.EnsureSuccessStatusCode();
-				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
-				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
-				var provincesList = provinces.ToList();
-				provincesList.Insert(0, new ProvinceDto
-				{
-					Id = 0,
-					Name = "National Capital Region (NCR)",
-					Code = "1300000000",
-					RegionId = 13
-				});
-
-				var model = new ProvincesViewModel { Provinces = provincesList };
-				return View(model);
-			}
-
 			try
 			{
-				// Populate additional fields required by the interfaces
+				customer.Id = Guid.NewGuid().ToString();
 				customer.DateCreated = DateTime.UtcNow;
 				customer.DateModified = DateTime.UtcNow;
 				customer.IsActive = true;
-				customer.ModifiedBy = User?.Identity?.Name ?? "System"; // Assuming user is authenticated; adjust as needed
 
-				// Add the customer to the database
+				// Temporary: Set default user (replace with actual logic with auth)
+				customer.ModifiedBy = "System";
+
 				_mainDb.Customers.Add(customer);
 				await _mainDb.SaveChangesAsync();
 
-				_logger.LogInformation("Customer registered successfully: {FirstName} {LastName}", customer.FirstName, customer.LastName);
-				return RedirectToAction("Index", "Home");
+				// Redirect with success parameter
+				return RedirectToAction("Register", new { success = true });
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Error saving customer data: {ex.Message}");
-				ViewBag.ErrorMessage = "An error occurred while saving your data. Please try again.";
+				_logger.LogError($"Error saving customer: {ex.Message}");
+				ViewBag.ErrorMessage = "There was an error processing your request.";
 
-				// Reload provinces for the view
+				// Need to reload provinces for the view
 				var client = _httpClientFactory.CreateClient();
-				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
-				provinceResponse.EnsureSuccessStatusCode();
-				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
-				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
-				var provincesList = provinces.ToList();
-				provincesList.Insert(0, new ProvinceDto
-				{
-					Id = 0,
-					Name = "National Capital Region (NCR)",
-					Code = "1300000000",
-					RegionId = 13
-				});
+				client.Timeout = TimeSpan.FromSeconds(30);
 
-				var model = new ProvincesViewModel { Provinces = provincesList };
-				return View(model);
+				try
+				{
+					var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
+					provinceResponse.EnsureSuccessStatusCode();
+					var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
+					var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
+
+					var ncrProvince = new ProvinceDto
+					{
+						Id = 0,
+						Name = "National Capital Region (NCR)",
+						Code = "1300000000",
+						RegionId = 13
+					};
+
+					var provincesList = provinces.ToList();
+					provincesList.Insert(0, ncrProvince);
+
+					var model = new ProvincesViewModel
+					{
+						Provinces = provincesList
+					};
+
+					return View(model);
+				}
+				catch
+				{
+					return RedirectToAction("Index", "Home");
+				}
 			}
 		}
 
@@ -160,7 +157,7 @@ namespace CCIMS.Web.Controllers
 
 				return View(model: data);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				return RedirectToAction("Index", "Home");
 			}
