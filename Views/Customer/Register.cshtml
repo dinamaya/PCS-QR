@@ -39,43 +39,43 @@
 								</div>
 							}
 
-							<form>								
+							<form method="post" action="/Customer/Register">
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>
-										<input class="form-control" type="text" placeholder="eg. Juan" />
+										<input class="form-control" type="text" name="FirstName" placeholder="eg. Juan" required />
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label>Last Name</label>
-										<input class="form-control" type="text" placeholder="eg. dela Cruz" />
+										<input class="form-control" type="text" name="LastName" placeholder="eg. dela Cruz" required />
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>Contact Number</label>
-										<input class="form-control" type="password" placeholder="eg. 09171234567" />
+										<input class="form-control" type="text" name="ContactNumber" placeholder="eg. 09171234567" required />
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label>Email Address</label>
-										<input class="form-control" type="email" placeholder="eg. myemail@gmail.com" />
+										<input class="form-control" type="email" name="Email" placeholder="eg. myemail@gmail.com" required />
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col">
 										<label>Address 1</label>
-										<input class="form-control" type="text" placeholder="eg. 123 Ortigas" />
+										<input class="form-control" type="text" name="Address1" placeholder="eg. 123 Ortigas" required />
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col">
 										<label>Address 2</label>
-										<input class="form-control" type="text" placeholder="eg. 123 Ortigas" />
+										<input class="form-control" type="text" name="Address2" placeholder="eg. 123 Ortigas" />
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col-12 col-sm-4">
 										<label>Province</label>
-										<select class="form-control" name="province" id="provinceSelect">
+										<select class="form-control" name="Province" id="provinceSelect">
 											<option value="">Select Province</option>
 											@foreach (var province in Model.Provinces)
 											{
@@ -85,13 +85,13 @@
 									</div>
 									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
 										<label>City/Municipality</label>
-										<select class="form-control" name="cityMunicipality" id="cityMunSelect">
+										<select class="form-control" name="CityMunicipality" id="cityMunSelect" required>
 											<option value="">Select City/Municipality</option>
 										</select>
 									</div>
 									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
 										<label>Barangay</label>
-										<select class="form-control" name="barangay" id="barangaySelect">
+										<select class="form-control" name="Barangay" id="barangaySelect" required>
 											<option value="">Select Barangay</option>
 										</select>
 									</div>
@@ -99,11 +99,11 @@
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label>Serial Number</label>
-										<input class="form-control" type="password" placeholder="eg. 987654321" />
+										<input class="form-control" type="text" name="SerialNumber" placeholder="eg. 987654321" required />
 									</div>
 								</div>
 								<div class="text-left mt-4">
-									<button class="btn bg-gradient-dark ms-auto mb-0" type="button" title="Send">Submit</button>
+									<button class="btn bg-gradient-dark ms-auto mb-0" type="submit" title="Send">Submit</button>
 								</div>
 							</form>
 

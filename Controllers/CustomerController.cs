@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
 using Microsoft.EntityFrameworkCore;
+using CCIMS.Web.Models.Entities.Main;
 
 namespace CCIMS.Web.Controllers
 {
@@ -83,6 +84,71 @@ namespace CCIMS.Web.Controllers
 				ViewBag.ErrorMessage = ex.Message;
         return RedirectToAction("Index", "Home");
       }
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Register(string token, [FromForm] Customer customer)
+		{
+			if (!ModelState.IsValid)
+			{
+				// Reload provinces if validation fails
+				var client = _httpClientFactory.CreateClient();
+				client.Timeout = TimeSpan.FromSeconds(30);
+				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
+				provinceResponse.EnsureSuccessStatusCode();
+				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
+				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
+				var provincesList = provinces.ToList();
+				provincesList.Insert(0, new ProvinceDto
+				{
+					Id = 0,
+					Name = "National Capital Region (NCR)",
+					Code = "1300000000",
+					RegionId = 13
+				});
+
+				var model = new ProvincesViewModel { Provinces = provincesList };
+				return View(model);
+			}
+
+			try
+			{
+				// Populate additional fields required by the interfaces
+				customer.DateCreated = DateTime.UtcNow;
+				customer.DateModified = DateTime.UtcNow;
+				customer.IsActive = true;
+				customer.ModifiedBy = User?.Identity?.Name ?? "System"; // Assuming user is authenticated; adjust as needed
+
+				// Add the customer to the database
+				_mainDb.Customers.Add(customer);
+				await _mainDb.SaveChangesAsync();
+
+				_logger.LogInformation("Customer registered successfully: {FirstName} {LastName}", customer.FirstName, customer.LastName);
+				return RedirectToAction("Index", "Home");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Error saving customer data: {ex.Message}");
+				ViewBag.ErrorMessage = "An error occurred while saving your data. Please try again.";
+
+				// Reload provinces for the view
+				var client = _httpClientFactory.CreateClient();
+				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
+				provinceResponse.EnsureSuccessStatusCode();
+				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
+				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
+				var provincesList = provinces.ToList();
+				provincesList.Insert(0, new ProvinceDto
+				{
+					Id = 0,
+					Name = "National Capital Region (NCR)",
+					Code = "1300000000",
+					RegionId = 13
+				});
+
+				var model = new ProvincesViewModel { Provinces = provincesList };
+				return View(model);
+			}
 		}
 
 		[HttpGet]
