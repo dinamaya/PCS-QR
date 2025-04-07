@@ -59,9 +59,20 @@ namespace CCIMS.Web.Controllers
 				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
 				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
 
-				var model = new RegistrationViewModel
+				var ncrProvince = new ProvinceDto
 				{
-					Provinces = provinces
+					Id = 0,
+					Name = "National Capital Region (NCR)",
+					Code = "1300000000",
+					RegionId = 13
+				};
+
+				var provincesList = provinces.ToList();
+				provincesList.Insert(0, ncrProvince);
+
+				var model = new ProvincesViewModel
+				{
+					Provinces = provincesList
 				};
 
 				return View(model);
