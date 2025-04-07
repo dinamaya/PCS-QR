@@ -61,24 +61,31 @@
 					</a>
 					<div class="collapse " id="pagesExamples">
 						<ul class="nav ms-4 ps-3">
-							<li class="nav-item ">
-								<a class="nav-link " href="../../pages/pages/pricing-page.html">
-									<span class="sidenav-mini-icon"> UM </span>
-									<span class="sidenav-normal"> User Management </span>
+							@if (User.IsInRole("OPS"))
+							{
+								<li class="nav-item ">
+								<a class="nav-link" asp-action="Account" asp-controller="CMS">
+									<span class="sidenav-mini-icon"> AM </span>
+									<span class="sidenav-normal"> Account Management </span>
 								</a>
 							</li>
-							<li class="nav-item ">
-								<a class="nav-link" asp-action="ServicePartner" asp-controller="CMS">
-									<span class="sidenav-mini-icon"> SM </span>
-									<span class="sidenav-normal"> SP Management </span>
-								</a>
-							</li>
-							<li class="nav-item ">
-								<a class="nav-link " asp-area="" asp-controller="CMS" asp-action="Index">
-									<span class="sidenav-mini-icon"> CM </span>
-									<span class="sidenav-normal"> Case Management </span>
-								</a>
-							</li>
+							}
+
+							@if (User.IsInRole("SPA"))
+							{
+								<li class="nav-item ">
+									<a class="nav-link" asp-action="ServicePartner" asp-controller="CMS">
+										<span class="sidenav-mini-icon"> SM </span>
+										<span class="sidenav-normal"> SP Management </span>
+									</a>
+								</li>
+								<li class="nav-item ">
+									<a class="nav-link " asp-area="" asp-controller="CMS" asp-action="Index">
+										<span class="sidenav-mini-icon"> CM </span>
+										<span class="sidenav-normal"> Case Management </span>
+									</a>
+								</li>
+							}
 						</ul>
 					</div>
 				</li>

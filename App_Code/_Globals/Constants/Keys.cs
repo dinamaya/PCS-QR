@@ -12,8 +12,7 @@
 
 			public static class Types
 			{
-				public const string WARRANTY = "AllWarrantyTypes";
-				public const string STATUS = "AllStatusTypes";
+				public const string ROLES = "AllAccountRoleTypes";
 			}
 
 			public static class Search
