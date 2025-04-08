@@ -9,5 +9,6 @@ namespace CCIMS.Web.Repositories.Interfaces
 		Task CreateAsync(AccountCreationRequestDto creationRequest, string createdBy);
 		Task<IEnumerable<AccountRowViewModel>> GetAll();
 		Task<IEnumerable<DropdownOptionViewModel>> GetAllRoles();
+		Task<AccountEditResponseDto> GetById(string id);
 	}
 }

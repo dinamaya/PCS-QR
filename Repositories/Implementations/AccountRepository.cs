@@ -89,5 +89,21 @@ namespace CCIMS.Web.Repositories.Implementations
 				})
 				.ToListAsync();
 		}
+
+		public async Task<AccountEditResponseDto> GetById(string id)
+		{
+			return await _authDb.AccountsVs
+				.AsNoTracking()
+				.Where(a => a.AccountId == id)
+				.Select(data => new AccountEditResponseDto()
+				{
+					FirstName = data.FirstName,
+					LastName = data.LastName,
+					Email = data.Email,
+					Username = data.UserName,
+					Type = data.RoleName,
+				})
+				.FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
+		}
 	}
 }
