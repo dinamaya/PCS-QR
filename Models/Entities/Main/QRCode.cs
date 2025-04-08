@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CCIMS.Web.Models.Abstracts;
 using CCIMS.Web.Models.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CCIMS.Web.Models.Entities.Main
 {
@@ -10,10 +11,12 @@ namespace CCIMS.Web.Models.Entities.Main
 		public QRCode() : base("QRC") {}
 
     public string ServicePartnerId { get; set; }
-    public string Description { get; set; }
 
     public DateTime DateCreated { get;  set; }
     public DateTime DateModified { get; set; }
     public bool IsActive { get; set; }
+
+    [ForeignKey(nameof(ServicePartnerId))]
+    public virtual ServicePartner ServicePartner { get; set; }
   }
 }

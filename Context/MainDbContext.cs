@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using CCIMS.Web.App_Code._Globals.Enums;
 using CCIMS.Web.Models.Entities.Main;
 using System.Reflection.Emit;
+using CCIMS.Web.Models.SQLViews.Main;
 
 namespace CCIMS.Web.Context
 {
@@ -17,14 +18,32 @@ namespace CCIMS.Web.Context
 		public virtual DbSet<Status> Statuses { get; set; }
 		public virtual DbSet<Transaction> Transactions { get; set; }
 
+    public virtual DbSet<ServicePartnersV> ServicePartnersVs { get; set; }
+    
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Case>()
 				.HasOne(a => a.QRCode)
 				.WithMany()
 				.HasForeignKey(a => a.QRCodeId);
+			
+			modelBuilder.Entity<QRCode>()
+				.HasOne(a => a.ServicePartner)
+				.WithMany()
+				.HasForeignKey(a => a.ServicePartnerId);
 
-			base.OnModelCreating(modelBuilder);
+      modelBuilder.Entity<ServicePartnersV>(entity =>
+      {
+        entity
+            .HasNoKey()
+            .ToView("ServicePartners_v");
+
+        entity.Property(e => e.CreatorUsername).HasMaxLength(256);
+        entity.Property(e => e.QrId).HasMaxLength(450);
+        entity.Property(e => e.SpId).HasMaxLength(450);
+      });
+
+      base.OnModelCreating(modelBuilder);
 		}
 	}
 }

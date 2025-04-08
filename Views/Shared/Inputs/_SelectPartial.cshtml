@@ -1,0 +1,22 @@
+﻿@using CCIMS.Web.Models.ViewModels.Partials
+
+@model SelectViewModel
+@{
+	string selectContainerClass = $"{Model.SelectContainerClassName}";
+}
+
+<div class="col @Model.ClassName">
+	<label for='@Model.Id' class='form-label fs-5 fw-bold'>@Model.Title</label>
+	<div class="@selectContainerClass ">
+		<select class="form-control " name="@Model.Name" id="@Model.Id">
+			<option value="" selected="">@Model.DefaultName</option>
+			@foreach (var option in Model.Options)
+			{
+				<option value="@option.Value">
+					@option.Label
+				</option>
+			}
+		</select>
+	</div>
+	<span id='@Model.NotifId'></span>
+</div>

@@ -1,8 +1,7 @@
-﻿@model CCIMS.Web.Models.ViewModels.ProvincesViewModel
-
-@{
+﻿@{
 	ViewData["Title"] = "Customer Form";
 }
+
 
 <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('/img/curved-images/curved9.jpg');" );">
 	<span class="mask bg-gradient-dark opacity-6"></span>
@@ -34,8 +33,9 @@
 								</div>
 							}
 
-							<form asp-action="Register" method="post">
+							<form method="post" action="/Customer/Register" id="customerForm">
 								@Html.AntiForgeryToken()
+								<input type="text" name="Token" value="@Context.Request.Query["token"]" />
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>
@@ -59,37 +59,40 @@
 								<div class="row mt-3">
 									<div class="col">
 										<label>Address 1</label>
-										<input class="form-control" type="text" name="Address1" placeholder="eg. 123 Garden Royal Subdivision" required />
+										<input class="form-control" type="text" name="Address1" placeholder="eg. 123 Ortigas" required />
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col">
 										<label>Address 2</label>
-										<input class="form-control" type="text" name="Address2" placeholder="eg. Rizal Avenue" />
+										<input class="form-control" type="text" name="Address2" placeholder="eg. 123 Ortigas" />
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col-12 col-sm-4">
 										<label>Province</label>
-										<select class="form-control" name="Province" id="provinceSelect" required>
+										<select class="form-control" name="ProvinceCode" id="provinceSelect" required>
 											<option value="">Select Province</option>
 											@foreach (var province in Model.Provinces)
 											{
 												<option value="@province.Code">@province.Name</option>
 											}
 										</select>
+										<input type="hidden" name="Province" id="provinceName" />
 									</div>
 									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
 										<label>City/Municipality</label>
-										<select class="form-control" name="CityMunicipality" id="cityMunSelect" required>
+										<select class="form-control" name="CityMunicipalityCode" id="cityMunSelect" required>
 											<option value="">Select City/Municipality</option>
 										</select>
+										<input type="hidden" name="CityMunicipality" id="cityMunName" />
 									</div>
 									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
 										<label>Barangay</label>
-										<select class="form-control" name="Barangay" id="barangaySelect" required>
+										<select class="form-control" name="BarangayCode" id="barangaySelect" required>
 											<option value="">Select Barangay</option>
 										</select>
+										<input type="hidden" name="Barangay" id="barangayName" />
 									</div>
 								</div>
 								<div class="row mt-3">
@@ -102,7 +105,6 @@
 									<button class="btn bg-gradient-dark ms-auto mb-0" type="submit" title="Send">Submit</button>
 								</div>
 							</form>
-
 						</div>
 					</div>
 				</div>
@@ -110,49 +112,54 @@
 		</div>
 	</div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-	$('#provinceSelect').change(function () {
-		var provinceCode = $(this).val();
-		var cityMunSelect = $('#cityMunSelect');
-		var barangaySelect = $('#barangaySelect');
+	$(document).ready(function () {
 
-		// Clear dependent dropdowns
-		cityMunSelect.empty().append('<option value="">Select City/Municipality</option>');
-		barangaySelect.empty().append('<option value="">Select Barangay</option>');
+		// Store the text value when province is changed
+		$('#provinceSelect').change(function () {
+			var provinceCode = $(this).val();
+			var provinceName = $(this).find('option:selected').text();
+			$('#provinceName').val(provinceName);
+			
+			var cityMunSelect = $('#cityMunSelect');
+			var barangaySelect = $('#barangaySelect');
 
-		if (provinceCode) {
-			var apiUrl = '/api/fetch/city';
+			// Clear dependent dropdowns
+			cityMunSelect.empty().append('<option value="">Select City/Municipality</option>');
+			barangaySelect.empty().append('<option value="">Select Barangay</option>');
+			$('#cityMunName').val('');
+			$('#barangayName').val('');
 
-			// Special case for NCR (assuming "1300000000" is the NCR region code)
-			if (provinceCode === "1300000000") {
-				apiUrl = '/api/fetch/city/ncr'; // Use a different API for NCR
+			if (provinceCode) {
+				$.ajax({
+					url: '/api/fetch/city',
+					type: 'GET',
+					data: { provinceCode: provinceCode },
+					success: function (data) {
+						$.each(data, function (index, city) {
+							cityMunSelect.append(
+								$('<option></option>').val(city.value).text(city.label)
+							);
+						});
+					},
+					error: function (xhr, status, error) {
+						console.log('Error fetching cities: ' + error);
+					}
+				});
 			}
+		});
 
-			$.ajax({
-				url: apiUrl,
-				type: 'GET',
-				data: { provinceCode: provinceCode },
-				success: function (data) {
-					$.each(data, function (index, city) {
-						cityMunSelect.append(
-							$('<option></option>').val(city.value).text(city.label)
-						);
-					});
-				},
-				error: function (xhr, status, error) {
-					console.log('Error fetching cities: ' + error);
-				}
-			});
-		}
-	});
-
-
+		// Store the text value when city is changed
 		$('#cityMunSelect').change(function () {
 			var cityMunCode = $(this).val();
+			var cityMunName = $(this).find('option:selected').text();
+			$('#cityMunName').val(cityMunName);
+			
 			var barangaySelect = $('#barangaySelect');
 
 			barangaySelect.empty().append('<option value="">Select Barangay</option>');
+			$('#barangayName').val('');
 
 			if (cityMunCode) {
 				$.ajax({
@@ -171,6 +178,12 @@
 					}
 				});
 			}
+		});
+		
+		// Store the text value when barangay is changed
+		$('#barangaySelect').change(function() {
+			var barangayName = $(this).find('option:selected').text();
+			$('#barangayName').val(barangayName);
 		});
 	});
 </script>

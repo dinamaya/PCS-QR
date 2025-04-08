@@ -13,6 +13,7 @@ using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
 using Microsoft.EntityFrameworkCore;
 using CCIMS.Web.Models.Entities.Main;
+using System.Net.Mail;
 
 namespace CCIMS.Web.Controllers
 {
@@ -43,35 +44,33 @@ namespace CCIMS.Web.Controllers
 
 			try
 			{
-				//QRTokenDto? qrToken = null;
-				//if (!_tokenProvider.IsValidToken(token, out qrToken))
-				//	throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
+				QRTokenDto? qrToken = null;
+				if (!_tokenProvider.IsValidToken(token, out qrToken))
+					throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-				//if(qrToken == null)
-				//	throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
+				if (qrToken == null)
+					throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-				//string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);
-				//bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == origQrId);
-				//if (!doesExist)
-				//	throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
+				string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);
+				bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == origQrId);
+				if (!doesExist)
+					throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
 
 				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
 				provinceResponse.EnsureSuccessStatusCode();
 				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
 				var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
 
-				
 				var ncrProvince = new ProvinceDto
 				{
-					Id = 0, 
+					Id = 0,
 					Name = "National Capital Region (NCR)",
-					Code = "1300000000", 
-					RegionId = 13 
+					Code = "1300000000",
+					RegionId = 13
 				};
 
-				
 				var provincesList = provinces.ToList();
-				provincesList.Add(ncrProvince);
+				provincesList.Insert(0, ncrProvince);
 
 				var model = new ProvincesViewModel
 				{
@@ -88,59 +87,91 @@ namespace CCIMS.Web.Controllers
 			}
 		}
 
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Register(RegistrationViewModel model, string token)
+		public async Task<IActionResult> Register(CreateCustomerDto createCustomerDto)
 		{
-			var client = _httpClientFactory.CreateClient();
-			client.Timeout = TimeSpan.FromSeconds(30);
-
 			try
 			{
-				if (!ModelState.IsValid)
-				{
-					// Re-fetch provinces for the view
-					var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
-					provinceResponse.EnsureSuccessStatusCode();
-					var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
-					model.Provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
-					return View(model);
-				}
+				var customer = new Customer();
+				var newCase = new Case();
+				QRTokenDto token = null;
+				bool isTokenValid = _tokenProvider.IsValidToken(createCustomerDto.Token, out token);
 
-				// Example: Save to database (adjust based on your entity model)
-				var customer = new Customer
-				{
-					FirstName = model.FirstName,
-					LastName = model.LastName,
-					ContactNumber = model.ContactNumber,
-					Email = model.Email,
-					Address1 = model.Address1,
-					Address2 = model.Address2,
-					Province = model.Province,
-					CityMunicipality = model.CityMunicipality,
-					Barangay = model.Barangay,
-					SerialNumber = model.SerialNumber,
-					DateCreated = DateTime.UtcNow
-				};
+				if (!isTokenValid && token != null) throw new Exception("Invalid Token");
+
+				customer.FirstName = createCustomerDto.FirstName;
+				customer.LastName = createCustomerDto.LastName;
+				customer.Address1 = createCustomerDto.Address1;
+				customer.Address2 = createCustomerDto.Address2;
+				customer.Province = createCustomerDto.Province;
+				customer.CityMunicipality = createCustomerDto.CityMunicipality;
+				customer.Barangay = createCustomerDto.Barangay;
+				customer.ContactNumber = createCustomerDto.ContactNumber;
+				customer.Email = createCustomerDto.Email;
+
+				customer.DateCreated = DateTime.UtcNow;
+				customer.DateModified = DateTime.UtcNow;
+				customer.IsActive = true;
+				customer.ModifiedBy = string.Empty;
 
 				_mainDb.Customers.Add(customer);
 				await _mainDb.SaveChangesAsync();
 
-				// Redirect to a success page or home
-				return RedirectToAction("Index", "Home");
+				newCase.CaseNumber = Guid.NewGuid().ToString();
+				newCase.CustomerID = customer.Id;
+				newCase.Description = string.Empty;
+				newCase.QRCodeId = await _securityRepo.DecryptIDAsync(token.QRID);
+				newCase.SerialNumber = createCustomerDto.SerialNumber;
+				newCase.ModifiedBy = string.Empty;
+				newCase.DateCreated = DateTime.Now; 
+				newCase.IsActive = true;
+
+				_mainDb.Cases.Add(newCase);
+				await _mainDb.SaveChangesAsync();
+
+				// Redirect after successful submission
+				return View("ThankYou");
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Error saving customer data: {ex.Message}");
-				ViewBag.ErrorMessage = "An error occurred while processing your request. Please try again.";
+				_logger.LogError($"Error saving customer: {ex.Message}");
+				ViewBag.ErrorMessage = "There was an error processing your request.";
 
-				// Re-fetch provinces for the view
-				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
-				provinceResponse.EnsureSuccessStatusCode();
-				var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
-				model.Provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
+				// Need to reload provinces for the view
+				var client = _httpClientFactory.CreateClient();
+				client.Timeout = TimeSpan.FromSeconds(30);
 
-				return View(model);
+				try
+				{
+					var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
+					provinceResponse.EnsureSuccessStatusCode();
+					var provinceJson = await provinceResponse.Content.ReadAsStringAsync();
+					var provinces = JsonSerializer.Deserialize<IEnumerable<ProvinceDto>>(provinceJson) ?? Enumerable.Empty<ProvinceDto>();
+
+					var ncrProvince = new ProvinceDto
+					{
+						Id = 0,
+						Name = "National Capital Region (NCR)",
+						Code = "1300000000",
+						RegionId = 13
+					};
+
+					var provincesList = provinces.ToList();
+					provincesList.Insert(0, ncrProvince);
+
+					var model = new ProvincesViewModel
+					{
+						Provinces = provincesList
+					};
+
+					return View(model);
+				}
+				catch
+				{
+					return RedirectToAction("Index", "Home");
+				}
 			}
 		}
 
@@ -153,47 +184,10 @@ namespace CCIMS.Web.Controllers
 
 				return View(model: data);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				return RedirectToAction("Index", "Home");
 			}
 		}
-
-		[HttpGet]
-		public async Task<IActionResult> FetchCities(string provinceCode)
-		{
-			var client = _httpClientFactory.CreateClient();
-			client.Timeout = TimeSpan.FromSeconds(30);
-
-			try
-			{
-				string requestUrl;
-
-				// Special case for NCR (Region 13, code 1300000000)
-				if (provinceCode == "1300000000")
-				{
-					requestUrl = _configRepo.GetPSGCCitiesByNCRRegion(provinceCode);
-				}
-				else
-				{
-					requestUrl = _configRepo.GetPSGCCitiesByProvinceCode(provinceCode);
-				}
-
-				var response = await client.GetAsync(requestUrl);
-				response.EnsureSuccessStatusCode();
-
-				var json = await response.Content.ReadAsStringAsync();
-				var cities = JsonSerializer.Deserialize<IEnumerable<CityDto>>(json) ?? Enumerable.Empty<CityDto>();
-
-				return Json(cities);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Error fetching cities: {ex.Message}");
-				return StatusCode(500, "Error fetching cities");
-			}
-		}
-
 	}
 }
-

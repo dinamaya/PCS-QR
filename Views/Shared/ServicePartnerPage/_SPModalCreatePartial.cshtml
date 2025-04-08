@@ -1,0 +1,87 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels.Partials
+
+@{
+	var spName = new InputFieldViewModel()
+	{
+		OperationName = "add",
+		IdName = "spName",
+		Title = "Service Partner Name",
+	};
+
+	var compName = new InputFieldViewModel()
+	{
+		OperationName = "add",
+		IdName = "companyName",
+		Title = "Company Name",
+		ClassName = "col"
+	};
+
+	var contPerson = new InputFieldViewModel()
+	{
+		OperationName = "add",
+		IdName = "contactPerson",
+		Title = "Contact Person",
+		ClassName = "col-12 col-md-6 "
+	};
+
+	var contNo = new InputFieldViewModel()
+	{
+		OperationName = "add",
+		IdName = "contactNo",
+		Title = "Contact Number",
+		ClassName = "col",
+		Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Tel
+	};
+
+	var email = new InputFieldViewModel()
+	{
+		OperationName = "add",
+		IdName = "email",
+		Title = "Email",
+		ClassName = "col-12 col-md-6 ",
+		Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Email
+	};
+
+
+}
+<!-- Create SP -->
+<div class="modal modal-lg fade" id="modal-create" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-create">
+		<div class="modal-dialog">
+			<div class="modal-content p-2">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Create Service Partner</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="p-4	">
+
+						@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, spName)
+
+						<div class="row">
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, compName)
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, contPerson)
+						</div>
+
+						<div class="row">
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, contNo)
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, email)
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Create</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="module">
+	import { initModal as initCreateModal} from '/js/components/spModalCreate.js';
+	initCreateModal('@spName.Id', '@compName.Id', '@contPerson.Id', '@contNo.Id', '@email.Id');
+</script>
