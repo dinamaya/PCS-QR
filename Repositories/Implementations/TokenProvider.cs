@@ -2,6 +2,7 @@
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Repositories.Interfaces;
 using System.Collections.Concurrent;
+using CCIMS.Web.App_Code._Globals;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -11,7 +12,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
 		public string GenerateToken(int minutesToExpire, int remainingUses, string qrHashedId)
 		{
-			string token = Guid.NewGuid().ToString();
+			string token = Utils.Security.GenerateExtendedGuid("tk",5);
 
 			_validTokens[token] = new QRTokenDto
 			{

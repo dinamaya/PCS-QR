@@ -1,0 +1,15 @@
+﻿@using CCIMS.Web.Models.ViewModels.Partials
+@model InputFieldViewModel
+
+@{
+  string className = $"text-start py-3 {Model.ClassName}";
+  string type = Model.Type.ToString().ToLower();
+}
+
+<div class="@className">
+  <label for='@Model.Id' class='form-label fs-5 fw-bold'>@Model.Title</label>
+  <div class='input-group'>
+    <input type='@type' id='@Model.Id' name='@Model.Name' class='form-control' placeholder='@Model.PlaceHolder' value='@Model.Value' />
+  </div>
+  <span id='@Model.NotifId'></span>
+</div>

@@ -1,0 +1,91 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels.Partials
+
+@{
+	var spName = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "spName",
+				Title = "Service Partner Name",
+			};
+
+	var compName = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "companyName",
+				Title = "Company Name",
+				ClassName = "col"
+			};
+
+	var contPerson = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "contactPerson",
+				Title = "Contact Person",
+				ClassName = "col-12 col-md-6 "
+			};
+
+	var contNo = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "contactNo",
+				Title = "Contact Number",
+				ClassName = "col",
+				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Tel
+			};
+
+	var email = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "email",
+				Title = "Email",
+				ClassName = "col-12 col-md-6 ",
+				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Email
+			};
+
+
+}
+<!-- Edit SP -->
+<div class="modal modal-lg fade" id="modal-edit" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-edit">
+		<div class="modal-dialog">
+			<div class="modal-content p-2">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Service Partner</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="p-4	">
+
+						@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, spName)
+
+						<div class="row">
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, compName)
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, contPerson)
+						</div>
+
+						<div class="row">
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, contNo)
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, email)
+						</div>
+					</div>
+				</div>
+
+				<input type="hidden" id="hdn-edit-spId"/>
+
+				<div class="modal-footer">
+					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal" onclick="resetEditModal()">Close</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Edit</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="module">
+	import { initModal as initEditModal, onEdit as editSp, resetModal as resetEditModal } from '/js/components/spModalEdit.js';
+	initEditModal('@spName.Id', '@compName.Id', '@contPerson.Id', '@contNo.Id', '@email.Id', 'hdn-edit-spId');
+	window.editSp = editSp;
+	window.resetEditModal = resetEditModal;
+</script>

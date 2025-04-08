@@ -1,0 +1,115 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Models.ViewModels.Partials
+
+@{
+	var fname = new InputFieldViewModel()
+		{
+			OperationName = "add",
+			IdName = "fname",
+			Title = "First Name",
+			ClassName = "col"
+		};
+
+	var lname = new InputFieldViewModel()
+		{
+			OperationName = "add",
+			IdName = "lname",
+			Title = "Last Name",
+			ClassName = "col-12 col-md-6 "
+		};
+			
+	var uname = new InputFieldViewModel()
+		{
+			OperationName = "add",
+			IdName = "uname",
+			Title = "Username",
+			ClassName = "col"
+		};
+
+	var email = new InputFieldViewModel()
+			{
+				OperationName = "add",
+				IdName = "email",
+				Title = "Email",
+				ClassName = "col-12 col-md-6 ",
+				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Email
+			};
+			
+	var pass1 = new InputFieldViewModel()
+		{
+			OperationName = "add",
+			IdName = "pass1",
+			Title = "Password",
+			ClassName = "col",
+			Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Password
+		};
+
+	var pass2 = new InputFieldViewModel()
+		{
+			OperationName = "add",
+			IdName = "pass2",
+			Title = "Retype Password",
+			ClassName = "col-12 col-md-6 ",
+			Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Password
+		};
+
+	var roles = new SelectViewModel()
+		{
+			IdName = "roles",
+			Title = "Account Role / Type",
+			SelectContainerClassName = "col",
+			Options = (IEnumerable<DropdownOptionViewModel>) ViewData[Keys.ViewData.Types.ROLES]
+		};
+}
+
+
+<!-- Create Account -->
+<div class="modal modal-lg fade" id="modal-create" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-create">
+		<div class="modal-dialog">
+			<div class="modal-content p-2">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Create Account</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="p-4	">
+
+						<div class="row">
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, lname)
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, fname)
+						</div>
+
+						<div class="row">
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, uname)
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, email)
+						</div>
+
+						<div class="row">
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, pass1)
+							@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, pass2)
+						</div>
+
+						@await Html.PartialAsync(Routes.Partials.Inputs.SELECT, roles)
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Create</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="module">
+	import { initModal as initCreateModal } from '/js/components/accModalCreate.js';
+
+	initCreateModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', '@roles.Id');
+	const selectRoles = new Choices(document.getElementById('@roles.Id'), {
+		searchEnabled: false
+	});
+</script>

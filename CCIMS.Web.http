@@ -1,4 +1,5 @@
-﻿@PCS QR_HostAddress = https://localhost:34881
+﻿@CCIMS.Web_HostAddress = https://localhost:8585
+@PCS QR_HostAddress = https://localhost:34881
 
 POST {{PCS QR_HostAddress}}/api/test/qrLink
 Content-Type: application/json
@@ -17,4 +18,48 @@ Content-Type: application/json
 {
   //QRCreationRequestDto
 }
+###
+
+POST {{CCIMS.Web_HostAddress}}/api/sp/create
+Content-Type: application/json
+
+{
+  "Name" : "Test SP1",
+  "CompanyName" : "Test Company 1",
+  "ContactNumber" : "Test Contact 1",
+  "Email" : "Test Email 1",
+  "ContactPerson" : "Test ContactPerson 1",
+}
+
+###
+
+GET {{CCIMS.Web_HostAddress}}/api/qr?id=string
+
+###
+
+GET {{CCIMS.Web_HostAddress}}/api/qr?id=string
+
+###
+
+GET {{CCIMS.Web_HostAddress}}/api/qr?id=
+
+###
+
+POST {{CCIMS.Web_HostAddress}}/api/qr
+Content-Type: application/json
+
+{
+  //QRCreationRequestDto
+}
+
+###
+
+POST {{CCIMS.Web_HostAddress}}/api/qr
+Content-Type: application/json
+
+{
+  "ServicePartnerId" : "SVP49f3962a5bff4306935e0936d5971fcaaae138a5739144bba11e92ae1072688717bfaae9d9044f369b048e9ef7a9ba9576aba2d790c44d67acb9806895317b35",
+  "Description" : "asa"
+}
+
 ###

@@ -32,5 +32,9 @@ namespace CCIMS.Web.Repositories.Implementations
 			Utils.Urls.Combine(GetPSGCBaseUrl(), $"cities-municipalities/{code}/barangays");
 
     public ISysAdminSecurityDetails GetSysAdminPrivateDetails() => _config.GetSection("AdminSecurityConfig:Private").Get<SysAdminSecurityDetails>() ?? throw new InvalidCastException(Exceptions.Message.Config.INVALID_SYS_SECDETAILS);
-  }
+
+    public string GetQrScanUrl() => _config.GetValue<string>("QrConfig:url");
+
+		public string GetDocumentationUrl() => _config.GetValue<string>("Documentation");
+	}
 }
