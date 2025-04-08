@@ -9,7 +9,7 @@
 	<label for='@Model.Id' class='form-label fs-5 fw-bold'>@Model.Title</label>
 	<div class="@selectContainerClass ">
 		<select class="form-control " name="@Model.Name" id="@Model.Id">
-			<option value="" selected="">@Model.DefaultName</option>
+			<option value="" selected="">@Model.PlaceHolder</option>
 			@foreach (var option in Model.Options)
 			{
 				<option value="@option.Value">

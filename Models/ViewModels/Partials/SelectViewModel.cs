@@ -1,17 +1,17 @@
-﻿namespace CCIMS.Web.Models.ViewModels.Partials
+﻿using CCIMS.Web.App_Code._Globals.Constants;
+
+namespace CCIMS.Web.Models.ViewModels.Partials
 {
-	public class SelectViewModel
+	public class SelectViewModel : BaseElementViewModel
 	{
-		public string IdName { get; set; }
-		public string Title { get; set; }
 		public IEnumerable<DropdownOptionViewModel> Options { get; set; }
-		public string? ClassName { get; set; }
 		public string? SelectContainerClassName { get; set; }
 
-		public string DefaultName { get; set; } = "Select Something";
+		public override string PlaceHolder => "Select Something";
 
-		public string Id => $"sel-{IdName}";
-		public string Name => $"sel_{IdName}";
-		public string NotifId => $"notif-{IdName}";
+		public override string Id => $"sel-{OperationName}-{IdName}";
+		public override string Name => $"sel_{OperationName}_{IdName}";
+
+		public override string GetPartialViewPath() => Routes.Partials.Inputs.SELECT;
 	}
 }
