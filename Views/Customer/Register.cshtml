@@ -33,13 +33,6 @@
 								</div>
 							}
 
-							@if (TempData["SuccessMessage"] != null)
-							{
-								<div class="alert alert-success" role="alert" id="successAlert">
-									@TempData["SuccessMessage"]
-								</div>
-							}
-
 							<form method="post" action="/Customer/Register" id="customerForm">
 								@Html.AntiForgeryToken()
 								<div class="row mt-3">
@@ -119,48 +112,15 @@
 	</div>
 </div>
 
-<!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="successModalLabel">Success!</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body text-center">
-				<div class="py-3">
-					<i class="fas fa-check-circle text-success fa-4x mb-3"></i>
-					<h4>Thank you!</h4>
-					<p>Your case has been successfully submitted.</p>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn bg-gradient-primary" data-bs-dismiss="modal" id="continueButton">Continue</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <script>
 	$(document).ready(function () {
-		// Show success modal if redirected with success flag
-		if (new URLSearchParams(window.location.search).get('success') === 'true') {
-			$('#successModal').modal('show');
-		}
-
-		// Handle Continue button click
-		$('#continueButton').click(function () {
-			window.location.href = '/'; // Redirect to home page or wherever needed
-		});
 
 		// Store the text value when province is changed
 		$('#provinceSelect').change(function () {
 			var provinceCode = $(this).val();
 			var provinceName = $(this).find('option:selected').text();
 			$('#provinceName').val(provinceName);
-
+			
 			var cityMunSelect = $('#cityMunSelect');
 			var barangaySelect = $('#barangaySelect');
 
@@ -194,7 +154,7 @@
 			var cityMunCode = $(this).val();
 			var cityMunName = $(this).find('option:selected').text();
 			$('#cityMunName').val(cityMunName);
-
+			
 			var barangaySelect = $('#barangaySelect');
 
 			barangaySelect.empty().append('<option value="">Select Barangay</option>');
@@ -218,9 +178,9 @@
 				});
 			}
 		});
-
+		
 		// Store the text value when barangay is changed
-		$('#barangaySelect').change(function () {
+		$('#barangaySelect').change(function() {
 			var barangayName = $(this).find('option:selected').text();
 			$('#barangayName').val(barangayName);
 		});

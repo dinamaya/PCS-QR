@@ -104,8 +104,8 @@ namespace CCIMS.Web.Controllers
 				_mainDb.Customers.Add(customer);
 				await _mainDb.SaveChangesAsync();
 
-				// Redirect with success parameter
-				return RedirectToAction("Register", new { success = true });
+				// Redirect after successful submission
+				return View("ThankYou");
 			}
 			catch (Exception ex)
 			{
