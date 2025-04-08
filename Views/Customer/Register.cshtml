@@ -35,6 +35,7 @@
 
 							<form method="post" action="/Customer/Register" id="customerForm">
 								@Html.AntiForgeryToken()
+								<input type="text" name="Token" value="@Context.Request.Query["token"]" />
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>

@@ -13,6 +13,7 @@ using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
 using Microsoft.EntityFrameworkCore;
 using CCIMS.Web.Models.Entities.Main;
+using System.Net.Mail;
 
 namespace CCIMS.Web.Controllers
 {
@@ -43,17 +44,17 @@ namespace CCIMS.Web.Controllers
 
 			try
 			{
-				//QRTokenDto? qrToken = null;
-				//if (!_tokenProvider.IsValidToken(token, out qrToken))
-				//	throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
+				QRTokenDto? qrToken = null;
+				if (!_tokenProvider.IsValidToken(token, out qrToken))
+					throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-				//if(qrToken == null)
-				//	throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
+				if (qrToken == null)
+					throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-				//string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);
-				//bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == origQrId);
-				//if (!doesExist)
-				//	throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
+				string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);
+				bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == origQrId);
+				if (!doesExist)
+					throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
 
 				var provinceResponse = await client.GetAsync(_configRepo.GetPSGCProvinces());
 				provinceResponse.EnsureSuccessStatusCode();
@@ -89,19 +90,45 @@ namespace CCIMS.Web.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Register(Customer customer)
+		public async Task<IActionResult> Register(CreateCustomerDto createCustomerDto)
 		{
 			try
 			{
-				customer.Id = Guid.NewGuid().ToString();
+				var customer = new Customer();
+				var newCase = new Case();
+				QRTokenDto token = null;
+				bool isTokenValid = _tokenProvider.IsValidToken(createCustomerDto.Token, out token);
+
+				if (!isTokenValid && token != null) throw new Exception("Invalid Token");
+
+				customer.FirstName = createCustomerDto.FirstName;
+				customer.LastName = createCustomerDto.LastName;
+				customer.Address1 = createCustomerDto.Address1;
+				customer.Address2 = createCustomerDto.Address2;
+				customer.Province = createCustomerDto.Province;
+				customer.CityMunicipality = createCustomerDto.CityMunicipality;
+				customer.Barangay = createCustomerDto.Barangay;
+				customer.ContactNumber = createCustomerDto.ContactNumber;
+				customer.Email = createCustomerDto.Email;
+
 				customer.DateCreated = DateTime.UtcNow;
 				customer.DateModified = DateTime.UtcNow;
 				customer.IsActive = true;
-
-				// Temporary: Set default user (replace with actual logic with auth)
-				customer.ModifiedBy = "System";
+				customer.ModifiedBy = string.Empty;
 
 				_mainDb.Customers.Add(customer);
+				await _mainDb.SaveChangesAsync();
+
+				newCase.CaseNumber = Guid.NewGuid().ToString();
+				newCase.CustomerID = customer.Id;
+				newCase.Description = string.Empty;
+				newCase.QRCodeId = await _securityRepo.DecryptIDAsync(token.QRID);
+				newCase.SerialNumber = createCustomerDto.SerialNumber;
+				newCase.ModifiedBy = string.Empty;
+				newCase.DateCreated = DateTime.Now; 
+				newCase.IsActive = true;
+
+				_mainDb.Cases.Add(newCase);
 				await _mainDb.SaveChangesAsync();
 
 				// Redirect after successful submission

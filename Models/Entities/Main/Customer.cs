@@ -26,8 +26,6 @@ namespace CCIMS.Web.Models.Entities.Main
         [Required]
         public string Email { get; set; }
         [Required]
-        public string SerialNumber { get; set; }
-        [Required]
         public string? ModifiedBy { get; set; }
         [Required]
         public DateTime DateModified { get; set; }
