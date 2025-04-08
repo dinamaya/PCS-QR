@@ -9,12 +9,12 @@ namespace CCIMS.Web.Controllers.API
 {
 	[Route("api/fetch")]
 	[ApiController]
-	public class DataFetchController : ControllerBase
+	public class ProvinceFetchController : ControllerBase
 	{
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly IConfigurationRepository _configRepo;
 
-		public DataFetchController(IHttpClientFactory httpClientFactory, IConfigurationRepository configRepo)
+		public ProvinceFetchController(IHttpClientFactory httpClientFactory, IConfigurationRepository configRepo)
 		{
 			_httpClientFactory = httpClientFactory;
 			_configRepo = configRepo;
@@ -27,7 +27,20 @@ namespace CCIMS.Web.Controllers.API
 			var client = _httpClientFactory.CreateClient();
 			try
 			{
-				string url = _configRepo.GetPSGCCitiesByProvinceCode(provinceCode);
+				string url;
+				if (provinceCode == "1300000000") // NCR special case
+				{
+					url = "https://psgc.cloud/api/regions/1300000000/cities-municipalities";
+				}
+				else if (!string.IsNullOrEmpty(provinceCode)) // Regular province case
+				{
+					url = _configRepo.GetPSGCCitiesByProvinceCode(provinceCode);
+				}
+				else
+				{
+					return BadRequest("No valid province or region code provided.");
+				}
+
 				var response = await client.GetAsync(url);
 				response.EnsureSuccessStatusCode();
 				var json = await response.Content.ReadAsStringAsync();

@@ -23,10 +23,10 @@ namespace CCIMS.Web.Repositories.Implementations
 
 			return url;
 		}
-		public string GetPSGCProvines() => Utils.Urls.Combine(GetPSGCBaseUrl(), "provinces");
+		public string GetPSGCProvinces() => Utils.Urls.Combine(GetPSGCBaseUrl(), "provinces");
 
 		public string GetPSGCCitiesByProvinceCode(string code) => 
-			Utils.Urls.Combine(GetPSGCProvines(), $"provinces/{code}/cities-municipalities");
+			Utils.Urls.Combine(GetPSGCProvinces(), $"provinces/{code}/cities-municipalities");
 
 		public string GetPSGCBarangaysByCityCode(string code) => 
 			Utils.Urls.Combine(GetPSGCBaseUrl(), $"cities-municipalities/{code}/barangays");
