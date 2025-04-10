@@ -6,7 +6,9 @@ using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -21,9 +23,24 @@ namespace CCIMS.Web.Repositories.Implementations
 
     public string InsertedId { get; set; }
 
-    public async Task CreateAsync(ServicePartner data)
+    public async Task CreateAsync(SPCreationRequestDto data, string createdBy)
     {
-      await _mainDb.ServicePartners.AddAsync(data);
+      var date = DateTime.Now;
+
+      var sp = new ServicePartner()
+      {
+        Name = data.Name,
+        CompanyName = data.CompanyName,
+        ContactNumber = data.ContactNumber,
+        Email = data.Email,
+        ContactPerson = data.ContactPerson,
+        CreatedBy = createdBy,
+        DateCreated = date,
+        DateModified = date,
+        IsActive = true,
+      };
+
+      await _mainDb.ServicePartners.AddAsync(sp);
       await _mainDb.SaveChangesAsync();
     }
 

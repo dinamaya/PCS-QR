@@ -63,7 +63,7 @@ namespace CCIMS.Web.Controllers.API
 					IsActive = true,
 				};
 
-				await _qrRepo.CreateAsync(addedQr);
+				await _qrRepo.CreateAsync(addedQr, "");
 
         var qrResult = await _qrRepo.GetById(addedQr.Id);
 				_response.Result = new()
