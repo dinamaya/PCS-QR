@@ -12,9 +12,11 @@
 			public static class Inputs
 			{
 				public const string TEXTBOX = @"../Shared/Inputs/_InputFieldPartial";
+				public const string CHECKBOX = @"../Shared/Inputs/_CheckBoxPartial";
 				public const string SELECT = @"../Shared/Inputs/_SelectPartial";
 				public const string RADIO_GROUP = @"../Shared/Inputs/_RadioGroupPartial";
 			}
+
 			public static class SP
 			{
 				public const string TROW = @"../Shared/ServicePartnerPage/_SPTableRowPartial";
@@ -22,12 +24,18 @@
 				public const string MODAL_EDIT = @"../Shared/ServicePartnerPage/_SPModalEditPartial";
 				public const string MODAL_QR = @"../Shared/ServicePartnerPage/_QRModalViewPartial";
 			}
+
 			public static class Account
 			{
 				public const string TROW = @"../Shared/AccountPage/_TableRowPartial";
 				public const string MODAL_CREATE = @"../Shared/AccountPage/_ModalCreatePartial";
 				public const string MODAL_EDIT = @"../Shared/AccountPage/_ModalEditPartial";
-				//public const string MODAL_QR = @"../Shared/Account/_QRModalViewPartial";
+			}
+
+			public static class Operation
+			{
+				public const string STAT_TROW = @"../Shared/OperationPage/_StatusTableRowPartial";
+				public const string STAT_CREATE_MODAL = @"../Shared/OperationPage/_StatusModalCreatePartial";
 			}
 		}
 	}

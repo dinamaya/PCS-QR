@@ -14,6 +14,7 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddScoped<IQRRepository, QRRepository>();
 			services.AddScoped<IServicePartnerRepository, ServicePartnerRepository>();
 			services.AddScoped<IAccountRepository, AccountRepository>();
+			services.AddScoped<IOperationsRepository, OperationsRepository>();
 
 			services.AddSingleton<ITokenProvider, TokenProvider>();
 		}
