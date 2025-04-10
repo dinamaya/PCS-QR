@@ -28,7 +28,13 @@
 		{
 			@foreach (var button in Model.RadioGroupButtons)
 			{
-				@await Html.RenderAsync(button.Element)
+				@if (button.Elements != null && button.Elements.Any())
+				{
+					@foreach (var element in button.Elements)
+					{
+						@await Html.RenderAsync(element)
+					}
+				}
 			}
 		}
 	</div>
@@ -38,6 +44,6 @@
 <script>
 	$("input[name='@Model.Name']").change(function () 
 	{
-		@Html.Raw(Model.Script)
+		@Html.Raw(Model.JavaScript)
 	});
 </script>

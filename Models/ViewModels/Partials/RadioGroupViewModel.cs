@@ -4,7 +4,7 @@ namespace CCIMS.Web.Models.ViewModels.Partials
 {
 	public class RadioGroupViewModel : BaseElementViewModel
 	{
-		public string Script { get; set; }
+		public string JavaScript { get; set; }
 		public IEnumerable<RadioGroupButtonViewModel> RadioGroupButtons { get; set; }
 		public override string Id => $"rd-grp-{OperationName}-{IdName}";
 		public override string Name => $"rd-grp_{OperationName}_{IdName}";
