@@ -64,5 +64,27 @@ namespace CCIMS.Web.Controllers.API
 				return BadRequest(response);
 			}
 		}
+
+		[HttpPut, Authorize]
+		public async Task<ActionResult<ResponseDto>> Put([FromBody] AccountEditRequestDto requestDto)
+		{
+			var response = new ResponseDto();
+			try
+			{
+				string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
+				await _accountRepo.EditAsync(requestDto, accountId);
+
+				response.Message = "Account (" + requestDto.Id + ") Updated";
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
+			}
+		}
 	}
 }

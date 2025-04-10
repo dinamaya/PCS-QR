@@ -4,7 +4,7 @@ using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-	public interface IAccountRepository
+	public interface IAccountRepository : IEditRepository<AccountEditRequestDto>
 	{
 		Task CreateAsync(AccountCreationRequestDto creationRequest, string createdBy);
 		Task<IEnumerable<AccountRowViewModel>> GetAll();

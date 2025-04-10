@@ -26,7 +26,8 @@ export function initModal(
 	inputs.hdnSpId = $(`#${hdnSpIdElemId}`);
 }
 
-export function onEdit(button) {
+export function onEdit(button)
+{
 	const row = button.closest("tr");
 	const spId = row.dataset.spId;
 
@@ -57,7 +58,8 @@ export function onEdit(button) {
 
 }
 
-export function resetModal() {
+export function resetModal()
+{
 	setTimeout(() => {
 		inputs.spName.val("");
 		inputs.companyName.val("");
@@ -68,7 +70,8 @@ export function resetModal() {
 	}, 800);
 }
 
-function edit() {
+function edit()
+{
 	try {
 		const dto = {
 			id: inputs.hdnSpId.val(),
@@ -110,14 +113,6 @@ function edit() {
 		console.error("Exception in submitEdit:", ex);
 	}
 }
-
-//function updateTableRow(dto) {
-//	const row = $(`tr[data-sp-id='${dto.id}']`);
-//	row.children[2].text(dto.name);
-//	row.children[3].text(dto.companyName);
-//	row.children[4].text(dto.contactNumber);
-//	row.children[5].text(dto.email);
-//}
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {

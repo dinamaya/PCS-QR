@@ -64,8 +64,21 @@
 				Options = (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.ROLES]
 			};
 
-	var radBtnPass1 = new RadioGroupButtonViewModel(pass1);
-	var radBtnPass2 = new RadioGroupButtonViewModel(pass2);
+	var radBtnPass1 = new RadioGroupButtonViewModel()
+	{
+		OperationName = "edit",
+		IdName = "reset",
+		Title = "Reset",
+		Elements = [pass1, pass2]
+	};
+
+	var radBtnPass2 = new RadioGroupButtonViewModel()
+	{
+		OperationName = "edit",
+		IdName = "change",
+		Title = "Change",
+	};
+
 
 	var radioGroupPass = new RadioGroupViewModel
 		{
@@ -75,7 +88,7 @@
 			RadioGroupButtons = [radBtnPass1, radBtnPass2]
 		};
 
-	radioGroupPass.Script = $@"
+	radioGroupPass.JavaScript = $@"
     if ($(""#{radBtnPass1.Id}"").is("":checked"")) {{
         $(""#{radioGroupPass.Id}"").slideDown(300);
     }} else {{
@@ -120,7 +133,7 @@
 
 				<div class="modal-footer">
 					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="mx-2 col btn border-1 btn-primary">Create</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Edit</button>
 				</div>
 			</div>
 		</div>
@@ -133,6 +146,8 @@
 		searchEnabled: false
 	});
 
-	initEditModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', selectEditRoles, 'hdn-edit-accId');
+	initEditModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', selectEditRoles, 'hdn-edit-accId', '@radioGroupPass.Id');
 	window.showEdit = showEdit;
+
+
 </script>

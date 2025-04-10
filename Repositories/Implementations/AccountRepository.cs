@@ -6,6 +6,7 @@ using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CCIMS.Web.Repositories.Implementations
@@ -15,12 +16,14 @@ namespace CCIMS.Web.Repositories.Implementations
 		private readonly AuthDbContext _authDb;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly UserManager<Account> _userManager;
+		private readonly PasswordHasher<Account> _passHasher;
 
-		public AccountRepository(AuthDbContext authDb, RoleManager<IdentityRole> roleManager, UserManager<Account> userManager)
+		public AccountRepository(AuthDbContext authDb, RoleManager<IdentityRole> roleManager, UserManager<Account> userManager, PasswordHasher<Account> passHasher)
 		{
 			_authDb = authDb;
 			_roleManager = roleManager;
 			_userManager = userManager;
+			_passHasher = passHasher;
 		}
 
 		public async Task CreateAsync(AccountCreationRequestDto creationRequest, string createdBy)
@@ -104,6 +107,38 @@ namespace CCIMS.Web.Repositories.Implementations
 					Type = data.RoleName,
 				})
 				.FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
+		}
+
+		public async Task EditAsync(AccountEditRequestDto editRequestDto, string modifiedBy)
+		{
+			// Add Validations
+			var date = DateTime.UtcNow;
+			Account account = await _userManager.FindByIdAsync(editRequestDto.Id) ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
+			account.UserName = editRequestDto.Username;
+			account.NormalizedUserName = editRequestDto.Username.ToUpper();
+			account.Email = editRequestDto.Email;
+			account.NormalizedEmail = editRequestDto.Email.ToUpper();
+			account.DateModified = date;
+			account.ModifiedBy = modifiedBy;
+
+			if (editRequestDto.Password.IsNullOrEmpty())
+				account.PasswordHash = _passHasher.HashPassword(account, editRequestDto.Password);
+			
+			var result = await _userManager.UpdateAsync(account);
+
+			if (!result.Succeeded) throw new Exception(Exceptions.Message.INVALID_ACCOUNT_UPDATE);
+
+			Person person = await _authDb.People.FindAsync(account.PersonID);
+			person.FirstName = editRequestDto.FirstName;
+			person.LastName = editRequestDto.LastName;
+			person.DateModified = date;
+			person.ModifiedBy = modifiedBy;
+
+			await _authDb.SaveChangesAsync();
+
+			var currentRoles = await _userManager.GetRolesAsync(account);
+			await _userManager.RemoveFromRolesAsync(account, currentRoles);
+			await _userManager.AddToRoleAsync(account, editRequestDto.AccountType);
 		}
 	}
 }

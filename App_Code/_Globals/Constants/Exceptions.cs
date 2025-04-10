@@ -13,6 +13,7 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_QRREFERENCE = "Invalid QR Code: The scanned QR code is not recognized by the system. Please ensure you are using a valid QR code provided by VST ECS.";
 			public const string INVALID_SPREFERENCE = "Invalid SP Reference: SP does not exist. Please contact the administrator";
 			public const string INVALID_ACCOUNTREFERENCE = "Invalid Account Reference: Account does not exist.";
+			public const string INVALID_ACCOUNT_UPDATE = "Account Update Failed. Please Check the logs or contact the Administrator";
 			
 			public static class Config
 			{
