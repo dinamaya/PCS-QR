@@ -36,6 +36,7 @@
 			{
 				public const string STAT_TROW = @"../Shared/OperationPage/_StatusTableRowPartial";
 				public const string STAT_CREATE_MODAL = @"../Shared/OperationPage/_StatusModalCreatePartial";
+				public const string STAT_EDIT_MODAL = @"../Shared/OperationPage/_StatusModalEditPartial";
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 @{
 	var name = new InputFieldViewModel()
 			{
-				OperationName = "add",
+				OperationName = "edit",
 				IdName = "name",
 				Title = "Status Name",
 				ClassName = "col"
@@ -14,7 +14,7 @@
 
 	var isCommentable = new CheckBoxViewModel()
 			{
-				OperationName = "add",
+				OperationName = "edit",
 				IdName = "isCommentable",
 				Title = "Can Comment",
 				ClassName = "col-12 col-md-6 ",
@@ -22,13 +22,13 @@
 }
 
 
-<!-- Create Status -->
-<div class="modal modal-lg fade" id="modal-create" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-	<form id="form-create">
+<!-- Edit Status -->
+<div class="modal modal-lg fade" id="modal-edit" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-edit">
 		<div class="modal-dialog">
 			<div class="modal-content p-2">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="staticBackdropLabel">Create Status</h1>
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Status</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 
@@ -39,9 +39,10 @@
 					</div>
 				</div>
 
+				<input type="text" id="hdn-edit-statId" />
 				<div class="modal-footer">
 					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="mx-2 col btn border-1 btn-primary">Create</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Edit</button>
 				</div>
 			</div>
 		</div>
@@ -50,7 +51,8 @@
 
 
 <script type="module">
-	import { initModal as initCreateModal} from '/js/components/statusModalCreate.js';
-	initCreateModal('@name.Id', '@isCommentable.Id');
+	import { initModal as initEditModal, onEdit as edit } from '/js/components/statusModalEdit.js';
+	initEditModal('@name.Id', '@isCommentable.Id', 'hdn-edit-statId');
+	window.edit = edit;
 </script>
 

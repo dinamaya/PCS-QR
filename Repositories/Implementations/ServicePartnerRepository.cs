@@ -48,7 +48,6 @@ namespace CCIMS.Web.Repositories.Implementations
     {
       return await _mainDb.ServicePartnersVs
         .AsNoTracking()
-				.OrderBy(s => s.SpDateCreated)
 				.Select(s => new ServicePartnerRowViewModel()
         {
           SpId = s.SpId,
@@ -62,7 +61,8 @@ namespace CCIMS.Web.Repositories.Implementations
           SpDateCreated = s.SpDateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           QrDateCreated = s.QrDateCreated.ToString(),
         })
-        .ToListAsync();
+				.OrderByDescending(s => s.SpDateCreated)
+				.ToListAsync();
     }
 
     public async Task<SPEditResponseDto?> GetById(string id)

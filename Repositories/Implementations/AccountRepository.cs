@@ -69,6 +69,7 @@ namespace CCIMS.Web.Repositories.Implementations
 		public async Task<IEnumerable<AccountRowViewModel>> GetAll() =>
 			await _authDb.AccountsVs
 			.AsNoTracking()
+			.OrderByDescending(a => a.DateCreated)
 			.Select(a => new AccountRowViewModel()
 			{
 				Id = a.AccountId,

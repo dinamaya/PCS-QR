@@ -7,10 +7,12 @@
 
 <div class="@className">
   <div class='input-group'>
-		<input class="me-2 form-check-input" type="checkbox" id='@Model.Id' name='@Model.Name' value='@Model.IsChecked'>
-		<label class="form-label fs-5 fw-bold" for='@Model.Id'>
+		<label class="fs-6 text-secondary my-auto me-3" for='@Model.Id'>
 			@Model.Title
 		</label>
+		<div class="form-check form-switch ">
+			<input class="form-check-input" type="checkbox" id='@Model.Id' name='@Model.Name' checked='@Model.IsChecked'>
+		</div>
   </div>
   <span id='@Model.NotifId'></span>
 </div>

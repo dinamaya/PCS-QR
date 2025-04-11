@@ -14,6 +14,7 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_SPREFERENCE = "Invalid SP Reference: SP does not exist. Please contact the administrator";
 			public const string INVALID_ACCOUNTREFERENCE = "Invalid Account Reference: Account does not exist.";
 			public const string INVALID_ACCOUNT_UPDATE = "Account Update Failed. Please Check the logs or contact the Administrator";
+			public const string INVALID_STATUS = "Status Not Found. Please Check the logs or contact the Administrator";
 			
 			public static class Config
 			{

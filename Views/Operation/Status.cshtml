@@ -35,7 +35,6 @@
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status Name</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Commentable</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created By</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Active</th>
                   </tr>
@@ -67,6 +66,5 @@
 
 
 @await Html.PartialAsync(Routes.Partials.Operation.STAT_CREATE_MODAL)
-@* @await Html.PartialAsync(Routes.Partials.Account.MODAL_EDIT)
-@await Html.PartialAsync(Routes.Partials.SP.MODAL_QR) *@
+@await Html.PartialAsync(Routes.Partials.Operation.STAT_EDIT_MODAL)
 

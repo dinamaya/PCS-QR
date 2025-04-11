@@ -10,11 +10,14 @@
 	<div class="@selectContainerClass ">
 		<select class="form-control " name="@Model.Name" id="@Model.Id">
 			<option value="" selected="">@Model.PlaceHolder</option>
-			@foreach (var option in Model.Options)
+			@if (Model.Options != null && Model.Options.Any())
 			{
-				<option value="@option.Value">
-					@option.Label
-				</option>
+				@foreach (var option in Model.Options)
+				{
+					<option value="@option.Value">
+						@option.Label
+					</option>
+				}
 			}
 		</select>
 	</div>

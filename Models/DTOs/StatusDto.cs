@@ -1,6 +1,6 @@
 ﻿namespace CCIMS.Web.Models.DTOs
 {
-  public class StatusCreationRequestDto
+  public class StatusDto
   {
     public string Name { get; set; }
     public bool IsCommentable { get; set; }
