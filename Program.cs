@@ -5,6 +5,7 @@ using CCIMS.Web.App_Code._Globals.Extensions;
 using CCIMS.Web.Context;
 using CCIMS.Web.Context.Seeder;
 using CCIMS.Web.Models.Entities.Auth;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 #region Extension Configurations
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddAuthConfiguration();
+builder.Services.AddHangfireConfigExtension();
 builder.Services.AddSQLConfiguration(builder);
 builder.Services.AddRepositories();
 
@@ -33,6 +35,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseHangfireDashboard();
 app.UseStaticFiles();
 
 app.UseRouting();
