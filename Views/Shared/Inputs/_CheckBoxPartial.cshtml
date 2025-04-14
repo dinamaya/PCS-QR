@@ -1,0 +1,18 @@
+﻿@using CCIMS.Web.Models.ViewModels.Partials
+
+@model CheckBoxViewModel
+@{
+	string className = $"text-start py-3 {Model.ClassName}";
+}
+
+<div class="@className">
+  <div class='input-group'>
+		<label class="fs-6 text-secondary my-auto me-3" for='@Model.Id'>
+			@Model.Title
+		</label>
+		<div class="form-check form-switch ">
+			<input class="form-check-input" type="checkbox" id='@Model.Id' name='@Model.Name' checked='@Model.IsChecked'>
+		</div>
+  </div>
+  <span id='@Model.NotifId'></span>
+</div>

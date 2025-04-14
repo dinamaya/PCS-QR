@@ -1,6 +1,6 @@
 ﻿@using CCIMS.Web.App_Code._Globals.Constants
 @using CCIMS.Web.Models.ViewModels
-@model IEnumerable<AccountRowViewModel>
+@model IEnumerable<StatusRowViewModel>
 
 <script src="~/js/plugins/datatables.js"></script>
 <script src="~/js/plugins/choices.min.js"></script>
@@ -14,16 +14,15 @@
           <div class="card-header pb-0">
             <div class="d-lg-flex">
               <div>
-                <h5 class="mb-0">All Accounts</h5>
+                <h5 class="mb-0">All Status</h5>
               </div>
               <div class="ms-auto my-auto mt-lg-0 mt-4">
                 <div class="ms-auto my-auto">
                   <button class="btn bg-gradient-primary btn-sm mb-0"
                           data-bs-toggle="modal"
                           data-bs-target="#modal-create">
-                    + New Account
+                    + New Status
                   </button>
-                  <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Export</button>
                 </div>
               </div>
             </div>
@@ -34,19 +33,17 @@
                 <thead>
                   <tr>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email Address</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created By</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status Name</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Commentable</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Active</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   @foreach (var row in Model)
                   {
-                    @await Html.PartialAsync(Routes.Partials.Account.TROW, row)
+                    @await Html.PartialAsync(Routes.Partials.Operation.STAT_TROW, row)
                   }
                 </tbody>
               </table>
@@ -59,8 +56,8 @@
 </div>
 
 <script>
-  window.baseUrl = '@Url.Content("/api/account")'
-    
+  window.baseUrl = '@Url.Content("/api/ops/status")'
+
   const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
     searchable: true,
     fixedHeight: true
@@ -68,7 +65,6 @@
 </script>
 
 
-@await Html.PartialAsync(Routes.Partials.Account.MODAL_CREATE)
-@await Html.PartialAsync(Routes.Partials.Account.MODAL_EDIT)
-@await Html.PartialAsync(Routes.Partials.SP.MODAL_QR)
+@await Html.PartialAsync(Routes.Partials.Operation.STAT_CREATE_MODAL)
+@await Html.PartialAsync(Routes.Partials.Operation.STAT_EDIT_MODAL)
 

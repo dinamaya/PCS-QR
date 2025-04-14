@@ -22,7 +22,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
     public string InsertedId { get; set ; }
 
-    public async Task CreateAsync(main.QRCode data)
+    public async Task CreateAsync(main.QRCode data, string createdBy)
     {
       await DeactivateActiveQRs(data.ServicePartnerId);
 

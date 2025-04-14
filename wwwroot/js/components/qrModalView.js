@@ -80,40 +80,35 @@ export function generateQr() {
 
 export function downloadQr() {
 	try {
+		const qrId = hdnQrId.val();
+
 		const _url = `${qrUrl}?id=${qrId}`;
 
-		$.post({
-			url: qrUrl,
-			contentType: "application/json",
-			data: JSON.stringify(dto),
-			success: function (response) {
+		fetch(_url)
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+
 				if (data && data.result) {
-					if (data.result) {
-						const qrImage = `data:image/png;base64,${data.result}`;
+					const qrImage = `data:image/png;base64,${data.result}`;
 
-						$("#img-qrCode").attr("src", qrImage);
+					$("#img-qrCode").attr("src", qrImage);
 
-						const link = document.createElement('a');
-						link.href = qrImage;
-						link.download = `QR_Code(${qrId}).png`;
-						link.style.display = 'none';
+					const link = document.createElement('a');
+					link.href = qrImage;
+					link.download = `QR_${qrId}.png`;
+					link.style.display = 'none';
 
-						document.body.appendChild(link);
-						link.click();
+					document.body.appendChild(link);
+					link.click();
 
-						document.body.removeChild(link);
-					} else {
-						$("#img-qrCode").attr("src", "/img/qr_placeholder.png");
-					}
-				} else {
+					document.body.removeChild(link);
+				}
+				else {
 					console.error("No valid data received from server.");
 				}
-			},
-			error: function (error) {
-				console.error("Submission failed:", error);
-				alert("Submission failed!");
-			}
-		});
+			})
+			.catch(ex => console.error("Fetch error:", ex));
 	}
 	catch (ex) {
 		console.error(ex);

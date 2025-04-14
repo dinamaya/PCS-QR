@@ -1,4 +1,4 @@
-﻿let editInputs = {
+﻿let inputs = {
 	spName : null,
 	companyName : null,
 	contactPerson : null,
@@ -16,24 +16,23 @@ export function initModal(
 	emailId,
 	hdnSpIdElemId
 ) {
-	editInputs.url = window.baseUrl;
-	editInputs.spName = $(`#${spNameId}`);
-	editInputs.companyName = $(`#${companyNameId}`);
-	editInputs.contactPerson = $(`#${contactPersonId}`);
-	editInputs.contactNumber = $(`#${contactNumberId}`);
-	editInputs.email = $(`#${emailId}`);
+	inputs.url = window.baseUrl;
+	inputs.spName = $(`#${spNameId}`);
+	inputs.companyName = $(`#${companyNameId}`);
+	inputs.contactPerson = $(`#${contactPersonId}`);
+	inputs.contactNumber = $(`#${contactNumberId}`);
+	inputs.email = $(`#${emailId}`);
 
-	editInputs.hdnSpId = $(`#${hdnSpIdElemId}`);
-
-	console.log(editInputs);
+	inputs.hdnSpId = $(`#${hdnSpIdElemId}`);
 }
 
-export function onEdit(button) {
+export function onEdit(button)
+{
 	const row = button.closest("tr");
 	const spId = row.dataset.spId;
 
-	editInputs.hdnSpId.val(spId);
-	const _url = `${editInputs.url}?id=${spId}`
+	inputs.hdnSpId.val(spId);
+	const _url = `${inputs.url}?id=${spId}`
 
 	try {
 		fetch(_url)
@@ -41,11 +40,11 @@ export function onEdit(button) {
 			.then(data => {
 				const result = data.result;
 				if (data && result) {
-					editInputs.spName.val(result.name);
-					editInputs.companyName.val(result.companyName);
-					editInputs.contactPerson.val(result.contactPerson);
-					editInputs.contactNumber.val(result.contactNumber);
-					editInputs.email.val(result.email);
+					inputs.spName.val(result.name);
+					inputs.companyName.val(result.companyName);
+					inputs.contactPerson.val(result.contactPerson);
+					inputs.contactNumber.val(result.contactNumber);
+					inputs.email.val(result.email);
 				}
 				else {
 					console.error("No valid data received from server.");
@@ -59,29 +58,31 @@ export function onEdit(button) {
 
 }
 
-export function resetModal() {
+export function resetModal()
+{
 	setTimeout(() => {
-		editInputs.spName.val("");
-		editInputs.companyName.val("");
-		editInputs.contactPerson.val("");
-		editInputs.contactNumber.val("");
-		editInputs.email.val("");
-		editInputs.hdnSpId.val("");
+		inputs.spName.val("");
+		inputs.companyName.val("");
+		inputs.contactPerson.val("");
+		inputs.contactNumber.val("");
+		inputs.email.val("");
+		inputs.hdnSpId.val("");
 	}, 800);
 }
 
-function edit() {
+function edit()
+{
 	try {
 		const dto = {
-			id: editInputs.hdnSpId.val(),
-			name: editInputs.spName.val(),
-			companyName: editInputs.companyName.val(),
-			contactPerson: editInputs.contactPerson.val(),
-			contactNumber: editInputs.contactNumber.val(),
-			email: editInputs.email.val()
+			id: inputs.hdnSpId.val(),
+			name: inputs.spName.val(),
+			companyName: inputs.companyName.val(),
+			contactPerson: inputs.contactPerson.val(),
+			contactNumber: inputs.contactNumber.val(),
+			email: inputs.email.val()
 		};
 
-		fetch(editInputs.url, {
+		fetch(inputs.url, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
@@ -112,14 +113,6 @@ function edit() {
 		console.error("Exception in submitEdit:", ex);
 	}
 }
-
-//function updateTableRow(dto) {
-//	const row = $(`tr[data-sp-id='${dto.id}']`);
-//	row.children[2].text(dto.name);
-//	row.children[3].text(dto.companyName);
-//	row.children[4].text(dto.contactNumber);
-//	row.children[5].text(dto.email);
-//}
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {

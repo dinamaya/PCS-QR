@@ -1,0 +1,58 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.App_Code._Globals.Extensions
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Models.ViewModels.Partials
+
+@{
+	var name = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "name",
+				Title = "Status Name",
+				ClassName = "col"
+			};
+
+	var isCommentable = new CheckBoxViewModel()
+			{
+				OperationName = "edit",
+				IdName = "isCommentable",
+				Title = "Can Comment",
+				ClassName = "col-12 col-md-6 ",
+			};
+}
+
+
+<!-- Edit Status -->
+<div class="modal modal-lg fade" id="modal-edit" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-edit">
+		<div class="modal-dialog">
+			<div class="modal-content p-2">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Status</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="p-4	">
+						@await Html.RenderAsync(name)
+						@await Html.RenderAsync(isCommentable)
+					</div>
+				</div>
+
+				<input type="text" id="hdn-edit-statId" />
+				<div class="modal-footer">
+					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Edit</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+
+<script type="module">
+	import { initModal as initEditModal, onEdit as edit } from '/js/components/statusModalEdit.js';
+	initEditModal('@name.Id', '@isCommentable.Id', 'hdn-edit-statId');
+	window.edit = edit;
+</script>
+

@@ -27,20 +27,8 @@ namespace CCIMS.Web.Controllers.API
 			var response = new ResponseDto();
 			try
 			{
-        var date = DateTime.Now;
         string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
-        await _spRepo.CreateAsync(new ServicePartner()
-        {
-          Name = creationDto.Name,
-          CompanyName = creationDto.CompanyName,
-          ContactNumber = creationDto.ContactNumber,
-          Email = creationDto.Email,
-          ContactPerson = creationDto.ContactPerson,
-          CreatedBy = accountId,
-          DateCreated = date,
-          DateModified = date,
-          IsActive = true,
-        });
+        await _spRepo.CreateAsync(creationDto, accountId);
 
         response.Message = "Service Partner created successfully";
 

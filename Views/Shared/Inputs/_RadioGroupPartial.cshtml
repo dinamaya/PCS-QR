@@ -1,0 +1,49 @@
+﻿@using CCIMS.Web.App_Code._Globals.Extensions
+@using CCIMS.Web.Models.ViewModels.Partials
+
+@model RadioGroupViewModel
+
+<div class="row mb-3">
+	<div class="row text-start py-3">
+		<label class="col-12 col-lg-4 col-xl-3 form-label fs-5 fw-bold me-3">Password Options</label>
+		<div class="col-12 col-lg btn-group" role="group" aria-label="Basic radio toggle button group">
+			<input type="radio" class="btn-check" name="@Model.Name" id="rad-none" autocomplete="off" checked>
+			<label class="btn btn-outline-primary px-4" for="rad-none">None</label>
+
+			@if (Model.RadioGroupButtons != null && Model.RadioGroupButtons.Any())
+			{
+				@foreach (var button in Model.RadioGroupButtons)
+				{
+					<input type="radio" class="btn-check" name="@Model.Name" id="@button.Id" autocomplete="off">
+					<label class="btn btn-outline-primary px-4" for="@button.Id">@button.Title</label>
+				}
+			}
+			
+		</div>
+	</div>
+
+	<div id="@Model.Id" class="row m-0 bg-secondary rounded-3 bg-opacity-10" style="display: none;">
+
+		@if (Model.RadioGroupButtons != null && Model.RadioGroupButtons.Any())
+		{
+			@foreach (var button in Model.RadioGroupButtons)
+			{
+				@if (button.Elements != null && button.Elements.Any())
+				{
+					@foreach (var element in button.Elements)
+					{
+						@await Html.RenderAsync(element)
+					}
+				}
+			}
+		}
+	</div>
+</div>
+
+
+<script>
+	$("input[name='@Model.Name']").change(function () 
+	{
+		@Html.Raw(Model.JavaScript)
+	});
+</script>

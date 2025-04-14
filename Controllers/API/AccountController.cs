@@ -44,5 +44,47 @@ namespace CCIMS.Web.Controllers.API
 				return BadRequest(response);
 			}
 		}
+
+		[HttpGet, Authorize]
+		public async Task<ActionResult<ResponseDto<AccountEditResponseDto>>> Get([FromQuery] string id)
+		{
+			var response = new ResponseDto<AccountEditResponseDto>();
+			try
+			{
+				response.Result = await _accountRepo.GetById(id);
+				response.Message = "Account (" + id + ") found";
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
+			}
+		}
+
+		[HttpPut, Authorize]
+		public async Task<ActionResult<ResponseDto>> Put([FromBody] AccountEditRequestDto requestDto)
+		{
+			var response = new ResponseDto();
+			try
+			{
+				string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
+				await _accountRepo.EditAsync(requestDto, accountId);
+
+				response.Message = "Account (" + requestDto.Id + ") Updated";
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
+			}
+		}
 	}
 }

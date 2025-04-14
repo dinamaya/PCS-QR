@@ -1,15 +1,12 @@
 ﻿@using CCIMS.Web.Models.ViewModels
-@model AccountRowViewModel
-@{
-  string name = $"{Model.LastName}, {Model.FirstName}";
-}
-<tr data-acc-id="@Model.Id">
+@model StatusRowViewModel
 
+<tr data-stat-id="@Model.Id">
   <td class="align-middle">
-    <button class="btn btn-transparent p-0 ms-0"
+    <button class="btn btn-transparent p-0 ms-3"
             data-bs-toggle="modal"
             data-bs-target="#modal-edit"
-            onclick="window.showEdit(this)">
+            onclick="edit(this)">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
@@ -18,26 +15,18 @@
   </td>
 
   <td>
-    <h6 class="text-xs font-weight-bold ms-0">@name</h6>
+    <p class="text-xs font-weight-bold ms-0">@Model.StatusName</p>
   </td>
 
   <td>
-    <p class="text-xs font-weight-bold ms-0">@Model.Username</p>
-  </td>
-
-  <td>
-    <p class="text-xs font-weight-bold ms-0">@Model.Email</p>
-  </td>
-  
-  <td>
-    <p class="text-xs font-weight-bold ms-0">@Model.Type</p>
-  </td>
-
-  <td>
-    <p class="text-xs font-weight-bold ms-0">@Model.CreatedBy</p>
+    <p class="text-xs font-weight-bold ms-0">@Model.IsCommentable</p>
   </td>
 
   <td>
     <p class="text-xs font-weight-bold ms-0">@Model.DateCreated</p>
+  </td>
+
+  <td>
+    <p class="text-xs font-weight-bold ms-0">@Model.IsActive</p>
   </td>
 </tr>
