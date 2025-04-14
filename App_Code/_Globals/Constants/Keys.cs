@@ -13,6 +13,7 @@
 			public static class Types
 			{
 				public const string ROLES = "AllAccountRoleTypes";
+				public const string STATUS = "AllStatusTypes";
 			}
 
 			public static class Search

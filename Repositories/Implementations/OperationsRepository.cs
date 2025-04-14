@@ -55,6 +55,7 @@ namespace CCIMS.Web.Repositories.Implementations
 		public async Task<IEnumerable<StatusRowViewModel>> GetAllStatus()
     {
       return await _mainDb.Statuses
+        .AsNoTracking()
         .OrderByDescending(s => s.DateCreated)
         .Select(s => new StatusRowViewModel()
         {
@@ -67,7 +68,7 @@ namespace CCIMS.Web.Repositories.Implementations
         .ToListAsync();
     }
 
-		public async Task<StatusDto> GetStatusById(string id)
+    public async Task<StatusDto> GetStatusById(string id)
 		{
       var status = await _mainDb.Statuses.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_STATUS);
       return new StatusDto()
@@ -75,6 +76,19 @@ namespace CCIMS.Web.Repositories.Implementations
 				Name = status.Name,
 				IsCommentable = status.IsCommentable,
 			};
-		}
-	}
+    }
+
+    public async Task<IEnumerable<DropdownOptionViewModel>> GetOptions()
+    {
+      return await _mainDb.Statuses
+        .AsNoTracking()
+        .OrderByDescending(s => s.Name)
+        .Select(s => new DropdownOptionViewModel()
+        {
+          Value = s.Name,
+          Label= s.Id,
+        })
+        .ToListAsync();
+    }
+  }
 }

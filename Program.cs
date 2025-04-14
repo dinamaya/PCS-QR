@@ -35,7 +35,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseHangfireDashboard();
+app.UseHangfireDashboard(builder.Configuration.GetSection("Hangfire").Get<string>(), new DashboardOptions()
+{
+	DashboardTitle = "CCI Jobs Monitoring"
+});
 app.UseStaticFiles();
 
 app.UseRouting();

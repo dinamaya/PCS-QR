@@ -12,13 +12,15 @@ namespace CCIMS.Web.Controllers
 	{
     private readonly IServicePartnerRepository _spRepo;
     private readonly IAccountRepository _accountRepo;
+    private readonly IOperationsRepository _opsRepo;
 
-		public CMSController(IServicePartnerRepository spRepo, IAccountRepository accountRepo)
-		{
-			_spRepo = spRepo;
-			_accountRepo = accountRepo;
-		}
-		public IActionResult Index()
+    public CMSController(IServicePartnerRepository spRepo, IAccountRepository accountRepo, IOperationsRepository opsRepo)
+    {
+      _spRepo = spRepo;
+      _accountRepo = accountRepo;
+      _opsRepo = opsRepo;
+    }
+    public IActionResult Index()
     {
       return View();
     }
@@ -50,6 +52,27 @@ namespace CCIMS.Web.Controllers
         return View(Enumerable.Empty<AccountRowViewModel>());
       }
     }
+    
+    public async Task<IActionResult> Cases()
+    {
+      try
+      {
+        await InitializeValues();
 
+        //var results = await _accountRepo.GetAll();
+
+        return View(Enumerable.Empty<CaseRowViewModel>());
+      }
+      catch (Exception ex)
+      {
+        return View(Enumerable.Empty<CaseRowViewModel>());
+      }
+    }
+
+    private async Task InitializeValues()
+    {
+      ViewData[Keys.ViewData.Types.STATUS] = await _opsRepo.GetOptions();
+
+    }
   }
 }
