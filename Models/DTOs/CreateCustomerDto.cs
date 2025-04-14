@@ -18,21 +18,13 @@ namespace CCIMS.Web.Models.DTOs
 		public string Email { get; set; }
 
 		[Required]
-		public string Address1 { get; set; }
-
-		public string? Address2 { get; set; }
-
-		[Required]
-		public string Province { get; set; }
-
-		[Required]
-		public string CityMunicipality { get; set; }
-
-		[Required]
-		public string Barangay { get; set; }
+		public string Address { get; set; }
 
 		[Required]
 		public string SerialNumber { get; set; }
+
+		[Required]
+		public string PrivacyPolicyAccepted { get; set; }
 
 		[Required]
 		public string Token { get; set; }

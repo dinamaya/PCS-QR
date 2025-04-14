@@ -1,19 +1,35 @@
 ﻿using CCIMS.Web.Context;
 using CCIMS.Web.Models.Entities.Main;
 using CCIMS.Web.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
-namespace CCIMS.Web.Repositories.Implementations
+namespace CCIMS.Web.Repositories
 {
 	public class CustomerRepository : ICustomerRepository
 	{
-		private readonly MainDbContext _mainDb;
+		private readonly MainDbContext _context;
 
-
-		public string InsertedId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-		public Task CreateAsync(Customer data)
+		public CustomerRepository(MainDbContext context)
 		{
-			throw new NotImplementedException();
+			_context = context;
+		}
+
+		public async Task<Customer> CreateCustomerAsync(Customer customer)
+		{
+			customer.DateCreated = DateTime.UtcNow.ToLocalTime();
+			customer.DateModified = DateTime.UtcNow.ToLocalTime();
+			customer.IsActive = true;
+			customer.ModifiedBy = string.Empty;
+
+			_context.Customers.Add(customer);
+			await _context.SaveChangesAsync();
+			return customer;
+		}
+
+		public async Task<bool> CustomerExistsAsync(string email)
+		{
+			return await _context.Customers.AnyAsync(c => c.Email == email && c.IsActive);
 		}
 	}
 }

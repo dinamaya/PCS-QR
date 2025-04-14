@@ -13,14 +13,7 @@ namespace CCIMS.Web.Models.Entities.Main
         [Required]
         public string LastName { get; set; }
         [Required]
-        public string Address1 { get; set; }
-		public string? Address2 { get; set; }
-        [Required]
-        public string Province { get; set; }
-        [Required]
-        public string CityMunicipality { get; set; }
-        [Required]
-        public string Barangay { get; set; }
+        public string Address { get; set; }
         [Required]
         public string ContactNumber { get; set; }
         [Required]
