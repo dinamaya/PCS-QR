@@ -1,4 +1,5 @@
 ﻿using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Main;
@@ -48,7 +49,8 @@ namespace CCIMS.Web.Repositories.Implementations
     {
       return await _mainDb.ServicePartnersVs
         .AsNoTracking()
-				.Select(s => new ServicePartnerRowViewModel()
+		.OrderByDescending(s => s.SpDateCreated)
+        .Select(s => new ServicePartnerRowViewModel()
         {
           SpId = s.SpId,
           QrId = s.QrId,
@@ -61,8 +63,7 @@ namespace CCIMS.Web.Repositories.Implementations
           SpDateCreated = s.SpDateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           QrDateCreated = s.QrDateCreated.ToString(),
         })
-				.OrderByDescending(s => s.SpDateCreated)
-				.ToListAsync();
+		.ToListAsync();
     }
 
     public async Task<SPEditResponseDto?> GetById(string id)

@@ -3,8 +3,6 @@ using CCIMS.Web.Repositories;
 using CCIMS.Web.Repositories.Implementations;
 using CCIMS.Web.Repositories.Interfaces;
 using CCIMS.Web.Repositories.Interfaces.CCIMS.Web.Repositories.Interfaces;
-using CCIMS.Web.Services.Interfaces;
-using CCIMS.Web.Services;
 
 namespace CCIMS.Web.App_Code._Globals.Extensions
 {
@@ -22,7 +20,6 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 
 			services.AddScoped<ICustomerRepository, CustomerRepository>();
 			services.AddScoped<ICaseRepository, CaseRepository>();
-			services.AddScoped<ICustomerService, CustomerService>();
 
 			services.AddSingleton<ITokenProvider, TokenProvider>();
 		}
