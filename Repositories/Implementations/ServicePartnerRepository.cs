@@ -43,7 +43,9 @@ namespace CCIMS.Web.Repositories.Implementations
 
       await _mainDb.ServicePartners.AddAsync(sp);
       await _mainDb.SaveChangesAsync();
-    }
+
+      this.InsertedId = sp.Id;
+		}
 
 		public async Task<IEnumerable<ServicePartnerRowViewModel>> GetAll()
     {
@@ -63,7 +65,6 @@ namespace CCIMS.Web.Repositories.Implementations
           SpDateCreated = s.SpDateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           QrDateCreated = s.QrDateCreated.ToString(),
         })
-				.ToListAsync();
 				.ToListAsync();
     }
 
