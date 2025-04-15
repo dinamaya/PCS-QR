@@ -23,14 +23,13 @@
 						</div>
 					</div>
 
-          <input type="text" id="hdn-qrId" value="" placeholder="QR ID"/>
-					<input type="text" id="hdn-spId" value="" placeholder="SP ID" />
+          <input type="hidden" id="hdn-qrId" value="" placeholder="QR ID"/>
+					<input type="hidden" id="hdn-spId" value="" placeholder="SP ID" />
 				</div>
 
 				<div class="modal-footer">
 					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal" onclick="closeQr()">Close</button>
 					<button type="button" class="mx-2 col btn border-1 btn-primary" onclick="downQr()">Download</button>
-					<button type="button" class="mx-2 col btn border-1 btn-primary" onclick="genQr()">Generate</button>
 				</div>
 			</div>
 		</div>
@@ -38,10 +37,9 @@
 </div>
 
 <script type="module">
-	import { initQrModal, viewQr as showQr, generateQr as genQr, downloadQr as downQr, resetQr as closeQr } from '/js/components/qrModalView.js';
+	import { initQrModal, viewQr as showQr, downloadQr as downQr, resetQr as closeQr } from '/js/components/qrModalView.js';
 	initQrModal('@Url.Content("/api/qr")');
   window.showQr = showQr;
-  window.genQr = genQr;
 	window.downQr = downQr;
 	window.closeQr = closeQr;
 </script>

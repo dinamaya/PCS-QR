@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CCIMS.Web.Controllers.API
 {
@@ -16,9 +17,12 @@ namespace CCIMS.Web.Controllers.API
   public class ServicePartnerController : ControllerBase
   {
     private readonly IServicePartnerRepository _spRepo;
-    public ServicePartnerController(IServicePartnerRepository spRepo)
-    {
-      _spRepo = spRepo;
+		private readonly IQRRepository _qrRepo;
+
+		public ServicePartnerController(IServicePartnerRepository spRepo, IQRRepository qrRepo)
+		{
+			_spRepo = spRepo;
+			_qrRepo = qrRepo;
 		}
 
 		[HttpPost, Authorize]
@@ -28,9 +32,22 @@ namespace CCIMS.Web.Controllers.API
 			try
 			{
         string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
-        await _spRepo.CreateAsync(creationDto, accountId);
 
-        response.Message = "Service Partner created successfully";
+				await _spRepo.CreateAsync(creationDto, accountId);
+
+				var date = DateTime.Now;
+
+				var qr = new QRCode()
+				{
+					ServicePartnerId = _spRepo.InsertedId,
+					DateCreated = date,
+					DateModified = date,
+					IsActive = true,
+				};
+
+				await _qrRepo.CreateAsync(qr, "");
+
+				response.Message = "Service Partner created successfully";
 
 				return Ok(response);
       }

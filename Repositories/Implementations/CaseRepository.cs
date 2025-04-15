@@ -1,6 +1,7 @@
 ﻿using CCIMS.Web.Context;
 using CCIMS.Web.Models.Entities.Main;
-using CCIMS.Web.Repositories.Interfaces.CCIMS.Web.Repositories.Interfaces;
+using CCIMS.Web.Models.ViewModels;
+using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -15,7 +16,9 @@ namespace CCIMS.Web.Repositories
 			_context = context;
 		}
 
-		public async Task<Case> CreateCaseAsync(Case newCase)
+		public string InsertedId { get; set; }
+
+		public async Task CreateAsync(Case newCase, string createdBy)
 		{
 			newCase.CaseNumber = Guid.NewGuid().ToString();
 			newCase.DateCreated = DateTime.UtcNow.ToLocalTime();
@@ -25,7 +28,16 @@ namespace CCIMS.Web.Repositories
 
 			_context.Cases.Add(newCase);
 			await _context.SaveChangesAsync();
-			return newCase;
+		}
+
+		public Task<IEnumerable<CaseRowViewModel>> GetAll()
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<CaseRowViewModel> GetById(string id)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

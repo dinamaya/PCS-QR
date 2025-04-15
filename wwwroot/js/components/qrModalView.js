@@ -1,6 +1,5 @@
 ﻿import { qrCreationRequestDto } from '../dtos/qrCreationRequestDto.js';
 
-// '#edit-description'
 var hdnQrId = null;
 var hdnSpId = null;
 
@@ -44,34 +43,6 @@ export function viewQr(button)
 				}
 			})
 			.catch(ex => console.error("Fetch error:", ex));
-	}
-	catch (ex) {
-		console.error(ex);
-	}
-}
-
-export function generateQr() {
-	try {
-		const dto = hdnSpId.val();
-
-		$.post({
-			url: qrUrl,
-			contentType: "application/json",
-			data: JSON.stringify(dto),
-			success: function (response) {
-				console.log("Submission successful:", response);
-				const button = $(`[data-sp-id='${dto}']`);
-				button.attr("data-qr-id", response.result.qrId);
-				hdnQrId.val(response.result.qrId);
-
-				const qrImage = `data:image/png;base64,${response.result.qrImage}`;
-				$("#img-qrCode").attr("src", qrImage);
-			},
-			error: function (error) {
-				console.error("Submission failed:", error);
-				alert("Submission failed!");
-			}
-		});
 	}
 	catch (ex) {
 		console.error(ex);

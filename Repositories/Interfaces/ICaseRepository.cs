@@ -1,9 +1,9 @@
-﻿using CCIMS.Web.Models.ViewModels;
+﻿using CCIMS.Web.Models.Entities.Main;
+using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-	public interface ICaseRepository : : IReadOnlyRepository<CaseRowViewModel, CaseRowViewModel>
+	public interface ICaseRepository : IReadOnlyRepository<CaseRowViewModel, CaseRowViewModel>, ICreateRepository<Case>
 	{
-		Task<Case> CreateCaseAsync(Case newCase);
 	}
 }

@@ -2,7 +2,6 @@
 using CCIMS.Web.Repositories;
 using CCIMS.Web.Repositories.Implementations;
 using CCIMS.Web.Repositories.Interfaces;
-using CCIMS.Web.Repositories.Interfaces.CCIMS.Web.Repositories.Interfaces;
 
 namespace CCIMS.Web.App_Code._Globals.Extensions
 {
