@@ -37,6 +37,7 @@
 				public const string TROW = @"../Shared/CasePage/_TableRowPartial";
 				public const string MODAL_CREATE = @"../Shared/CasePage/_ModalCreatePartial";
 				public const string MODAL_EDIT = @"../Shared/CasePage/_ModalEditPartial";
+				public const string SEARCH = @"../Shared/CasePage/_SearchBarPartial";
 			}
 
 			public static class Operation

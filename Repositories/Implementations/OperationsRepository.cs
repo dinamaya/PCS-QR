@@ -82,11 +82,11 @@ namespace CCIMS.Web.Repositories.Implementations
     {
       return await _mainDb.Statuses
         .AsNoTracking()
-        .OrderByDescending(s => s.Name)
+        .OrderBy(s => s.Name)
         .Select(s => new DropdownOptionViewModel()
         {
-          Value = s.Name,
-          Label= s.Id,
+          Value = s.Id,
+          Label= s.Name,
         })
         .ToListAsync();
     }

@@ -12,8 +12,10 @@
 
 			public static class Types
 			{
+				public const string CATEGORIES = "AllCatgeoryTypes";
 				public const string ROLES = "AllAccountRoleTypes";
 				public const string STATUS = "AllStatusTypes";
+				public const string AGED = "AllAgedTypes";
 			}
 
 			public static class Search

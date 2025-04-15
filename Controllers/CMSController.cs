@@ -13,12 +13,14 @@ namespace CCIMS.Web.Controllers
     private readonly IServicePartnerRepository _spRepo;
     private readonly IAccountRepository _accountRepo;
     private readonly IOperationsRepository _opsRepo;
+    private readonly IConfigurationRepository _configRepo;
 
-    public CMSController(IServicePartnerRepository spRepo, IAccountRepository accountRepo, IOperationsRepository opsRepo)
+    public CMSController(IServicePartnerRepository spRepo, IAccountRepository accountRepo, IOperationsRepository opsRepo, IConfigurationRepository configRepo)
     {
       _spRepo = spRepo;
       _accountRepo = accountRepo;
       _opsRepo = opsRepo;
+      _configRepo = configRepo;
     }
     public IActionResult Index()
     {
@@ -52,15 +54,16 @@ namespace CCIMS.Web.Controllers
         return View(Enumerable.Empty<AccountRowViewModel>());
       }
     }
-    
-    public async Task<IActionResult> Cases()
+
+    public async Task<IActionResult> Cases(string? c = null, string? v = null)
     {
       try
       {
         await InitializeValues();
-
+        if (c.IsNullOrEmpty() || v.IsNullOrEmpty())
+          return View(Enumerable.Empty<CaseRowViewModel>());
         //var results = await _accountRepo.GetAll();
-
+        
         return View(Enumerable.Empty<CaseRowViewModel>());
       }
       catch (Exception ex)
@@ -71,8 +74,10 @@ namespace CCIMS.Web.Controllers
 
     private async Task InitializeValues()
     {
+      ViewData[Keys.ViewData.Types.CATEGORIES] = _configRepo.GetCategoriesSearcOptions();
+     
       ViewData[Keys.ViewData.Types.STATUS] = await _opsRepo.GetOptions();
-
+      ViewData[Keys.ViewData.Types.AGED] = _configRepo.GetAgedSearcOptions();
     }
   }
 }

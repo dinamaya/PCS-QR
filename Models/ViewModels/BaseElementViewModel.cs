@@ -11,8 +11,9 @@ namespace CCIMS.Web.Models.ViewModels
 		public string IdName { get; set; }
 		public string Title { get; set; }
 		public string? ClassName { get; set; }
+		public bool IsLabelVisible { get; set; } = true;
 
-		public virtual string Id => $"txt-{OperationName}-{IdName}";
+    public virtual string Id => $"txt-{OperationName}-{IdName}";
 		public virtual string Name => $"txt_{OperationName}_{IdName}";
 		public virtual string PlaceHolder => $"Enter {Title}";
 		public string NotifId => $"notif-{OperationName}-{IdName}";

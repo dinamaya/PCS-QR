@@ -1,4 +1,5 @@
 ﻿using CCIMS.Web.Models.Interfaces;
+using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
@@ -8,7 +9,11 @@ namespace CCIMS.Web.Repositories.Interfaces
 		string GetQrScanUrl();
 		string GetPSGCBaseUrl();
 		string GetPSGCProvinces();
-		string GetPSGCCitiesByProvinceCode(string code);
+
+		IEnumerable<DropdownOptionViewModel> GetAgedSearcOptions();
+		IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
+
+    string GetPSGCCitiesByProvinceCode(string code);
 		string GetPSGCBarangaysByCityCode(string code);
 		ISysAdminSecurityDetails GetSysAdminPrivateDetails();
   }

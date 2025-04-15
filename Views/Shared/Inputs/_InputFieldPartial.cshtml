@@ -2,14 +2,23 @@
 @model InputFieldViewModel
 
 @{
-  string className = $"text-start py-3 {Model.ClassName}";
+  string className = Model.IsCompact ? "text-start py-0" : "text-start py-3";
+  string containerClassName = $"input-group {Model.InputContainerClassName}";
+
   string type = Model.Type.ToString().ToLower();
 }
 
-<div class="@className">
-  <label for='@Model.Id' class='form-label fs-5 fw-bold'>@Model.Title</label>
-  <div class='input-group'>
-    <input type='@type' id='@Model.Id' name='@Model.Name' class='form-control' placeholder='@Model.PlaceHolder' value='@Model.Value' />
+<div class="@Model.ClassName">
+  <div class="@className">
+    @if (Model.IsLabelVisible)
+    {
+      <label for='@Model.Id' class='form-label fs-5 fw-bold'>@Model.Title</label>
+    }
+
+    <div class='@containerClassName'>
+      <input type='@type' id='@Model.Id' name='@Model.Name' class='form-control' placeholder='@Model.PlaceHolder' value='@Model.Value' />
+    </div>
+    <span id='@Model.NotifId'></span>
   </div>
-  <span id='@Model.NotifId'></span>
+
 </div>
