@@ -72,7 +72,7 @@ namespace CCIMS.Web.Controllers
 
             try
             {
-                await _customerRepository.CreateCustomerAsync(createCustomerDto);
+                await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
                 return View("ThankYou");
             }
             catch (Exception ex)

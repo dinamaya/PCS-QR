@@ -32,44 +32,36 @@ namespace CCIMS.Web.Repositories
             _logger = logger;
         }
 
-        public async Task<bool> CreateCustomerAsync(CreateCustomerDto createCustomerDto)
+        public async Task CreateCustomerCaseAsync(CreateCustomerDto createCustomerDto)
         {
-            try
+
+            if (!_tokenProvider.IsValidToken(createCustomerDto.Token, out QRTokenDto? token) || token == null)
+                throw new Exception("Invalid Token");
+
+            var customer = new Customer
             {
-                if (!_tokenProvider.IsValidToken(createCustomerDto.Token, out QRTokenDto? token) || token == null)
-                    throw new Exception("Invalid Token");
+                FirstName = createCustomerDto.FirstName,
+                LastName = createCustomerDto.LastName,
+                Address = createCustomerDto.Address,
+                ContactNumber = createCustomerDto.ContactNumber,
+                Email = createCustomerDto.Email,
+                DateCreated = DateTime.UtcNow.ToLocalTime(),
+                DateModified = DateTime.UtcNow.ToLocalTime(),
+                IsActive = true,
+                ModifiedBy = string.Empty
+            };
 
-                var customer = new Customer
-                {
-                    FirstName = createCustomerDto.FirstName,
-                    LastName = createCustomerDto.LastName,
-                    Address = createCustomerDto.Address,
-                    ContactNumber = createCustomerDto.ContactNumber,
-                    Email = createCustomerDto.Email,
-                    DateCreated = DateTime.UtcNow.ToLocalTime(),
-                    DateModified = DateTime.UtcNow.ToLocalTime(),
-                    IsActive = true,
-                    ModifiedBy = string.Empty
-                };
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
 
-                _context.Customers.Add(customer);
-                await _context.SaveChangesAsync();
-
-                var newCase = new Case
-                {
-                    CustomerID = customer.Id,
-                    QRCodeId = await _securityRepo.DecryptIDAsync(token.QRID),
-                    SerialNumber = createCustomerDto.SerialNumber
-                };
-
-                await _caseRepo.CreateCaseAsync(newCase);
-                return true;
-            }
-            catch (Exception ex)
+            var newCase = new Case
             {
-                _logger.LogError($"Error in CreateCustomerAsync: {ex.Message}");
-                throw;
-            }
+                CustomerID = customer.Id,
+                QRCodeId = await _securityRepo.DecryptIDAsync(token.QRID),
+                SerialNumber = createCustomerDto.SerialNumber
+            };
+
+            await _caseRepo.CreateCaseAsync(newCase);
         }
 
         public async Task<bool> CustomerExistsAsync(string email)
