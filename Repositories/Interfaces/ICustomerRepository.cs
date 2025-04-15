@@ -5,7 +5,7 @@ namespace CCIMS.Web.Repositories.Interfaces
 {
     public interface ICustomerRepository
     {
-        Task<bool> CreateCustomerAsync(CreateCustomerDto createCustomerDto);
+        Task CreateCustomerCaseAsync(CreateCustomerDto createCustomerDto);
         Task<bool> CustomerExistsAsync(string email);
     }
 }
