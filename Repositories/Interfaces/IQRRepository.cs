@@ -7,5 +7,6 @@ namespace CCIMS.Web.Repositories.Interfaces
   public interface IQRRepository : ICreateRepository<QRCode>
   {
     Task<byte[]> GetById(string qrId);
-  }
+	Task<bool> QRCodeExistsAsync(string qrId);
+	}
 }

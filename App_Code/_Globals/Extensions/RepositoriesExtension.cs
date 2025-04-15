@@ -1,6 +1,8 @@
 ﻿
+using CCIMS.Web.Repositories;
 using CCIMS.Web.Repositories.Implementations;
 using CCIMS.Web.Repositories.Interfaces;
+using CCIMS.Web.Repositories.Interfaces.CCIMS.Web.Repositories.Interfaces;
 
 namespace CCIMS.Web.App_Code._Globals.Extensions
 {
@@ -15,6 +17,9 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddScoped<IServicePartnerRepository, ServicePartnerRepository>();
 			services.AddScoped<IAccountRepository, AccountRepository>();
 			services.AddScoped<IOperationsRepository, OperationsRepository>();
+
+			services.AddScoped<ICustomerRepository, CustomerRepository>();
+			services.AddScoped<ICaseRepository, CaseRepository>();
 
 			services.AddSingleton<ITokenProvider, TokenProvider>();
 		}

@@ -1,4 +1,5 @@
 ﻿using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Main;
@@ -62,6 +63,7 @@ namespace CCIMS.Web.Repositories.Implementations
           SpDateCreated = s.SpDateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           QrDateCreated = s.QrDateCreated.ToString(),
         })
+				.ToListAsync();
 				.ToListAsync();
     }
 

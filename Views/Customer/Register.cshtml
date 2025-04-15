@@ -1,5 +1,6 @@
 ﻿@{
 	ViewData["Title"] = "Customer Form";
+	Layout = "~/Views/Shared/_PublicLayout.cshtml"; 
 }
 
 
@@ -35,6 +36,7 @@
 
 							<form method="post" action="/Customer/Register" id="customerForm">
 								@Html.AntiForgeryToken()
+								<input type="text" name="Token" value="@Context.Request.Query["token"]" />
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>
@@ -57,49 +59,30 @@
 								</div>
 								<div class="row mt-3">
 									<div class="col">
-										<label>Address 1</label>
-										<input class="form-control" type="text" name="Address1" placeholder="eg. 123 Ortigas" required />
+										<label>Address</label>
+										<input class="form-control" type="text" name="Address" placeholder="eg. 123 Ortigas Ave, Pasig City, Metro Manila" required />
 									</div>
-								</div>
-								<div class="row mt-3">
-									<div class="col">
-										<label>Address 2</label>
-										<input class="form-control" type="text" name="Address2" placeholder="eg. 123 Ortigas" />
-									</div>
-								</div>
-								<div class="row mt-3">
-									<div class="col-12 col-sm-4">
-										<label>Province</label>
-										<select class="form-control" name="ProvinceCode" id="provinceSelect" required>
-											<option value="">Select Province</option>
-											@foreach (var province in Model.Provinces)
-											{
-												<option value="@province.Code">@province.Name</option>
-											}
-										</select>
-										<input type="hidden" name="Province" id="provinceName" />
-									</div>
-									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
-										<label>City/Municipality</label>
-										<select class="form-control" name="CityMunicipalityCode" id="cityMunSelect" required>
-											<option value="">Select City/Municipality</option>
-										</select>
-										<input type="hidden" name="CityMunicipality" id="cityMunName" />
-									</div>
-									<div class="col-12 col-sm-4 mt-3 mt-sm-0">
-										<label>Barangay</label>
-										<select class="form-control" name="BarangayCode" id="barangaySelect" required>
-											<option value="">Select Barangay</option>
-										</select>
-										<input type="hidden" name="Barangay" id="barangayName" />
-									</div>
-								</div>
+								</div>							
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label>Serial Number</label>
 										<input class="form-control" type="text" name="SerialNumber" placeholder="eg. 987654321" required />
 									</div>
 								</div>
+
+								<!-- Privacy Policy Checkbox -->
+								<div class="row mt-4">
+									<div class="col-12"> 
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="privacyPolicyCheckbox" name="PrivacyPolicyAccepted" required>
+											<label class="form-check-label" for="privacyPolicyCheckbox">
+												I agree to let VST ECS process my personal data in order to manage my case submission, in accordance with
+												<a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal" class="text-info">VST ECS Privacy Notice</a>.
+											</label>
+										</div>
+									</div>
+								</div>
+
 								<div class="text-left mt-4">
 									<button class="btn bg-gradient-dark ms-auto mb-0" type="submit" title="Send">Submit</button>
 								</div>
@@ -112,77 +95,64 @@
 	</div>
 </div>
 
-<script>
-	$(document).ready(function () {
-
-		// Store the text value when province is changed
-		$('#provinceSelect').change(function () {
-			var provinceCode = $(this).val();
-			var provinceName = $(this).find('option:selected').text();
-			$('#provinceName').val(provinceName);
-			
-			var cityMunSelect = $('#cityMunSelect');
-			var barangaySelect = $('#barangaySelect');
-
-			// Clear dependent dropdowns
-			cityMunSelect.empty().append('<option value="">Select City/Municipality</option>');
-			barangaySelect.empty().append('<option value="">Select Barangay</option>');
-			$('#cityMunName').val('');
-			$('#barangayName').val('');
-
-			if (provinceCode) {
-				$.ajax({
-					url: '/api/fetch/city',
-					type: 'GET',
-					data: { provinceCode: provinceCode },
-					success: function (data) {
-						$.each(data, function (index, city) {
-							cityMunSelect.append(
-								$('<option></option>').val(city.value).text(city.label)
-							);
-						});
-					},
-					error: function (xhr, status, error) {
-						console.log('Error fetching cities: ' + error);
-					}
-				});
-			}
-		});
-
-		// Store the text value when city is changed
-		$('#cityMunSelect').change(function () {
-			var cityMunCode = $(this).val();
-			var cityMunName = $(this).find('option:selected').text();
-			$('#cityMunName').val(cityMunName);
-			
-			var barangaySelect = $('#barangaySelect');
-
-			barangaySelect.empty().append('<option value="">Select Barangay</option>');
-			$('#barangayName').val('');
-
-			if (cityMunCode) {
-				$.ajax({
-					url: '/api/fetch/barangay',
-					type: 'GET',
-					data: { cityMunCode: cityMunCode },
-					success: function (data) {
-						$.each(data, function (index, barangay) {
-							barangaySelect.append(
-								$('<option></option>').val(barangay.value).text(barangay.label)
-							);
-						});
-					},
-					error: function (xhr, status, error) {
-						console.log('Error fetching barangays: ' + error);
-					}
-				});
-			}
-		});
-		
-		// Store the text value when barangay is changed
-		$('#barangaySelect').change(function() {
-			var barangayName = $(this).find('option:selected').text();
-			$('#barangayName').val(barangayName);
-		});
-	});
-</script>
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="privacyPolicyModalLabel">VST ECS Privacy Notice</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<h6>Privacy Policy</h6>
+				<p>
+					VST ECS Philippines, Inc. is committed to protecting your privacy and ensuring the security of your personal information. 
+					This Privacy Notice explains how we collect, use, disclose, and safeguard your data when you submit a customer case.
+				</p>
+				
+				<h6>Information We Collect</h6>
+				<p>
+					We collect personal information such as your name, contact details, address, and product information to help us process and manage your case submission effectively. 
+					This information is necessary to identify you, communicate with you regarding your case, and provide appropriate support services.
+				</p>
+				
+				<h6>How We Use Your Information</h6>
+				<p>We use your personal information to:</p>
+				<ul>
+					<li>Process and manage your case submission</li>
+					<li>Communicate with you about your case status</li>
+					<li>Provide customer support and technical assistance</li>
+					<li>Improve our products and services</li>
+					<li>Comply with legal obligations</li>
+				</ul>
+				
+				<h6>Information Sharing</h6>
+				<p>
+					We may share your information with service providers who assist us in processing your case. 
+					We do not sell or rent your personal information to third parties. 
+					Any third party who receives your information is obligated to maintain its confidentiality and security.
+				</p>
+				
+				<h6>Data Security</h6>
+				<p>
+					We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, 
+					alteration, disclosure, or destruction.
+				</p>
+				
+				<h6>Your Rights</h6>
+				<p>
+					You have the right to access, correct, or delete your personal information. 
+					You may also withdraw your consent for the processing of your data, subject to legal or contractual restrictions.
+				</p>
+				
+				<h6>Contact Information</h6>
+				<p>
+					If you have questions about this Privacy Notice or our data practices, please contact our Data Protection Officer at privacy@vstecs.ph.
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn bg-gradient-dark" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

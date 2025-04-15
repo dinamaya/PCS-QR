@@ -1,18 +1,31 @@
-﻿using CCIMS.Web.Models.ViewModels;
-using CCIMS.Web.Repositories.Interfaces;
+﻿using CCIMS.Web.Context;
+using CCIMS.Web.Models.Entities.Main;
+using CCIMS.Web.Repositories.Interfaces.CCIMS.Web.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
-namespace CCIMS.Web.Repositories.Implementations
+namespace CCIMS.Web.Repositories
 {
-  public class CaseRepository : ICaseRepository
-  {
-    public Task<IEnumerable<CaseRowViewModel>> GetAll()
-    {
-      throw new NotImplementedException();
-    }
+	public class CaseRepository : ICaseRepository
+	{
+		private readonly MainDbContext _context;
 
-    public Task<CaseRowViewModel> GetById(string id)
-    {
-      throw new NotImplementedException();
-    }
-  }
+		public CaseRepository(MainDbContext context)
+		{
+			_context = context;
+		}
+
+		public async Task<Case> CreateCaseAsync(Case newCase)
+		{
+			newCase.CaseNumber = Guid.NewGuid().ToString();
+			newCase.DateCreated = DateTime.UtcNow.ToLocalTime();
+			newCase.IsActive = true;
+			newCase.ModifiedBy = string.Empty;
+			newCase.Description = string.Empty;
+
+			_context.Cases.Add(newCase);
+			await _context.SaveChangesAsync();
+			return newCase;
+		}
+	}
 }

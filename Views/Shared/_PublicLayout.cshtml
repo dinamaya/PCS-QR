@@ -1,0 +1,45 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
+
+    <link rel="apple-touch-icon" sizes="76x76" href="~/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="~/img/favicon.png">
+    <title>@ViewData["Title"]</title>
+    <!-- Fonts and icons -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- Nucleo Icons -->
+    <link href="~/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="~/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous">
+    <link href="~/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="~/css/soft-ui-dashboard.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Github buttons -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Main Content -->
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+        <div class="container-fluid py-4">
+            @RenderBody()
+        </div>
+        @await Html.PartialAsync("_FooterPartial")
+    </main>
+
+    <!-- Scripts -->
+    <script src="~/js/core/popper.min.js"></script>
+    <script src="~/js/core/bootstrap.min.js"></script>
+    <script src="~/js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="~/js/soft-ui-dashboard.js"></script>
+</body>
+</html>

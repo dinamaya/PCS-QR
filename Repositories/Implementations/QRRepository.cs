@@ -55,5 +55,11 @@ namespace CCIMS.Web.Repositories.Implementations
               .SetProperty(p => p.DateModified, now)
           );
     }
-  }
+
+	public async Task<bool> QRCodeExistsAsync(string qrId)
+	{
+		return await _mainDb.QRCodes.AnyAsync(q => q.Id == qrId);
+	}
+
+	}
 }
