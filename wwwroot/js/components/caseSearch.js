@@ -10,7 +10,8 @@ let statusList = [];
 let agedList = []
 let onSearch = false;
 
-export function initComponents(selectCategoryId, btnSearchId, textValueId, selectValueId, hiddenValueId, statuses, agedCounts) {
+export function initComponents(selectCategoryId, btnSearchId, textValueId, selectValueId, hiddenValueId, statuses, agedCounts)
+{
   $selectCategory = $(`#${selectCategoryId}`);
   $selectValue = $(`#${selectValueId}`);
   $btnSearch = $(`#${btnSearchId}`);
@@ -37,7 +38,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
     reset();
 
     const $selectWrapper = $selectValue.closest(".col").parent();
-    const $textWrapper = $textValue.closest(".col").parent().parent();
+    const $textWrapper = $textValue.closest(".col").parent();
 
     $selectWrapper.addClass("d-none");
     $textWrapper.addClass("d-none");
@@ -66,20 +67,6 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
 
     const selected = choicesValue.getValue(true);
     $hiddenValue.val(selected);
-  });
-
-  $selectValue.on('change', function () {
-    const selectedValue = $(this).val();
-
-    if (selectedValue === "" || selectedValue === null) {
-      $hiddenValue.val("");
-      return;
-    }
-
-    const selected = choicesValue.getValue(true);
-    $hiddenValue.val(selected);
-
-    console.log(selected);
   });
 
   $textValue.on('input', function () {
@@ -116,25 +103,18 @@ $(document).ready(function () {
   const searchCategory = params.get("c");
   const searchValue = params.get("v");
 
-  console.log("searchCategory: ", searchCategory);
-  console.log("searchValue: ", searchValue);
+  onSearch = true;
+  choicesCategory.setChoiceByValue(searchCategory);
+  $selectCategory.trigger('change');
 
-  if (searchCategory && searchValue) 
-  {
-    onSearch = true;
-    choicesCategory.setChoiceByValue(searchCategory);
-    $selectCategory.trigger('change');
+  $hiddenValue.val(searchValue)
 
-    $hiddenValue.val(searchValue)
+  const label = $($selectCategory).find("option:selected").text().trim();
 
-    const label = $($selectCategory).find("option:selected").text().trim();
-
-    setTimeout(() => {
-      if (label === "Status" || label === "Days Aged")
-        choicesValue.setChoiceByValue(searchValue);
-      else
-        $textValue.val(searchValue);
-    }, 100);
-  }
-
+  setTimeout(() => {
+    if (label === "Status" || label === "Days Aged")
+      choicesValue.setChoiceByValue(searchValue);
+    else
+      $textValue.val(searchValue);
+  }, 100);
 });

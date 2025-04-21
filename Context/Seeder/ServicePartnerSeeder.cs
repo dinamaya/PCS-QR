@@ -7,9 +7,10 @@ namespace CCIMS.Web.Context.Seeder
 {
 	public class ServicePartnerSeeder : Seeder
 	{
-		public override async Task Seed(IServiceProvider serviceProvider, UserManager<Account> userManager)
+		public override async Task Seed(IServiceProvider serviceProvider)
 		{
-			using var context = new MainDbContext(serviceProvider.GetRequiredService<DbContextOptions<MainDbContext>>());
+      var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
+      using var context = new MainDbContext(serviceProvider.GetRequiredService<DbContextOptions<MainDbContext>>());
 
 			var date = DateTime.Now;
 
@@ -62,11 +63,6 @@ namespace CCIMS.Web.Context.Seeder
 			}
 		}
 
-		public static async Task Run(IServiceProvider serviceProvider, UserManager<Account> userManager) => await new ServicePartnerSeeder().Seed(serviceProvider, userManager);
-
-		public override async Task Seed(IServiceProvider serviceProvider)
-		{
-			throw new NotImplementedException();
-		}
+		public static async Task Run(IServiceProvider serviceProvider) => await new ServicePartnerSeeder().Seed(serviceProvider);
 	}
 }

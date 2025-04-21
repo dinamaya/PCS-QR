@@ -9,8 +9,9 @@ namespace CCIMS.Web.Context.Seeder
 {
 	public class AccountSeeder : Seeder
 	{
-    public override async Task Seed(IServiceProvider serviceProvider, UserManager<Account> userManager)
+    public override async Task Seed(IServiceProvider serviceProvider)
     {
+      var userManager = serviceProvider.GetRequiredService<UserManager<Account>>();
       using var context = new AuthDbContext(serviceProvider.GetRequiredService<DbContextOptions<AuthDbContext>>());
 
       var date = DateTime.Now;
@@ -93,12 +94,6 @@ namespace CCIMS.Web.Context.Seeder
 
     }
 
-    public static async Task Run(IServiceProvider serviceProvider, UserManager<Account> userManager) => await new AccountSeeder().Seed(serviceProvider, userManager);
-
-		public override async Task Seed(IServiceProvider serviceProvider)
-		{
-			await Task.Delay(10);
-			throw new NotImplementedException();
-		}
+    public static async Task Run(IServiceProvider serviceProvider) => await new AccountSeeder().Seed(serviceProvider);
   }
 }
