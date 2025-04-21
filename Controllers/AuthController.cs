@@ -57,7 +57,7 @@ namespace CCIMS.Web.Controllers
 
 				// Login Account					
 				if (loginResponseDTO.Result != null)
-					return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToAction("Index", "Home");
+					return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToAction("Index", "Dashboard");
 
 				return View(loginRequestDTO);
 			}
