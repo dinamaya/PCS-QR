@@ -1,8 +1,12 @@
-﻿using CCIMS.Web.Context;
+﻿using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.Context;
 using CCIMS.Web.Models.Entities.Main;
+using CCIMS.Web.Models.SQLViews.Main;
 using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CCIMS.Web.Repositories
@@ -10,17 +14,19 @@ namespace CCIMS.Web.Repositories
 	public class CaseRepository : ICaseRepository
 	{
 		private readonly MainDbContext _context;
+    private readonly IConfigurationRepository _configRepo;
 
-		public CaseRepository(MainDbContext context)
-		{
-			_context = context;
-		}
+    public CaseRepository(MainDbContext context, IConfigurationRepository configRepo)
+    {
+      _context = context;
+      _configRepo = configRepo;
+    }
 
-		public string InsertedId { get; set; }
+    public string InsertedId { get; set; }
 
 		public async Task CreateAsync(Case newCase, string createdBy)
 		{
-			newCase.CaseNumber = Guid.NewGuid().ToString();
+			newCase.CaseNumber = Guid.NewGuid().ToString(); // TODO Implement CaseNumber based on the given template
 			newCase.DateCreated = DateTime.UtcNow.ToLocalTime();
 			newCase.IsActive = true;
 			newCase.ModifiedBy = string.Empty;
@@ -30,12 +36,64 @@ namespace CCIMS.Web.Repositories
 			await _context.SaveChangesAsync();
 		}
 
-		public Task<IEnumerable<CaseRowViewModel>> GetAll()
+		public async Task<IEnumerable<CaseRowViewModel>> GetAll()
 		{
-			throw new NotImplementedException();
-		}
+			return await _context.LatestCasesVs
+				.Select(c => new CaseRowViewModel()
+				{
+					Id = c.CaseId.ToString(),
+					CaseNumber = c.CaseNumber,
+          Description = c.Description,
+          Status = c.Status,
+          Comments = c.Comments,
+					CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
+					ServicePartnerName = c.ServicePartnerName,
+					SerialNumber = c.SerialNumber,
+					DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY),
+        }).ToListAsync();
+    }
 
-		public Task<CaseRowViewModel> GetById(string id)
+    public async Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value)
+    {
+      return await FilterCasesByCategory(categoryId, value)
+        .Select(
+          c => new CaseRowViewModel()
+          {
+            Id = c.CaseId.ToString(),
+            CaseNumber = c.CaseNumber,
+            Description = c.Description,
+            Status = c.Status,
+            Comments = c.Comments,
+            CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
+            ServicePartnerName = c.ServicePartnerName,
+            SerialNumber = c.SerialNumber,
+            DateCreated= c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          }
+        ).ToListAsync();
+    }
+
+    private IQueryable<LatestCasesV> FilterCasesByCategory(string categoryId, string value)
+    {
+      var categories = _configRepo.GetCategoriesSearcOptions().ToList();
+      var selectedCategory = categories.FirstOrDefault(c => c.Value == categoryId);
+
+      if (selectedCategory == null)
+        throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY);
+
+      return selectedCategory.Label switch
+      {
+        "Description" => _context.LatestCasesVs.Where(c => c.Description.Contains(value)),
+        "Status" => _context.LatestCasesVs.Where(c => c.StatusId == value),
+        "Serial Number" => _context.LatestCasesVs.Where(c => c.SerialNumber.Contains(value)),
+        "Case Number / ID" => _context.LatestCasesVs.Where(c => c.CaseNumber.Contains(value)),
+        "Service Partner Name" => _context.LatestCasesVs.Where(c => c.ServicePartnerName.Contains(value)),
+        "Days Aged" => _context.LatestCasesVs.Where(c => EF.Functions.DateDiffDay(c.DateStatusUpdated, DateTime.UtcNow) >= int.Parse(value)),
+        _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
+      };
+    }
+
+
+    public Task<CaseRowViewModel> GetById(string id)
 		{
 			throw new NotImplementedException();
 		}

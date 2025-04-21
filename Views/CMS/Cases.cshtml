@@ -11,58 +11,77 @@
       @await Html.PartialAsync(Routes.Partials.Cases.SEARCH)
     </div>
 
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <!-- Card header -->
-          <div class="card-header pb-0">
-            <div class="d-lg-flex">
-              <div>
-                <h5 class="mb-0">All Cases</h5>
-              </div>
-              <div class="ms-auto my-auto mt-4">
-                <div class="ms-auto my-auto">
-                  <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Export</button>
+    @if(Model != null)
+    {
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <!-- Card header -->
+            <div class="card-header pb-0">
+              <div class="d-lg-flex">
+                <div>
+                  <h5 class="mb-0">All Cases</h5>
+                </div>
+                <div class="ms-auto my-auto mt-4">
+                  <div class="ms-auto my-auto">
+                    <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Export</button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="card-body px-0 pb-0">
-            <div class="table-responsive">
-              <table class="table table-flush" id="tbl">
-                <thead>
-                  <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">CaseNumber</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer Name</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Partner Name</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Serial Number</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created By</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
-                  </tr>
-                </thead>
+            <div class="card-body px-0 pb-0">
+              <div class="table-responsive">
+                <table class="table table-flush" id="tbl">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">CaseNumber</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Comments / Remarks</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Customer Name</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Partner Name</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Serial Number</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  @foreach (var row in Model)
-                  {
-                    @await Html.PartialAsync(Routes.Partials.Cases.TROW, row)
-                  }
-                </tbody>
-              </table>
+                  <tbody>
+                    @foreach (var row in Model)
+                    {
+                      @await Html.PartialAsync(Routes.Partials.Cases.TROW, row)
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    }
+    else
+    {
+      <div class="row py-5 mt-5">
+        <div class="col-12 py-5">
+
+        </div>
+      </div>
+    }
   </div>
 </div>
 
 <script>
   window.baseUrl = '@Url.Content("/api/account")'
 
-  const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
-    searchable: true,
-    fixedHeight: true
-  });
+  try {
+    const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
+      searchable: true,
+      fixedHeight: true
+    });
+  } 
+  catch (e) 
+  {
+    console.log("Datatable not found");
+  }
+  
 </script>

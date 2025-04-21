@@ -33,28 +33,32 @@
       {
         IdName = "textVal",
         Title = "Value",
-        InputContainerClassName = "col mx-2 mb-2",
-        ClassName = "col h-100",
+        ClassName = "col mx-2 mb-2 ",
         InputClassName = "border-0",
         IsLabelVisible = false,
         IsCompact = true
       };
 }
 <form id="form-search">
-  <div class="col-12">
+  <div class="col">
     <div class="card">
       <div class="card-body">
-        <div class="container-fluid d-lg-flex px-0 ">
+        <div class="container-fluid d-sm-block d-lg-flex px-0 ">
           @await Html.RenderAsync(categories)
           @await Html.RenderAsync(selectValue)
 
-          @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, textValue)
-
-          <div class="col-12 col-lg-2 col-xl-1 px-2 d-flex mx-2 mb-2 justify-content-center align-content-center">
-            <button type="submit" class="w-100 h-auto btn bg-gradient-primary btn-sm mb-0" id="btn-search">
-              Search
-            </button>
+          <div class="col">
+            @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, textValue)
           </div>
+
+          <div class="col-12 col-lg-2 h-auto">
+            <div class="px-2 d-flex mx-2 pb-2 h-100 justify-content-center align-content-center">
+              <button type="submit" class="w-100 h-auto btn bg-gradient-primary btn-sm mb-0" id="btn-search">
+                Search
+              </button>
+            </div>
+          </div>
+
         </div>
         <div class="container">
           <input type="hidden" class="col-12" value="" name="v" placeholder="mainValue" id="hdn-searchVal"/>
@@ -64,10 +68,10 @@
   </div>
 </form>
 
-<script type="module">
-  import { initComponents } from '/js/components/caseSearch.js';
+<script type="module" defer>
+  import { initComponents as init} from '/js/components/caseSearch.js';
 
-  initComponents(
+  init(
     '@categories.Id', 
     'btn-search', 
     '@textValue.Id', 

@@ -5,5 +5,7 @@ namespace CCIMS.Web.Repositories.Interfaces
 {
 	public interface ICaseRepository : IReadOnlyRepository<CaseRowViewModel, CaseRowViewModel>, ICreateRepository<Case>
 	{
-	}
+		Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value);
+
+  }
 }

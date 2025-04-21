@@ -18,7 +18,8 @@ namespace CCIMS.Web.Context
 		public virtual DbSet<Status> Statuses { get; set; }
 		public virtual DbSet<Transaction> Transactions { get; set; }
 
-		public virtual DbSet<ServicePartnersV> ServicePartnersVs { get; set; }
+    public virtual DbSet<LatestCasesV> LatestCasesVs { get; set; }
+    public virtual DbSet<ServicePartnersV> ServicePartnersVs { get; set; }
 		public virtual DbSet<StatusesV> StatusesVs { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,7 +34,32 @@ namespace CCIMS.Web.Context
 				.WithMany()
 				.HasForeignKey(a => a.ServicePartnerId);
 
-			modelBuilder.Entity<ServicePartnersV>(entity =>
+      modelBuilder.Entity<Transaction>(entity =>
+      {
+        entity
+            .HasOne(a => a.Case)
+						.WithMany()
+						.HasForeignKey(a => a.CaseID);
+
+        entity
+            .HasOne(a => a.Status)
+						.WithMany()
+						.HasForeignKey(a => a.StatusId);
+      });
+
+
+      modelBuilder.Entity<LatestCasesV>(entity =>
+      {
+        entity
+            .HasNoKey()
+            .ToView("LatestCases_v");
+
+        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+        entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
+        entity.Property(e => e.StatusId).HasMaxLength(450);
+      });
+
+      modelBuilder.Entity<ServicePartnersV>(entity =>
 			{
 				entity
 						.HasNoKey()
