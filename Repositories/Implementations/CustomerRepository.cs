@@ -1,8 +1,11 @@
-﻿using CCIMS.Web.Context;
+﻿using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.Context;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Main;
+using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace CCIMS.Web.Repositories
 {
@@ -73,9 +76,23 @@ namespace CCIMS.Web.Repositories
       await _transactionRepo.CreateAsync(transaction, "");
     }
 
-    public async Task<bool> CustomerExistsAsync(string email)
+    public async Task<bool> CustomerExistsAsync(string email) => await _context.Customers.AnyAsync(c => c.Email == email && c.IsActive);
+
+    public async Task<CustomerDetailsViewModel> GetById(string id)
     {
-      return await _context.Customers.AnyAsync(c => c.Email == email && c.IsActive);
+      return await _context.Customers
+        .Where(c => c.IsActive && c.Id == id)
+        .Select(c => new CustomerDetailsViewModel()
+        {
+          Id = c.Id,
+          Firstname = c.FirstName,
+          Lastname = c.LastName,
+          Email = c.Email,
+          ContactNo = c.ContactNumber,
+          Address = c.Address,
+        })
+        .FirstOrDefaultAsync() ?? 
+        throw new Exception(Exceptions.Message.INVALID_CATEGORY);
     }
   }
 }

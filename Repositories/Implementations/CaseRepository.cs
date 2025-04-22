@@ -93,9 +93,22 @@ namespace CCIMS.Web.Repositories
     }
 
 
-    public Task<CaseRowViewModel> GetById(string id)
+    public async Task<CaseDetailsViewModel> GetById(string id)
 		{
-			throw new NotImplementedException();
-		}
+      long _id = long.Parse(id);
+      return await _context.CaseDetailsVs
+        .Where(c => c.Id == _id)
+        .Select(_case => new CaseDetailsViewModel()
+        {
+          Id = _case.Id.ToString(),
+          CustomerId = _case.CustomerId,
+          DateCreated = _case.DateCreated,
+          CaseNumber = _case.CaseNumber,
+          ServicePartner = _case.SpName,
+          SerialNumber = _case.SerialNumber,
+          Description = _case.Description
+        })
+        .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_CASE);
+    }
 	}
 }

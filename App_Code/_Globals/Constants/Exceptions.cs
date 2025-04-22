@@ -15,6 +15,8 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_ACCOUNT_UPDATE = "Account Update Failed. Please Check the logs or contact the Administrator";
 			public const string INVALID_STATUS = "Status Not Found. Please Check the logs or contact the Administrator";
 			public const string INVALID_CATEGORY= "Category Not Found. Please provide the correct category id or contact the Administrator";
+			public const string INVALID_CUSTOMER= "Customer Not Found. Please provide the correct customer id or contact the Administrator";
+			public const string INVALID_CASE= "Case Not Found. Please provide the correct case id or contact the Administrator";
 			
 			public static class Config
 			{

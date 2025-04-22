@@ -1,4 +1,5 @@
 ﻿using CCIMS.Web.Models.DTOs;
+using CCIMS.Web.Models.ViewModels;
 using System.Threading.Tasks;
 
 namespace CCIMS.Web.Repositories.Interfaces
@@ -7,5 +8,6 @@ namespace CCIMS.Web.Repositories.Interfaces
     {
         Task CreateCustomerCaseAsync(CreateCustomerDto createCustomerDto);
         Task<bool> CustomerExistsAsync(string email);
+        Task<CustomerDetailsViewModel> GetById(string id);
     }
 }

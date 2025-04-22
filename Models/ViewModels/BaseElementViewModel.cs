@@ -7,7 +7,7 @@ namespace CCIMS.Web.Models.ViewModels
 		/// <summary>
 		/// CRUD Name; Add/Create, Fetch/Read, Edit/Update, Remove/Delete
 		/// </summary>
-		public string OperationName { get; set; }
+		public string OperationName { get; set; } = "add";
 		public string IdName { get; set; }
 		public string Title { get; set; }
 		public string? ClassName { get; set; }

@@ -18,11 +18,13 @@ namespace CCIMS.Web.Context
 		public virtual DbSet<Status> Statuses { get; set; }
 		public virtual DbSet<Transaction> Transactions { get; set; }
 
-    public virtual DbSet<LatestCasesV> LatestCasesVs { get; set; }
+    public virtual DbSet<CaseDetailsV> CaseDetailsVs { get; set; }
+		public virtual DbSet<LatestCasesV> LatestCasesVs { get; set; }
     public virtual DbSet<ServicePartnersV> ServicePartnersVs { get; set; }
 		public virtual DbSet<StatusesV> StatusesVs { get; set; }
+    public virtual DbSet<TransactionsV> TransactionsVs { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Case>()
 				.HasOne(a => a.QRCode)
@@ -47,8 +49,16 @@ namespace CCIMS.Web.Context
 						.HasForeignKey(a => a.StatusId);
       });
 
+			modelBuilder.Entity<CaseDetailsV>(entity =>
+			{
+				entity
+						.HasNoKey()
+						.ToView("CaseDetails_v");
 
-      modelBuilder.Entity<LatestCasesV>(entity =>
+				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+			});
+
+			modelBuilder.Entity<LatestCasesV>(entity =>
       {
         entity
             .HasNoKey()
@@ -79,7 +89,16 @@ namespace CCIMS.Web.Context
 				entity.Property(e => e.Id).HasMaxLength(450);
 			});
 
-			base.OnModelCreating(modelBuilder);
+      modelBuilder.Entity<TransactionsV>(entity =>
+      {
+        entity
+            .HasNoKey()
+            .ToView("Transactions_v");
+
+        entity.Property(e => e.CaseId).HasColumnName("CaseID");
+      });
+
+      base.OnModelCreating(modelBuilder);
 		}
 	}
 }

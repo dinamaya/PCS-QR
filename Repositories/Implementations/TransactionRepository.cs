@@ -1,8 +1,11 @@
-﻿using CCIMS.Web.Context;
+﻿using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.Context;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Main;
+using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -50,5 +53,19 @@ namespace CCIMS.Web.Repositories.Implementations
       InsertedId = transaction.Id.ToString();
     }
 
+    public async Task<IEnumerable<CaseTransactionsViewModel>> GetAllByCaseId(long caseId)
+    {
+      return await _mainDb.TransactionsVs
+        .Where(t => t.CaseId == caseId)
+        .Select(t => new CaseTransactionsViewModel()
+        {
+          StatusName = t.Status,
+          Comments = t.Comments,
+          TransactionId = t.Id.ToString(),
+          TransactionDate = t.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          Icon = ""
+        })
+        .ToListAsync();
+    }
   }
 }
