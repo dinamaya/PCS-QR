@@ -70,8 +70,10 @@
   </div>
 </div>
 
+@(await Html.PartialAsync(Routes.Partials.Cases.STAT_UPDATE_MODAL))
+
 <script>
-  window.baseUrl = '@Url.Content("/api/account")'
+  window.baseUrl = '@Url.Content("/api/cases")'
 
   try {
     const dataTableSearch = new simpleDatatables.DataTable("#tbl", {

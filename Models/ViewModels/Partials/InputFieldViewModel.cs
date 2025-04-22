@@ -8,6 +8,8 @@ namespace CCIMS.Web.Models.ViewModels.Partials
 	public class InputFieldViewModel : BaseElementViewModel, IInputElement
 	{
 		public bool IsCompact { get; set; } = false;
+		public bool IsDisabled { get; set; } = false;
+
 		public string? Value { get; set; }
     public InputType? Type { get; set; } = InputType.Text;
     public string? InputContainerClassName { get; set; }

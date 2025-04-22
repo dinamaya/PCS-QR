@@ -110,5 +110,14 @@ namespace CCIMS.Web.Repositories
         })
         .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_CASE);
     }
-	}
+
+    public async Task<string> GetCurrentStatus(long caseId)
+    {
+      return await _context.LatestCasesVs
+        .AsNoTracking()
+        .Where(c => c.CaseId == caseId)
+        .Select(c => c.Status)
+        .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_CASE);
+    }
+  }
 }

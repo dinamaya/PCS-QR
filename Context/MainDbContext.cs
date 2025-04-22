@@ -96,6 +96,7 @@ namespace CCIMS.Web.Context
             .ToView("Transactions_v");
 
         entity.Property(e => e.CaseId).HasColumnName("CaseID");
+        entity.Property(e => e.StatusId).HasMaxLength(450);
       });
 
       base.OnModelCreating(modelBuilder);

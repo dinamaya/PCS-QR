@@ -6,5 +6,7 @@ namespace CCIMS.Web.Repositories.Interfaces
   public interface ITransactionRepository : ICreateRepository<TransactionCreationDto>
   {
     Task<IEnumerable<CaseTransactionsViewModel>> GetAllByCaseId(long caseId);
+    Task<IEnumerable<DropdownOptionViewModel>> GetExistingStatusByCaseId(long caseId);
+    Task<IEnumerable<DropdownOptionViewModel>> GetAvailableStatusByCaseId(long caseId);
   }
 }
