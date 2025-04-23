@@ -1,0 +1,153 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Models.ViewModels.Partials
+@using CCIMS.Web.App_Code._Globals.Extensions
+
+@{
+	var fname = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "fname",
+				Title = "First Name",
+				ClassName = "col"
+			};
+
+	var lname = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "lname",
+				Title = "Last Name",
+				ClassName = "col-12 col-md-6 "
+			};
+
+	var uname = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "uname",
+				Title = "Username",
+				ClassName = "col"
+			};
+
+	var email = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "email",
+				Title = "Email",
+				ClassName = "col-12 col-md-6 ",
+				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Email
+			};
+
+	var pass1 = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "pass1",
+				Title = "Password",
+				ClassName = "col",
+				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Password
+			};
+
+	var pass2 = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "pass2",
+				Title = "Retype Password",
+				ClassName = "col-12 col-md-6 ",
+				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Password
+			};
+
+	var roles = new SelectViewModel()
+			{
+				OperationName = "edit",
+				IdName = "roles",
+				Title = "Account Role / Type",
+				InputContainerClassName = "col",
+				Options = (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.ROLES]
+			};
+
+	var radBtnPass1 = new RadioGroupButtonViewModel()
+			{
+				OperationName = "edit",
+				IdName = "reset",
+				Title = "Reset",
+				Elements = [pass1, pass2]
+			};
+
+	var radBtnPass2 = new RadioGroupButtonViewModel()
+			{
+				OperationName = "edit",
+				IdName = "change",
+				Title = "Change",
+			};
+
+
+	var radioGroupPass = new RadioGroupViewModel
+			{
+				OperationName = "edit",
+				IdName = "passwords",
+				Title = "Change Password",
+				RadioGroupButtons = [radBtnPass1, radBtnPass2]
+			};
+
+	radioGroupPass.JavaScript = $@"
+    if ($(""#{radBtnPass1.Id}"").is("":checked"")) {{
+        $(""#{radioGroupPass.Id}"").slideDown(300);
+    }} else {{
+        $(""#{radioGroupPass.Id}"").slideUp(300);
+    }}";
+
+}
+
+
+<!-- Edit Account -->
+<div class="modal modal-xl fade" id="modal-edit-customer" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-edit-customer">
+		<div class="modal-dialog">
+			<div class="modal-content p-2">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Customer</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="p-4	">
+
+						<div class="row">
+							@await Html.RenderAsync(fname)
+							@await Html.RenderAsync(lname)
+						</div>
+
+						<div class="row">
+							@await Html.RenderAsync(uname)
+							@await Html.RenderAsync(email)
+						</div>
+
+						@await Html.RenderAsync(radioGroupPass)
+
+						<div class="row">
+							@await Html.RenderAsync(roles)
+						</div>
+					</div>
+				</div>
+
+				<input type="text" id="hdn-edit-accId" />
+
+				<div class="modal-footer">
+					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Edit</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="module">
+	import { initModal as initEditModal, onEdit as showEdit } from '/js/components/accModalEdit.js';
+	const selectEditRoles = new Choices(document.getElementById('@roles.Id'), {
+		searchEnabled: false
+	});
+
+	initEditModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', selectEditRoles, 'hdn-edit-accId', '@radioGroupPass.Id');
+	window.showEdit = showEdit;
+
+
+</script>
