@@ -47,5 +47,27 @@ namespace CCIMS.Web.Controllers.API
         return BadRequest(response);
       }
     }
+
+    [HttpPut("status")]
+    public async Task<ActionResult<ResponseDto>> Status([FromBody] CaseStatusUpdateRequestDto caseStatusUpdateRequest)
+    {
+      var response = new ResponseDto();
+      try
+      {
+        string createdBy = User.GetClaim(AuthClaims.ACCOUNT_ID);
+        await _transactionRepo.CreateAsync(caseStatusUpdateRequest, createdBy);
+
+        response.Message = "Status updated";
+
+        return Ok(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+    }
   }
 }

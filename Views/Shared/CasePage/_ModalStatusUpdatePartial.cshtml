@@ -15,6 +15,14 @@
 			InputClassName = "bg-gray-200"
 		};
 
+	var comments = new InputFieldViewModel()
+		{
+			OperationName = "edit",
+			IdName = "comments",
+			Title = "Comments / Remarks",
+			ClassName = "col",
+		};
+
 	var status = new SelectViewModel()
 			{
 				OperationName = "edit",
@@ -44,6 +52,9 @@
 						<div class="row">
 							@await Html.RenderAsync(status)
 						</div>
+						<div class="row">
+							@await Html.RenderAsync(comments)
+						</div>
 					</div>
 				</div>
 
@@ -63,11 +74,11 @@
 
 	window.showEdit = onEdit
 	
-	const selectEditStatus = new Choices(document.getElementById('@status.Id'), {
+	const statusChoice = new Choices(document.getElementById('@status.Id'), {
 		searchEnabled: false
 	});
 
-	init('@currStatus.Id', selectEditStatus, 'hdn-update-caseId');
+	init('@currStatus.Id', statusChoice, '@status.Id', '@comments.Id', 'hdn-update-caseId');
 
 
 </script>

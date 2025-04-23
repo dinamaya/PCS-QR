@@ -18,7 +18,7 @@ namespace CCIMS.Web.Controllers
 			_signInManager = signInManager;
 		}
 
-		public IActionResult Index() => _signInManager.IsSignedIn(User) ? RedirectToAction("Index", "Dashboard") : View();
+		public IActionResult Index() => _signInManager.IsSignedIn(User) ? RedirectToAction("Index", "Dashboard") : RedirectToAction("Index", "Auth");
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()

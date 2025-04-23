@@ -7,5 +7,7 @@ namespace CCIMS.Web.Repositories.Interfaces
   {
     Task<IEnumerable<StatusRowViewModel>> GetAllStatus();
     Task<StatusDto> GetStatusById(string id);
-  }
+    Task<bool> IsStatusCommentable(string id);
+
+	}
 }
