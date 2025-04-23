@@ -50,7 +50,10 @@ namespace CCIMS.Web.Controllers
                 if (!doesExist)
                     throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
 
-                return View();
+				TempData["Token"] = token;
+				var model = new CreateCustomerDto { Token = token };
+
+				return View(model);
             }
             catch (Exception ex)
             {
@@ -64,7 +67,10 @@ namespace CCIMS.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(CreateCustomerDto createCustomerDto)
         {
-            if (!ModelState.IsValid)
+
+			createCustomerDto.Token = createCustomerDto.Token ?? TempData["Token"]?.ToString();
+
+			if (!ModelState.IsValid)
             {
                 ViewBag.ErrorMessage = "Invalid form submission.";
                 return View(createCustomerDto.Token);
@@ -79,7 +85,7 @@ namespace CCIMS.Web.Controllers
             {
                 _logger.LogError($"Error saving customer: {ex.Message}");
                 ViewBag.ErrorMessage = ex.Message;
-                return View(createCustomerDto.Token);
+                return View("Register", createCustomerDto);
             }
         }
 
