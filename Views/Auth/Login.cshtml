@@ -3,50 +3,78 @@
 @model LoginRequestDto
 
 @{
-	ViewData["Title"] = "Login";
+  ViewData["Title"] = "Login";
 }
+<div class="mx-5 d-none d-xxl-block">
+  <!-- Navbar -->
+  <nav class="navbar top-0 z-index-3 shadow-none position-absolute start-0 end-0 mx-5 mt-4">
+    <div class="container-fluid">
+      <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="@Url.Action("Login", "Auth")">
+        <img src="../../img/icons/icon_ccims_lg.svg" alt="ccims-icon">
+      </a>
+    </div>
+  </nav>
+  <!-- End Navbar -->
+</div>
 
-<div class="main-content mt-0">
-	<div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('/img/curved-images/curved9.jpg');" );">
-		<span class="mask bg-gradient-dark opacity-6"></span>
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-lg-5 text-center mx-auto">
-					<h1 class="text-white mb-2 mt-5">Welcome!</h1>
-					<p class="text-lead text-white">Login or create new account to your PCS QA System.</p>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container">
-		<div class="row mt-lg-n10 mt-md-n11 mt-n10 justify-content-center">
-			<div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
-				<div class="card z-index-0">
-					<div class="card-header text-center pt-4">
-						<h5>Sign in</h5>
-					</div>
-					<div class="card-body">
-						<form asp-action="Login" asp-controller="Auth" method="post" role="form" class="text-start">
-							@Html.AntiForgeryToken()
+<div class="page-header min-vh-100">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
+        <div class="card card-plain">
+          <div class="card-header pb-0 text-start bg-transparent text-center">
+            <div class="mb-4 mt-4">
+							<img src="../../img/icons/vst_lg.svg" alt="vstecs-icon" >
+						</div>
+            <div>
+              <h2 class="mb">Sign In to Account</h2>
+              <p class="mb-0">Enter your credentials to access your account</p>
+            </div>
+          </div>
+          <div class="card-body">
+						<form asp-action="Login" asp-controller="Auth" method="post" role="form">
 							<div class="mb-3">
-								<input class="form-control form-control-sm" type="text" aria-required="true" placeholder="Enter username..." asp-for="Username">
+								<input type="email" class="form-control form-control-lg" type="text" aria-required="true" placeholder="Enter Username..." asp-for="Username">
 								<span asp-validation-for="Username" class="text-danger"></span>
 							</div>
 							<div class="mb-3">
-								<input class="form-control form-control-sm" type="password" aria-required="true" placeholder="Enter Password..." asp-for="PlaintextPassword">
+								<input class="form-control form-control-lg" type="password" aria-required="true" aria-label="Password" placeholder="Enter Password..." asp-for="PlaintextPassword">
 								<span asp-validation-for="PlaintextPassword" class="text-danger"></span>
 							</div>
 							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" asp-for="@Model.IsRemembered">
-								<label class="form-check-label" asp-for="@Model.IsRemembered">Remember me</label>
+								<input class="form-check-input" type="checkbox" id="rememberMe">
+								<label class="form-check-label" for="rememberMe">Remember me</label>
 							</div>
 							<div class="text-center">
-								<button type="submit" class="btn bg-gradient-info w-100 my-4 mb-2">Sign in</button>
+								<button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
 							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            </form>
+          </div>
+          <div class="card-footer text-center pt-0 px-lg-2 px-1">
+            <p class="mb-4 text-sm mx-auto">
+              Are you a customer?
+              <a class="text-primary text-gradient font-weight-bold">Register now</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+        <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center">
+          <img src="" alt="pattern-lines" class="position-absolute opacity-4 start-0">
+          <div class="position-relative">
+            <img id="img-qr" class="max-width-500 w-100 position-relative z-index-2" alt="3DQrHand">
+          </div>
+					<h3 class="mt-5 text-white font-weight-bolder">"Never Miss a Detail From your Cases Again"</h3>
+					<p class="text-white">Stay updated on Case status with automated notifications. Just scan the QR code and submit your Case instantly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<script>
+  const index = Math.floor(Math.random() * 2);
+  const imgSrc = (index === 0) ? "../../img/illustrations/3dQrcode.png" : "../../img/illustrations/3dQrHand.png";
+  $("#img-qr").attr("src", imgSrc);
+</script>

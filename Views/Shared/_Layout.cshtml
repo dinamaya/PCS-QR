@@ -17,6 +17,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
+	<meta name="3DQrHandAttrib" content="https://www.vecteezy.com/free-png/qr-code-3d"/>
 
 	<link rel="apple-touch-icon" sizes="76x76" href="~/img/apple-icon.png">
 	<link rel="icon" type="image/png" href="~/img/favicon.png">
@@ -46,10 +47,10 @@
 
 		@await Html.PartialAsync(Routes.Partials.NAVBAR, new NavBarViewModel(_user.IsAuthenticated, _username, _role, _fname, _lname))
 
-		<div class="container-fluid py-4">
+		<div class="container-fluid px-0">
 			@RenderBody()
 		</div>
-		@await Html.PartialAsync("_FooterPartial")
+		@await Html.PartialAsync(Routes.Partials.FOOTER, _user.IsAuthenticated)
 	</main>
 
 	<!-- Scripts -->
