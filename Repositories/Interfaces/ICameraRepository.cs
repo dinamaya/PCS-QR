@@ -2,6 +2,6 @@
 {
   public interface ICameraRepository
   {
-    Task<string> GetResult(string filePath);
+    Task<string> ExtractText(string filePath);
   }
 }

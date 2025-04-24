@@ -19,6 +19,8 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_CASE= "Case Not Found. Please provide the correct case id or contact the Administrator";
 			public const string INVALID_FILESIZE = $"File size should not exceed 10 MB.";
 
+			public const string UNRECOGNIZED_SERIALNUMBER = $"Serial number not recognize";
+
 
       public static class Config
 			{

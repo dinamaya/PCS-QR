@@ -30,7 +30,7 @@ namespace CCIMS.Web.Controllers.API
       {
         string filePath = await _fileManager.UploadAttachmentAsync(file);
         
-        response.Result = await _cameraRepo.GetResult(filePath);
+        response.Result = await _cameraRepo.ExtractText(filePath);
         response.Message = "Image uploaded successfully";
 
         return Ok(response);
