@@ -67,5 +67,6 @@ namespace CCIMS.Web.Repositories.Implementations
       return dict.ToList();
     }
 
+    public string GetTesseractTrainingDataPath() => _config.GetValue<string>("TesseractConfig:TrainingPath");
   }
 }

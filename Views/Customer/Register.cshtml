@@ -1,7 +1,11 @@
-﻿@{
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@{
 	ViewData["Title"] = "Customer Form";
 	Layout = "~/Views/Shared/_PublicLayout.cshtml"; 
 }
+<!-- Add in your HTML head -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
 
 <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('/img/curved-images/curved9.jpg');" );">
@@ -36,7 +40,7 @@
 
 							<form method="post" action="/Customer/Register" id="customerForm">
 								@Html.AntiForgeryToken()
-								<input type="text" name="Token" value="@Context.Request.Query["token"]" />
+								<input type="hidden" name="Token" value="@Context.Request.Query["token"]" />
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>
@@ -64,9 +68,13 @@
 									</div>
 								</div>							
 								<div class="row mt-3">
-									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
-										<label>Serial Number</label>
-										<input class="form-control" type="text" name="SerialNumber" placeholder="eg. 987654321" required />
+									<label class="col-12">Serial Number</label>
+									<div class="col-9 mt-3 mt-sm-0">
+										<input id="txt-sn" class="form-control" type="text" name="SerialNumber" placeholder="eg. 987654321" required />
+									</div>
+									<div class="col-3 mt-3 mt-sm-0">
+										<input class="d-none" type="file" id="file-scan" accept="image/*" onchange="handleFileChange()" capture="environment" />
+										<button class="btn bg-gradient-primary mb-0 me-2 w-100" onclick="triggerCamera()" type="button" name="button">Scan</button>
 									</div>
 								</div>
 
@@ -95,64 +103,61 @@
 	</div>
 </div>
 
-<!-- Privacy Policy Modal -->
-<div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="privacyPolicyModalLabel">VST ECS Privacy Notice</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<h6>Privacy Policy</h6>
-				<p>
-					VST ECS Philippines, Inc. is committed to protecting your privacy and ensuring the security of your personal information. 
-					This Privacy Notice explains how we collect, use, disclose, and safeguard your data when you submit a customer case.
-				</p>
-				
-				<h6>Information We Collect</h6>
-				<p>
-					We collect personal information such as your name, contact details, address, and product information to help us process and manage your case submission effectively. 
-					This information is necessary to identify you, communicate with you regarding your case, and provide appropriate support services.
-				</p>
-				
-				<h6>How We Use Your Information</h6>
-				<p>We use your personal information to:</p>
-				<ul>
-					<li>Process and manage your case submission</li>
-					<li>Communicate with you about your case status</li>
-					<li>Provide customer support and technical assistance</li>
-					<li>Improve our products and services</li>
-					<li>Comply with legal obligations</li>
-				</ul>
-				
-				<h6>Information Sharing</h6>
-				<p>
-					We may share your information with service providers who assist us in processing your case. 
-					We do not sell or rent your personal information to third parties. 
-					Any third party who receives your information is obligated to maintain its confidentiality and security.
-				</p>
-				
-				<h6>Data Security</h6>
-				<p>
-					We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, 
-					alteration, disclosure, or destruction.
-				</p>
-				
-				<h6>Your Rights</h6>
-				<p>
-					You have the right to access, correct, or delete your personal information. 
-					You may also withdraw your consent for the processing of your data, subject to legal or contractual restrictions.
-				</p>
-				
-				<h6>Contact Information</h6>
-				<p>
-					If you have questions about this Privacy Notice or our data practices, please contact our Data Protection Officer at privacy@vstecs.ph.
-				</p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn bg-gradient-dark" data-bs-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
+
+@(await Html.PartialAsync(Routes.Partials.Customer.MODAL_SCAN))
+@(await Html.PartialAsync(Routes.Partials.Customer.MODAL_POLICY))
+
+
+<script defer>
+	let cropper = null;
+	let modalElem = null;		
+	let modal = null;
+
+	$(document).ready(function () {
+		modalElem = document.getElementById('modal-edit-img');
+		modal = new bootstrap.Modal(modalElem);
+	});
+
+	function triggerCamera() {
+		document.getElementById('file-scan').click();
+	}
+
+	function handleFileChange() {
+
+		var input = document.getElementById('file-scan');
+
+		const file = input.files[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = readFile;
+		
+		reader.readAsDataURL(file);
+	}
+
+	function readFile(e){
+
+		const img = e.target.result
+		const imgPreviewer = document.getElementById("img-preview");
+		imgPreviewer.src = img;
+
+		img.onload = loadCropper(imgPreviewer)
+	}
+
+	function loadCropper(imgPreviewer)
+	{
+		modal.show();
+
+		modalElem.addEventListener('shown.bs.modal', () => {
+			if (cropper) cropper.destroy();
+
+			cropper = new Cropper(imgPreviewer, {
+				aspectRatio: NaN,
+				zoomable: true,
+				scalable: true,
+				viewMode: 1,
+			});
+		}, { once: true });
+	}
+
+</script>

@@ -1,10 +1,5 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.App_Code._Globals.Extensions;
-using CCIMS.Web.Context;
 using CCIMS.Web.Context.Seeder;
-using CCIMS.Web.Models.Entities.Auth;
 using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +11,6 @@ builder.Services.AddAuthConfiguration();
 builder.Services.AddHangfireConfigExtension();
 builder.Services.AddSQLConfiguration(builder);
 builder.Services.AddRepositories();
-
 #endregion
 
 

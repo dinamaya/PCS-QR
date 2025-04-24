@@ -17,8 +17,10 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_CATEGORY= "Category Not Found. Please provide the correct category id or contact the Administrator";
 			public const string INVALID_CUSTOMER= "Customer Not Found. Please provide the correct customer id or contact the Administrator";
 			public const string INVALID_CASE= "Case Not Found. Please provide the correct case id or contact the Administrator";
-			
-			public static class Config
+			public const string INVALID_FILESIZE = $"File size should not exceed 10 MB.";
+
+
+      public static class Config
 			{
         public const string INVALID_SYS_SECDETAILS = "Invalid Security Details Please contact the administrator";
 				public const string INVALID_APIURL_PSGC = "Incorrect PSGC base URL";

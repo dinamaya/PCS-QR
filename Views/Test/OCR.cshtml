@@ -1,0 +1,45 @@
+﻿<h2>Capture or Upload an Image</h2>
+
+<input type="file" id="fileInput" accept="image/*" onchange="sendToOcr()" capture="environment" />
+<br />
+<br />
+
+<h3>OCR Result:</h3>
+<pre id="resultText">[No result yet]</pre>
+
+<script>
+  function sendToOcr() {
+    const input = document.getElementById("fileInput");
+    const file = input.files[0];
+    const _url = "@Url.Content("/api/ocr/recognize")";
+
+    if (!file) {
+      alert("Please select a file first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      fetch(_url, 
+        {
+        method: "POST",
+        body: formData
+      })
+        .then(response => response.json())
+        .then(response => {
+          console.log(response);
+
+          if(response.isSuccess && response.result){
+            document.getElementById("resultText").innerText = response.result || "[No text recognized]";
+          }
+          else {
+            document.getElementById("resultText").innerText = "Error: " + response.message;
+          }
+        });
+    } catch (err) {
+      document.getElementById("resultText").innerText = "Request failed: " + err.message;
+    }
+  }
+</script>
