@@ -18,6 +18,12 @@
 				public const string RADIO_GROUP = @"../Shared/Inputs/_RadioGroupPartial";
 			}
 
+			public static class Customer
+			{
+				public const string MODAL_SCAN = @"../Shared/RegistrationPage/_ImageModalEditPartial";
+				public const string MODAL_POLICY = @"../Shared/RegistrationPage/_PolicyModalPartial";
+			}
+
 			public static class SP
 			{
 				public const string TROW = @"../Shared/ServicePartnerPage/_SPTableRowPartial";

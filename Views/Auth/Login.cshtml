@@ -1,4 +1,6 @@
-﻿@using CCIMS.Web.Models.DTOs
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.App_Code._Globals.Extensions
+@using CCIMS.Web.Models.DTOs
 
 @model LoginRequestDto
 
@@ -24,30 +26,37 @@
         <div class="card card-plain">
           <div class="card-header pb-0 text-start bg-transparent text-center">
             <div class="mb-4 mt-4">
-							<img src="../../img/icons/icon_vst_lg.svg" alt="vstecs-icon" >
-						</div>
+              <img src="../../img/icons/icon_vst_lg.svg" alt="vstecs-icon" >
+            </div>
             <div>
               <h2 class="mb">Sign In to Account</h2>
               <p class="mb-0">Enter your credentials to access your account</p>
             </div>
           </div>
           <div class="card-body">
-						<form asp-action="Login" asp-controller="Auth" method="post" role="form">
-							<div class="mb-3">
-								<input type="email" class="form-control form-control-lg" type="text" aria-required="true" placeholder="Enter Username..." asp-for="Username">
-								<span asp-validation-for="Username" class="text-danger"></span>
-							</div>
-							<div class="mb-3">
-								<input class="form-control form-control-lg" type="password" aria-required="true" aria-label="Password" placeholder="Enter Password..." asp-for="PlaintextPassword">
-								<span asp-validation-for="PlaintextPassword" class="text-danger"></span>
-							</div>
-							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" id="rememberMe">
-								<label class="form-check-label" for="rememberMe">Remember me</label>
-							</div>
-							<div class="text-center">
-								<button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
-							</div>
+            <form asp-action="Login" asp-controller="Auth" method="post" role="form">
+              <div class="mb-3">
+                <input type="email" class="form-control form-control-lg" type="text" aria-required="true" placeholder="Enter Username..." asp-for="Username">
+                <span asp-validation-for="Username" class="text-danger"></span>
+              </div>
+              <div class="mb-3">
+                <input class="form-control form-control-lg" type="password" aria-required="true" aria-label="Password" placeholder="Enter Password..." asp-for="PlaintextPassword">
+                <span asp-validation-for="PlaintextPassword" class="text-danger"></span>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">Remember me</label>
+              </div>
+
+              <div>
+                @(await Html.RenderAlertsAsync((string)TempData[Keys.ViewData.ERROR]))
+                @(await Html.RenderAlertsAsync((string)ViewData[Keys.ViewData.ERROR]))
+              </div>
+              
+              <div class="text-center">
+                <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
+              </div>
+
             </form>
           </div>
           <div class="card-footer text-center pt-0 px-lg-2 px-1">
@@ -60,7 +69,7 @@
       </div>
       <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
         <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center">
-          <img src="" alt="pattern-lines" class="position-absolute opacity-4 start-0">
+          <img src="../../img/shapes/pattern-lines.svg" alt="pattern-lines" class="position-absolute opacity-4 start-0">
           <div class="position-relative">
             <img id="img-qr" class="max-width-500 w-100 position-relative z-index-2" alt="3DQrHand">
           </div>
