@@ -1,0 +1,27 @@
+﻿@using CCIMS.Web.App_Code._Globals.Enums
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Models.ViewModels.Partials
+@using CCIMS.Web.App_Code._Globals.Enums
+@using CCIMS.Web.Models.ViewModels.Partials
+@model AlertViewModel
+@{
+	Func<string> getAlertType = () => Model.Type switch
+	{
+		AlertType.Error => "alert-danger",
+		AlertType.Primary => "alert-primary",
+		AlertType.Success => "alert-success",
+		AlertType.Warning => "alert-warning",
+		_ => "alert-info"
+	};
+
+	string className = "p-2 px-3 mb-2 alert text-start d-flex rounded-3 alert-outline " + getAlertType();
+}
+<div class="@className">
+	<i class="bi bi-exclamation-circle-fill flex-shrink-0 me-2"></i>
+	<div class="flex-grow-1">
+		@Model.Message
+	</div>
+	<button type="button" class="btn btn-transparent flex-shrink-0 p-0" data-bs-dismiss="alert" aria-label="Close">
+		<i class="bi bi-x"></i>
+	</button>
+</div>
