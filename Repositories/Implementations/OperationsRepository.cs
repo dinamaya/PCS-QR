@@ -90,5 +90,11 @@ namespace CCIMS.Web.Repositories.Implementations
         })
         .ToListAsync();
     }
-  }
+
+		public async Task<bool> IsStatusCommentable(string id)
+		{
+      var result = await _mainDb.Statuses.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_STATUS);
+      return result.IsCommentable;
+		}
+	}
 }

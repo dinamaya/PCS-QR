@@ -5,6 +5,7 @@ using CCIMS.Web.Models.Entities.Main;
 using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 namespace CCIMS.Web.Repositories.Implementations
@@ -12,10 +13,12 @@ namespace CCIMS.Web.Repositories.Implementations
   public class TransactionRepository : ITransactionRepository
   {
     private readonly MainDbContext _mainDb;
+    private readonly IOperationsRepository _opsRepo;
 
-    public TransactionRepository(MainDbContext mainDb)
+    public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo)
     {
       _mainDb = mainDb;
+      _opsRepo = opsRepo;
     }
 
     public string InsertedId { get; set; }
@@ -66,6 +69,33 @@ namespace CCIMS.Web.Repositories.Implementations
           Icon = ""
         })
         .ToListAsync();
+    }
+
+    public async Task<IEnumerable<DropdownOptionViewModel>> GetExistingStatusByCaseId(long caseId)
+    {
+      return await _mainDb.TransactionsVs
+        .Where(t => t.CaseId == caseId)
+        .Select(t => new DropdownOptionViewModel()
+        {
+          Label = t.Status,
+          Value = t.StatusId
+        })
+        .ToListAsync();
+    }
+
+    public async Task<IEnumerable<DropdownOptionViewModel>> GetAvailableStatusByCaseId(long caseId)
+    {
+      var existingStats = await GetExistingStatusByCaseId(caseId);
+      var allStats = await  _opsRepo.GetOptions();
+      var availStats = allStats.Where(s => !existingStats.Any(x => x.Value == s.Value))
+        .Select(s => new DropdownOptionViewModel()
+        {
+          Label = s.Label,
+          Value = s.Value
+        })
+        .ToList();
+
+      return availStats;
     }
   }
 }

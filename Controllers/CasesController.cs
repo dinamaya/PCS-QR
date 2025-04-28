@@ -13,14 +13,14 @@ namespace CCIMS.Web.Controllers
     private readonly ICustomerRepository _customerRepo;
     private readonly ITransactionRepository _transRepo;
 
-    public CasesController(ICaseRepository caseRepo, ICustomerRepository customerRepo, ITransactionRepository transRepo)
-    {
-      _caseRepo = caseRepo;
-      _customerRepo = customerRepo;
-      _transRepo = transRepo;
-    }
+		public CasesController(ICaseRepository caseRepo, ICustomerRepository customerRepo, ITransactionRepository transRepo)
+		{
+			_caseRepo = caseRepo;
+			_customerRepo = customerRepo;
+			_transRepo = transRepo;
+		}
 
-    [HttpGet]
+		[HttpGet]
 		public async Task<IActionResult> Update(string id)
     {
       var _case = await _caseRepo.GetById(id);

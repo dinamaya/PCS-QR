@@ -84,5 +84,26 @@ namespace CCIMS.Web.Controllers.API
 				return BadRequest(response);
 			}
 		}
+
+
+		[HttpGet("status/commentable")]
+		public async Task<ActionResult<ResponseDto>> IsCommentable([FromQuery] string id)
+		{
+			var response = new ResponseDto();
+			try
+			{
+				response.Result = await _opsRepo.IsStatusCommentable(id);
+				response.Message = "Status updated";
+
+				return Ok(response);
+			}
+			catch (Exception ex)
+			{
+				response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
+			}
+		}
 	}
 }

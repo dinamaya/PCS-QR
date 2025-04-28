@@ -15,6 +15,7 @@ namespace CCIMS.Web.Repositories.Interfaces
 
     string GetPSGCCitiesByProvinceCode(string code);
 		string GetPSGCBarangaysByCityCode(string code);
+		string GetTesseractTrainingDataPath();
 		ISysAdminSecurityDetails GetSysAdminPrivateDetails();
   }
 }

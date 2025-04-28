@@ -4,6 +4,7 @@ using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Auth;
 using CCIMS.Web.Repositories.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 namespace CCIMS.Web.Controllers
 {
 	public class AuthController : Controller
@@ -46,25 +47,31 @@ namespace CCIMS.Web.Controllers
 		{
 			try
 			{
+				if (loginRequestDTO.Username.IsNullOrEmpty() && loginRequestDTO.PlaintextPassword.IsNullOrEmpty())
+					throw new InvalidDataException("Please provide username and password");
+
 				var loginResponseDTO = await _authRepo.Login(loginRequestDTO);
 
 				if (loginResponseDTO.Result == null)
 				{
-					// Invalid Login
 					ViewData[Keys.ViewData.ERROR] = loginResponseDTO.Message;
 					return View(loginRequestDTO);
 				}
 
-				// Login Account					
 				if (loginResponseDTO.Result != null)
 					return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToAction("Index", "Dashboard");
 
 				return View(loginRequestDTO);
 			}
-			catch (Exception ex)
+			catch (InvalidDataException ex)
 			{
 				ViewData[Keys.ViewData.ERROR] = ex.Message + " " + ex.InnerException?.Message;
-				return RedirectToAction("Index", "Auth");
+				return View(loginRequestDTO);
+			}
+			catch (Exception ex)
+			{
+				TempData[Keys.ViewData.ERROR] = ex.Message + " " + ex.InnerException?.Message;
+				return RedirectToAction("Index", "Auth", new {q = ""});
 			}
 		}
 

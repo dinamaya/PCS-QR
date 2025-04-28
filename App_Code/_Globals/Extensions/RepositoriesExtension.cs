@@ -20,8 +20,12 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddScoped<ICustomerRepository, CustomerRepository>();
 			services.AddScoped<ICaseRepository, CaseRepository>();
 			services.AddScoped<ITransactionRepository, TransactionRepository>();
+			services.AddScoped<ICameraRepository, CameraRepository>();
 
 			services.AddSingleton<ITokenProvider, TokenProvider>();
-		}
-	}
+
+      services.AddSingleton<FileManager>();
+      services.AddSingleton<Server>();
+    }
+  }
 }

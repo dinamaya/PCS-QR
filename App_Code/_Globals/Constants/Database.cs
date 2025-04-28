@@ -14,5 +14,10 @@
       public const string UNIQUE_INPUT = "MMddyyyyHHmmssfff";
       public const string CONUMBER = "yyMMddhhmmssfff";
     }
+
+    public abstract class File
+    {
+      public const int MAX_SIZE = 5 * 1024 * 1024; // 10 MB1
+    }
   }
 }

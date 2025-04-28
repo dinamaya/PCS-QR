@@ -8,6 +8,7 @@
 			public const string OUTLINE_ALERT = @"../Shared/Alerts/_OutlineAlertPartial";
 			public const string SIDEBAR = @"../Shared/_SideBarPartial";
 			public const string NAVBAR = @"../Shared/_NavBarPartial";
+			public const string FOOTER = @"../Shared/_FooterPartial";
 
 			public static class Inputs
 			{
@@ -15,6 +16,12 @@
 				public const string CHECKBOX = @"../Shared/Inputs/_CheckBoxPartial";
 				public const string SELECT = @"../Shared/Inputs/_SelectPartial";
 				public const string RADIO_GROUP = @"../Shared/Inputs/_RadioGroupPartial";
+			}
+
+			public static class Customer
+			{
+				public const string MODAL_SCAN = @"../Shared/RegistrationPage/_ImageModalEditPartial";
+				public const string MODAL_POLICY = @"../Shared/RegistrationPage/_PolicyModalPartial";
 			}
 
 			public static class SP
@@ -38,6 +45,7 @@
 				public const string TRANS_HIST = @"../Shared/CasePage/_TransactionsHistoryPartial";
 				public const string CASE_DETAILS = @"../Shared/CasePage/_CaseDetailsPartial";
 				public const string SEARCH = @"../Shared/CasePage/_SearchBarPartial";
+				public const string STAT_UPDATE_MODAL = @"../Shared/CasePage/_ModalStatusUpdatePartial";
 			}
 
 			public static class Operation
