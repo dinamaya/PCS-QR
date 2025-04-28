@@ -13,6 +13,8 @@ namespace CCIMS.Web.Repositories.Interfaces
 		IEnumerable<DropdownOptionViewModel> GetAgedSearcOptions();
 		IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
 
+		IEnumerable<string> GetAllowedEmailDomains();
+
     string GetPSGCCitiesByProvinceCode(string code);
 		string GetPSGCBarangaysByCityCode(string code);
 		string GetTesseractTrainingDataPath();

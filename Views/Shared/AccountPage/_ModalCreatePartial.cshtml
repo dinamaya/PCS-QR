@@ -107,9 +107,11 @@
 </div>
 
 <script type="module">
-	import { initModal as initCreateModal } from '/js/components/accModalCreate.js';
+	import { initModal as initCreateModal, initModalNotifs as initCreateModalNotifs } from '/js/components/accModalCreate.js';
 
 	initCreateModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', '@roles.Id');
+	initCreateModalNotifs('@lname.NotifId', '@fname.NotifId', '@uname.NotifId', '@email.NotifId', '@pass1.NotifId', '@pass2.NotifId', '@roles.NotifId');
+
 	const selectRoles = new Choices(document.getElementById('@roles.Id'), {
 		searchEnabled: false
 	});

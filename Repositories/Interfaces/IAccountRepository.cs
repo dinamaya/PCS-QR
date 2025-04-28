@@ -10,5 +10,6 @@ namespace CCIMS.Web.Repositories.Interfaces
 		Task<IEnumerable<AccountRowViewModel>> GetAll();
 		Task<IEnumerable<DropdownOptionViewModel>> GetAllRoles();
 		Task<AccountEditResponseDto> GetById(string id);
+		Task ValidateInputs(AccountCreationRequestDto dto);
 	}
 }

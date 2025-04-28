@@ -141,5 +141,20 @@ namespace CCIMS.Web.Repositories.Implementations
 			await _userManager.RemoveFromRolesAsync(account, currentRoles);
 			await _userManager.AddToRoleAsync(account, editRequestDto.AccountType);
 		}
-	}
+
+    public async Task ValidateInputs(AccountCreationRequestDto creationRequest)
+    {
+			var username = creationRequest.Username.ToLower();
+			var email = creationRequest.Email.ToLower();
+
+      var isUsernameExist = await _authDb.Accounts.AnyAsync(a => a.UserName.ToLower() == username);
+      var isEmailExist = await _authDb.Accounts.AnyAsync(a => a.Email.ToLower() == email);
+
+			if (isUsernameExist)
+				throw new InvalidOperationException(Exceptions.Message.INVALID_USERNAME);
+
+			if (isEmailExist)
+				throw new InvalidOperationException(Exceptions.Message.INVALID_EMAIL);
+    }
+  }
 }

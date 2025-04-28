@@ -39,6 +39,8 @@ namespace CCIMS.Web.Repositories.Implementations
 
 		public string GetDocumentationUrl() => _config.GetValue<string>("Documentation");
 
+		public IEnumerable<string> GetAllowedEmailDomains() => _config.GetSection("InputConfig:AllowedDomains").Get<List<string>>();
+
     public IEnumerable<DropdownOptionViewModel> GetAgedSearcOptions()
     {
       var section = _config.GetSection("SearchConfig:Aged").Get<List<Dictionary<string, string>>>();
