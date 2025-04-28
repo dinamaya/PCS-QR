@@ -62,7 +62,7 @@ namespace CCIMS.Web.Repositories.Implementations
 				throw new Exception($"Failed to create account {account.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
 
 			await _authDb.SaveChangesAsync();
-			await _userManager.AddToRoleAsync(account, creationRequest.Type);
+			await _userManager.AddToRoleAsync(account, creationRequest.AccountType);
 			await _authDb.SaveChangesAsync();
 		}
 

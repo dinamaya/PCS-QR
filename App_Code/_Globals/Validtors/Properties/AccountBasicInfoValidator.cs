@@ -1,22 +1,19 @@
 ﻿using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Models.DTOs;
-using CCIMS.Web.Models.Entities.Auth;
 using CCIMS.Web.Repositories.Interfaces;
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.RegularExpressions;
 
-namespace CCIMS.Web.App_Code._Globals.Validtors
+namespace CCIMS.Web.App_Code._Globals.Validtors.Properties
 {
-  public class AccountCreationRequestValidator : AbstractValidator<AccountCreationRequestDto>
+  public class AccountBasicInfoValidator : AbstractValidator<AccountBasicInfoDto>
   {
-    public AccountCreationRequestValidator(IConfigurationRepository configRepo)
+    public AccountBasicInfoValidator(IConfigurationRepository configRepo)
     {
       RuleFor(x => x.FirstName)
-          .NotEmpty().WithMessage("First name is required.")
-          .MaximumLength(50).WithMessage("First name must not exceed 50 characters.")
-          .Matches(RegEx.NAMES).WithMessage("First name contains invalid characters.");
+        .NotEmpty().WithMessage("First name is required.")
+        .MaximumLength(50).WithMessage("First name must not exceed 50 characters.")
+        .Matches(RegEx.NAMES).WithMessage("First name contains invalid characters.");
 
       RuleFor(x => x.LastName)
           .NotEmpty().WithMessage("Last name is required.")
@@ -39,36 +36,29 @@ namespace CCIMS.Web.App_Code._Globals.Validtors
           .WithMessage("Username contains invalid characters. only letters, numbers, underscores, and dots are ");
 
       RuleFor(x => x.Email)
-          .NotEmpty().WithMessage("Email is required.")
-          .EmailAddress().WithMessage("Email must be valid.")
-          .Matches(RegEx.EMAIL_LOCAL).WithMessage("Email username part contains invalid characters.")
-          .Must(email =>
-          {
-            var allowedDomains = configRepo.GetAllowedEmailDomains();
+        .NotEmpty().WithMessage("Email is required.")
+        .EmailAddress().WithMessage("Email must be valid.")
+        .Matches(RegEx.EMAIL_LOCAL).WithMessage("Email username part contains invalid characters.")
+        .Must(email =>
+        {
+          var allowedDomains = configRepo.GetAllowedEmailDomains();
 
-            if (email.IsNullOrEmpty())
-              return false;
+          if (email.IsNullOrEmpty())
+            return false;
 
-            var domainPart = email.Split('@').LastOrDefault()?.Split('.').FirstOrDefault()?.ToLowerInvariant();
+          var domainPart = email.Split('@').LastOrDefault()?.Split('.').FirstOrDefault()?.ToLowerInvariant();
 
-            return !string.IsNullOrWhiteSpace(domainPart) && allowedDomains.Contains(domainPart);
-          }).WithMessage("Email domain is not allowed.");
+          return !string.IsNullOrWhiteSpace(domainPart) && allowedDomains.Contains(domainPart);
+        }).WithMessage("Email domain is not allowed.");
 
-      RuleFor(x => x.Type)
+      RuleFor(x => x.AccountType)
           .NotEmpty().WithMessage("Account type is required.")
           .Must(type => type == "SPA" || type == "OPS")
-          .WithMessage("Account type must be either 'SPA' or 'OPS'.")
+          .WithMessage("Account type must be either \"SPA\" or \"OPS\".")
           .MinimumLength(3).WithMessage("Account type must be at least 4 characters.")
           .MaximumLength(3).WithMessage("Account type must not exceed 30 characters.")
           .Matches(RegEx.NAMES).WithMessage("Account type contains invalid characters.");
 
-      RuleFor(x => x.Password)
-          .NotEmpty().WithMessage("Password is required.")
-          .MinimumLength(6).WithMessage("Password must be at least 6 characters.")
-          .MaximumLength(100).WithMessage("Password must not exceed 100 characters.");
-
-      RuleFor(x => x.RetypePass)
-          .Equal(x => x.Password).WithMessage("Passwords do not match.");
     }
   }
 }

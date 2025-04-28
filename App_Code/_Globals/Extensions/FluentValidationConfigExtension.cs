@@ -1,5 +1,7 @@
 ﻿using CCIMS.Web.App_Code._Globals.Factory;
-using CCIMS.Web.App_Code._Globals.Validtors;
+using CCIMS.Web.App_Code._Globals.Validtors.Objects;
+using CCIMS.Web.App_Code._Globals.Validtors.Properties;
+using CCIMS.Web.Models.DTOs;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,7 +16,6 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
     {
       services.AddFluentValidationAutoValidation();
       services.AddValidatorsFromAssemblyContaining<AccountCreationRequestValidator>();
-
     }
   }
 }
