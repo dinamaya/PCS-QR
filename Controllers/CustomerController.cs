@@ -67,10 +67,9 @@ namespace CCIMS.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(CreateCustomerDto createCustomerDto)
         {
+            createCustomerDto.Token = createCustomerDto.Token ?? TempData["Token"]?.ToString();
 
-			createCustomerDto.Token = createCustomerDto.Token ?? TempData["Token"]?.ToString();
-
-			if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 ViewBag.ErrorMessage = "Invalid form submission.";
                 return View(createCustomerDto.Token);
@@ -78,8 +77,8 @@ namespace CCIMS.Web.Controllers
 
             try
             {
-                await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
-                return View("ThankYou");
+                string caseNumber = await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
+                return View("ThankYou", caseNumber); // Pass caseNumber to the view
             }
             catch (Exception ex)
             {

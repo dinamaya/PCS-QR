@@ -34,12 +34,10 @@ namespace CCIMS.Web.Repositories
             _logger = logger;
         }
 
-        public async Task CreateCustomerCaseAsync(CreateCustomerDto createCustomerDto)
+        public async Task<string> CreateCustomerCaseAsync(CreateCustomerDto createCustomerDto)
         {
-
             if (!_tokenProvider.IsValidToken(createCustomerDto.Token, out QRTokenDto? token) || token == null)
                 throw new Exception("Invalid Token");
-
 
             bool serialExists = await _context.Cases.AnyAsync(c => c.SerialNumber == createCustomerDto.SerialNumber);
             if (serialExists)
@@ -79,6 +77,8 @@ namespace CCIMS.Web.Repositories
             };
 
             await _transactionRepo.CreateAsync(transaction, "");
+
+            return newCase.CaseNumber; // Return the case number
         }
 
         public async Task<bool> CustomerExistsAsync(string email) => await _context.Customers.AnyAsync(c => c.Email == email && c.IsActive);
