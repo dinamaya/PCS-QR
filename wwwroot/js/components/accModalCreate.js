@@ -1,5 +1,5 @@
 ﻿import { accountCreationRequestDto } from "../dtos/accountCreationRequestDto.js";
-import { displayErrors, resetNotifs } from "../utils.js";
+import { displayErrors, showErrorModal, handleError } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -36,8 +36,6 @@ export function initModalNotifs(lnameId,
   notifs.Password = $(`#${pass1Id}`);
   notifs.RetypePass = $(`#${pass2Id}`);
   notifs.Type = $(`#${typeId}`);
-
-  console.log(notifs);
 }
 
 export function initModal(
@@ -60,31 +58,26 @@ export function initModal(
 
 function post()
 {
-  try
-  {
-    Swal.mixin({
-      customClass: {
-        confirmButton: 'btn bg-gradient-success',
-        cancelButton: 'btn bg-gradient-danger'
-      },
-      buttonsStyling: !1
+  Swal.mixin({
+    customClass: {
+      confirmButton: 'btn bg-gradient-success',
+      cancelButton: 'btn bg-gradient-danger'
+    },
+    buttonsStyling: !1
+  })
+    .fire({
+      title: 'Create Account?',
+      text: 'This will create current account with the provided details!',
+      icon: 'question',
+      confirmButtonText: 'Create',
+      cancelButtonText: 'Cancel',
+      reverseButtons: !0,
+      showCancelButton: !0
     })
-      .fire({
-        title: 'Create Account?',
-        text: 'This will create current account with the provided details!',
-        icon: 'question',
-        confirmButtonText: 'Create',
-        cancelButtonText: 'Cancel',
-        reverseButtons: !0,
-        showCancelButton: !0
-      }).then(submit)
-      .catch(e => {
-        showErrorModal(e.message);
-      });
-  }
-  catch (e) {
-    showErrorModal(e.message);
-  }
+    .then(submit)
+    .catch(e => {
+      showErrorModal(e.message, "Account Creation Failed", "There was a problem while creating the account.", notifs);
+    });
 }
 
 function submit(e)
@@ -101,8 +94,6 @@ function submit(e)
     inputs.pass2.val(),
   );
 
-  console.log(window.baseUrl);
-
   $.post({
     url: window.baseUrl,
     contentType: 'application/json',
@@ -115,43 +106,14 @@ function submit(e)
       setTimeout(() => {
         const url = new URL(window.location.href);
 
-        url.searchParams.set('q', window.okParam);
+        url.searchParams.set('q', window.okEditParam);
         window.location.href = url.toString();
       }, 300);
     },
-    error: function (error)
-    {
-      try
-      {
-        const response = error.responseText;
-        const result = JSON.parse(response);
-        console.log(response);
-
-        const errors = result.errors;
-        if (!errors)
-          throw new DOMException(result.message);
-
-        displayErrors(errors, notifs);
-      }
-      catch (e) {
-        showErrorModal(e.message);
-      }
-    }
+    error: (error) => handleError(error, "Account Creation Failed", "There was a problem while creating the account.", notifs)
   });
 }
 
-function showErrorModal(message) {
-  resetNotifs(notifs);
-
-  const _message = message || "There was a problem while creating the account.";
-  Swal.fire({
-    title: "Creation Failed!",
-    text: _message,
-    icon: "error"
-  });
-
-  console.error("Create failed:", _message);
-}
 
 $(document).ready(function () {
   $('#form-create').submit(function (event) {

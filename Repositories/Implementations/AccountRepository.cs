@@ -112,14 +112,25 @@ namespace CCIMS.Web.Repositories.Implementations
 
 		public async Task EditAsync(AccountEditRequestDto editRequestDto, string modifiedBy)
 		{
-			// Add Validations
 			var date = DateTime.UtcNow;
 			Account account = await _userManager.FindByIdAsync(editRequestDto.Id) ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
-			account.UserName = editRequestDto.Username;
-			account.NormalizedUserName = editRequestDto.Username.ToUpper();
-			account.Email = editRequestDto.Email;
-			account.NormalizedEmail = editRequestDto.Email.ToUpper();
-			account.DateModified = date;
+
+      if (!string.Equals(account.UserName, editRequestDto.Username, StringComparison.OrdinalIgnoreCase))
+      {
+        var setUsernameResult = await _userManager.SetUserNameAsync(account, editRequestDto.Username);
+        if (!setUsernameResult.Succeeded)
+          throw new InvalidOperationException("Failed to update " + string.Join(", ", setUsernameResult.Errors.Select(e => e.Description)));
+      }
+
+      if (!string.Equals(account.Email, editRequestDto.Email, StringComparison.OrdinalIgnoreCase))
+      {
+        var setEmailResult = await _userManager.SetEmailAsync(account, editRequestDto.Email);
+        if (!setEmailResult.Succeeded)
+          throw new InvalidOperationException("Failed to update " + string.Join(", ", setEmailResult.Errors.Select(e => e.Description)));
+      }
+
+
+      account.DateModified = date;
 			account.ModifiedBy = modifiedBy;
 
 			if (editRequestDto.Password.IsNullOrEmpty())

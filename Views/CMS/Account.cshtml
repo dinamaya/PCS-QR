@@ -63,7 +63,8 @@
 
 <script>
   window.baseUrl = '@Url.Content("/api/account")'
-  window.okParam = '@Queries.SUCCESS';
+  window.okEditParam = '@Queries.SUCCESS_EDIT';
+  window.okCreateParam = '@Queries.SUCCESS_CREATE';
   
   const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
     searchable: true,

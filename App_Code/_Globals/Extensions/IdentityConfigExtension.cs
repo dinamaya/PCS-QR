@@ -14,7 +14,8 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddIdentity<Account, IdentityRole>(options =>
 			{
 				options.SignIn.RequireConfirmedAccount = false;
-			})
+				options.User.RequireUniqueEmail = true;
+      })
 				.AddEntityFrameworkStores<AuthDbContext>()
 				.AddDefaultTokenProviders();
 

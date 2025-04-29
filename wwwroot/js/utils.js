@@ -17,3 +17,54 @@ export function resetNotifs(notifElems) {
   }
 }
 
+export function showErrorModal(message, title, defaultMessage, notifs) {
+  resetNotifs(notifs);
+
+  const _message = message || defaultMessage ;
+  Swal.fire({
+    title: title,
+    text: _message,
+    icon: "error"
+  });
+
+  console.error(title, _message);
+}
+
+export function handleError(error, title, defaultMessage, notifs)
+{
+  try
+  {
+    const response = error.responseText;
+    const result = JSON.parse(response);
+    const errors = result.errors;
+
+    if (!errors)
+      throw new DOMException(result.message);
+
+    displayErrors(errors, notifs);
+  }
+  catch (e) {
+    showErrorModal(e.message, title, defaultMessage, notifs);
+  }
+}
+
+export function handleUpdateError(data, title, defaultMessage, notifs) {
+  try {
+    const response = data.responseText;
+    const result = JSON.parse(response);
+    const errors = result.errors;
+
+    if (!errors)
+      throw new DOMException(result.message);
+
+    displayErrors(errors, notifs);
+  }
+  catch (e) {
+    showErrorModal(e.message, title, defaultMessage, notifs);
+  }
+}
+
+
+export function isNullOrEmpty(text) {
+  return text == "" || text == null;
+}

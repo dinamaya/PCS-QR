@@ -67,25 +67,17 @@
 	var radBtnPass1 = new RadioGroupButtonViewModel()
 	{
 		OperationName = "edit",
-		IdName = "reset",
-		Title = "Reset",
-		Elements = [pass1, pass2]
-	};
-
-	var radBtnPass2 = new RadioGroupButtonViewModel()
-	{
-		OperationName = "edit",
 		IdName = "change",
 		Title = "Change",
+		Elements = [pass1, pass2]
 	};
-
 
 	var radioGroupPass = new RadioGroupViewModel
 		{
 			OperationName = "edit",
 			IdName = "passwords",
 			Title = "Change Password",
-			RadioGroupButtons = [radBtnPass1, radBtnPass2]
+			RadioGroupButtons = [radBtnPass1]
 		};
 
 	radioGroupPass.JavaScript = $@"
@@ -129,7 +121,7 @@
 					</div>
 				</div>
 				
-				<input type="text" id="hdn-edit-accId" />
+				<input type="hidden" id="hdn-edit-accId" />
 
 				<div class="modal-footer">
 					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
@@ -141,13 +133,14 @@
 </div>
 
 <script type="module">
-	import { initModal as initEditModal, onEdit as showEdit } from '/js/components/accModalEdit.js';
+	import { initModal as initEditModal, onEdit as showEdit, initModalNotifs as initEditNotifs } from '/js/components/accModalEdit.js';
 	const selectEditRoles = new Choices(document.getElementById('@roles.Id'), {
 		searchEnabled: false
 	});
 
-	initEditModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', selectEditRoles, 'hdn-edit-accId', '@radioGroupPass.Id');
-	window.showEdit = showEdit;
+	initEditModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', selectEditRoles, 'hdn-edit-accId', '@radioGroupPass.Name');
+	initEditNotifs('@lname.NotifId', '@fname.NotifId', '@uname.NotifId', '@email.NotifId', '@pass1.NotifId', '@pass2.NotifId', '@roles.NotifId');
 
+	window.showEdit = showEdit;
 
 </script>

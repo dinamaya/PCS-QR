@@ -52,12 +52,12 @@ namespace CCIMS.Web.App_Code._Globals.Validtors.Properties
         }).WithMessage("Email domain is not allowed.");
 
       RuleFor(x => x.AccountType)
-          .NotEmpty().WithMessage("Account type is required.")
-          .Must(type => type == "SPA" || type == "OPS")
-          .WithMessage("Account type must be either \"SPA\" or \"OPS\".")
-          .MinimumLength(3).WithMessage("Account type must be at least 4 characters.")
-          .MaximumLength(3).WithMessage("Account type must not exceed 30 characters.")
-          .Matches(RegEx.NAMES).WithMessage("Account type contains invalid characters.");
+        .NotEmpty().WithMessage("Account type is required.")
+        .Must(type => type == "SPA" || type == "OPS")
+        .WithMessage("Account type must be either \"SPA\" or \"OPS\".")
+        .MinimumLength(3).WithMessage("Account type must be at least 4 characters.")
+        .MaximumLength(3).WithMessage("Account type must not exceed 30 characters.")
+        .Matches(RegEx.NAMES).WithMessage("Account type contains invalid characters.");
 
     }
   }
