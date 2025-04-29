@@ -9,8 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddAuthConfiguration();
 builder.Services.AddHangfireConfigExtension();
-builder.Services.AddSQLConfiguration(builder);
+builder.Services.AddSQLConfiguration(builder.Configuration);
 builder.Services.AddRepositories();
+builder.Services.AddFluentValidationConfiguration();
+
 #endregion
 
 

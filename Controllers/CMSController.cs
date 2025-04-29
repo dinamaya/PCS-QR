@@ -42,10 +42,15 @@ namespace CCIMS.Web.Controllers
       }
     }
 
-    public async Task<IActionResult> Account()
+    public async Task<IActionResult> Account(string? q)
     {
       try
       {
+        if (!q.IsNullOrEmpty())
+        {
+          if(q.Equals(Queries.SUCCESS)) ViewData[Keys.ViewData.SUCCESS] = "Account Created Success fully";
+        }
+
         var results = await _accountRepo.GetAll();
         ViewData[Keys.ViewData.Types.ROLES] = await _accountRepo.GetAllRoles();
 

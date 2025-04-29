@@ -13,11 +13,14 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_SPREFERENCE = "Invalid SP Reference: SP does not exist. Please contact the administrator";
 			public const string INVALID_ACCOUNTREFERENCE = "Invalid Account Reference: Account does not exist.";
 			public const string INVALID_ACCOUNT_UPDATE = "Account Update Failed. Please Check the logs or contact the Administrator";
+			public const string INVALID_ACCOUNT_CREATE = "Account Creation Failed. Please Check the logs or contact the Administrator";
 			public const string INVALID_STATUS = "Status Not Found. Please Check the logs or contact the Administrator";
 			public const string INVALID_CATEGORY= "Category Not Found. Please provide the correct category id or contact the Administrator";
 			public const string INVALID_CUSTOMER= "Customer Not Found. Please provide the correct customer id or contact the Administrator";
 			public const string INVALID_CASE= "Case Not Found. Please provide the correct case id or contact the Administrator";
 			public const string INVALID_FILESIZE = $"File size should not exceed 10 MB.";
+			public const string INVALID_USERNAME = "Username already in use";
+			public const string INVALID_EMAIL = "Email Address already in use";
 
 			public const string UNRECOGNIZED_SERIALNUMBER = $"Serial number not recognize";
 

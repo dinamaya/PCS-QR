@@ -1,10 +1,13 @@
 ﻿using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.App_Code._Globals.Extensions;
+using CCIMS.Web.App_Code._Globals.Validtors;
 using CCIMS.Web.Context;
 using CCIMS.Web.Models.DTOs;
+using CCIMS.Web.Models.Entities.Auth;
 using CCIMS.Web.Models.Entities.Main;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CCIMS.Web.Controllers.API
@@ -14,27 +17,39 @@ namespace CCIMS.Web.Controllers.API
 	public class AccountController : ControllerBase
 	{
 		private readonly AuthDbContext _authDb;
-		private readonly IAccountRepository _accountRepo;
+		private readonly UserManager<Account> _userManager;
 
-		public AccountController(AuthDbContext authDb, IAccountRepository accountRepo)
-		{
-			_authDb = authDb;
-			_accountRepo = accountRepo;
-		}
+    private readonly IAccountRepository _accountRepo;
 
-		[HttpPost, Authorize]
+    public AccountController(AuthDbContext authDb, IAccountRepository accountRepo, UserManager<Account> userManager)
+    {
+      _authDb = authDb;
+      _accountRepo = accountRepo;
+      _userManager = userManager;
+    }
+
+    [HttpPost, Authorize]
 		public async Task<ActionResult<ResponseDto>> Post([FromBody] AccountCreationRequestDto creationRequest)
 		{
-			var response = new ResponseDto();
-			try
+      var response = new ResponseDto();
+      try
 			{
-				var date = DateTime.Now;
+				await _accountRepo.ValidateInputs(creationRequest);
+
+        var date = DateTime.Now;
 				string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
 				await _accountRepo.CreateAsync(creationRequest, accountId);
 
 				response.Message = "Account created successfully";
 
 				return Ok(response);
+			}
+			catch (InvalidOperationException ex)
+			{
+				response.Message = ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
 			}
 			catch (Exception ex)
 			{
