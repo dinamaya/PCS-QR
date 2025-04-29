@@ -48,7 +48,8 @@ namespace CCIMS.Web.Controllers
       {
         if (!q.IsNullOrEmpty())
         {
-          if(q.Equals(Queries.SUCCESS)) ViewData[Keys.ViewData.SUCCESS] = "Account Created Success fully";
+          if(q.Equals(Queries.SUCCESS_CREATE)) ViewData[Keys.ViewData.SUCCESS] = "Account Created Successfully";
+          if(q.Equals(Queries.SUCCESS_EDIT)) ViewData[Keys.ViewData.SUCCESS] = "Account Edited Successfully";
         }
 
         var results = await _accountRepo.GetAll();

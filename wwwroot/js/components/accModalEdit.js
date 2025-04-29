@@ -1,4 +1,4 @@
-﻿import { accountCreationRequestDto } from "../dtos/accountCreationRequestDto.js";
+﻿import { displayErrors, showErrorModal, handleError, resetNotifs, isNullOrEmpty } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -12,7 +12,37 @@ let inputs = {
 	hdnAccId: null
 };
 
-let _radioGroupId = "";
+const notifs = {
+	LastName: null,
+	FirstName: null,
+	Username: null,
+	Email: null,
+	Password: null,
+	RetypePass: null,
+	AccountType: null,
+};
+
+let _radioGroupName = "";
+
+export function initModalNotifs(
+	lnameId,
+	fnameId,
+	unameId,
+	emailId,
+	pass1Id,
+	pass2Id,
+	typeId)
+{
+	notifs.LastName = $(`#${lnameId}`);
+	notifs.FirstName = $(`#${fnameId}`);
+	notifs.Username = $(`#${unameId}`);
+	notifs.Email = $(`#${emailId}`);
+	notifs.Password = $(`#${pass1Id}`);
+	notifs.RetypePass = $(`#${pass2Id}`);
+	notifs.AccountType = $(`#${typeId}`);
+
+	console.log(notifs);
+}
 
 export function initModal(
   lnameId,
@@ -23,8 +53,9 @@ export function initModal(
   pass2Id,
   typeChoiceInstance,
 	hdnAccIdElemId,
-	radioGroupId
-) {
+	radioGroupName
+)
+{
   inputs.lname = $(`#${lnameId}`);
   inputs.fname = $(`#${fnameId}`);
   inputs.uname = $(`#${unameId}`);
@@ -34,9 +65,7 @@ export function initModal(
 	inputs.type = typeChoiceInstance;
 
 	inputs.hdnAccId = $(`#${hdnAccIdElemId}`);
-	_radioGroupId = radioGroupId;
-
-  console.log(inputs);
+	_radioGroupName = radioGroupName;
 }
 
 export function onEdit(button) {
@@ -47,13 +76,11 @@ export function onEdit(button) {
 
 	  inputs.hdnAccId.val(accId);
 	  const _url = `${window.baseUrl}?id=${accId}`
-    console.log(_url);
 
 		fetch(_url)
 			.then(response => response.json())
 			.then(data => {
 				const result = data.result;
-				console.log("Result: ", result);
 
 				if (data && result) {
 					inputs.lname.val(result.lastName);
@@ -62,70 +89,64 @@ export function onEdit(button) {
 					inputs.email.val(result.email);
 					inputs.type.setChoiceByValue(result.type);
 				}
-				else {
-					console.error("No valid data received from server.");
+				else
+				{
+					showErrorModal(e.message, "Account Not Found", "There was a problem while fetching the account.", notifs);
 				}
 			})
-			.catch(ex => console.error("Fetch error:", ex));
+			.catch(e => {
+				showErrorModal(e.message, "Account Fetching Failed", "There was a problem while fetching the account.", notifs);
+			})
 	}
-	catch (ex) {
-		console.error(ex);
+	catch (e) {
+		showErrorModal(e.message, "Account Fetching Failed", "There was a problem while fetching the account.", notifs);
 	}
 
 }
 
-function edit()
+function submit(e) {
+	if (!e.isConfirmed) return;
+
+	resetNotifs(notifs);
+
+	const dto = {
+		Id: inputs.hdnAccId.val(),
+		FirstName: inputs.fname.val(),
+		LastName: inputs.lname.val(),
+		Username: inputs.uname.val(),
+		Email: inputs.email.val(),
+		AccountType: inputs.type.getValue().value,
+		PasswordResetType: getSelectedPasswordOption(),
+		Password: inputs.pass1.val(),
+		RetypePass: inputs.pass2.val(),
+	};
+
+	$.ajax({
+		url: window.baseUrl,
+		method: 'PUT',
+		contentType: 'application/json',
+		data: JSON.stringify(dto),
+		success: function (response) {
+			const modalEl = $('#modal-edit');
+			const modalInstance = bootstrap.Modal.getInstance(modalEl);
+			modalInstance.hide();
+
+			setTimeout(() => {
+				const url = new URL(window.location.href);
+				url.searchParams.set('q', window.okEditParam);
+				window.location.href = url.toString();
+			}, 300);
+		},
+		error: (error) =>
+			handleError(error, "Account Edit Failed", "There was a problem while editing the account.", notifs)
+	});
+}
+
+function getSelectedPasswordOption() 
 {
-	try {
-		const dto = {
-			Id: inputs.hdnAccId.val(),
-			FirstName: inputs.fname.val(),
-			LastName: inputs.lname.val(),
-			Username: inputs.uname.val(),
-			Email: inputs.email.val(),
-			AccountType: inputs.type.getValue().value,
-			PasswordResetType: getSelectedPasswordOption(),
-			Password: inputs.pass1.val(),
-			RetypePass: inputs.pass2.val(),
-		};
+	const selectedRadio = document.querySelector(`input[name="${_radioGroupName}"]:checked`);
 
-		console.log("Dto Sent:", dto);
-
-		fetch(window.baseUrl, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(dto)
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.isSuccess) {
-					console.log("Edit successful:", data);
-					$("#modal-edit").modal("hide");
-
-					setTimeout(() => {
-						location.reload();
-					}, 500);
-				}
-				else {
-					console.error("Edit failed:", data.message);
-					alert("Edit failed: " + data.message);
-				}
-				console.log("Edit successful:", data);
-			})
-			.catch(ex => {
-				console.error("Error during PUT request:", ex);
-				alert("Something went wrong.");
-			});
-	}
-	catch (ex) {
-		console.error("Exception in submitEdit:", ex);
-	}
-}
-
-function getSelectedPasswordOption() {
-	const selectedRadio = document.querySelector(`input[name="${_radioGroupId}"]:checked`);
+	console.log(selectedRadio)
 
 	if (selectedRadio) {
 		const label = document.querySelector(`label[for="${selectedRadio.id}"]`);
@@ -135,9 +156,33 @@ function getSelectedPasswordOption() {
 	return '';
 }
 
+function put() {
+	Swal.mixin({
+		customClass: {
+			confirmButton: 'btn bg-gradient-success',
+			cancelButton: 'btn bg-gradient-danger'
+		},
+		buttonsStyling: !1
+	})
+		.fire({
+			title: 'Edit Account?',
+			text: 'This will edit the current account with the provided details!',
+			icon: 'question',
+			confirmButtonText: 'Create',
+			cancelButtonText: 'Cancel',
+			reverseButtons: !0,
+			showCancelButton: !0
+		})
+		.then(submit)
+		.catch(e => {
+			showErrorModal(e.message, "Account Edit Failed", "There was a problem while creating the account.", notifs);
+		});
+}
+
+
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {
 		event.preventDefault();
-		edit();
+		put();
 	});
 });

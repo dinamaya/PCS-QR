@@ -5,7 +5,7 @@
     this.LastName = lastName || null;
     this.Username = username || null;
     this.Email = email || null;
-    this.Type = type || null;
+    this.AccountType = type || null;
     this.Password = password1 || null;
     this.RetypePass = password2 || null;
   }

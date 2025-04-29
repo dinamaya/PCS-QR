@@ -1,0 +1,87 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels.Partials
+
+@{
+  var _user = User.Identities.FirstOrDefault();
+  bool isAuthenticated = _user.IsAuthenticated;
+
+  var textValue = new InputFieldViewModel()
+      {
+        IdName = "textVal",
+        Title = "Case Number",
+        ClassName = "col mx-2 mb-2 ",
+        InputClassName = "border-0",
+        IsLabelVisible = false,
+        IsCompact = true
+      };
+}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
+  <div class="container">
+    <a class="navbar-brand m-0 px-4 text-white" asp-action="Index" asp-controller="Dashboard">
+      <img src="../img/icons/icon_vst_sm.svg" class="navbar-brand-img h-100" style="max-height: 2.2rem;" alt="main_logo">
+      <span class="ms-1 font-weight-bolder fs-6">CCI Monitoring System</span>
+    </a>
+    <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon mt-2">
+        <span class="navbar-toggler-bar bar1"></span>
+        <span class="navbar-toggler-bar bar2"></span>
+        <span class="navbar-toggler-bar bar3"></span>
+      </span>
+    </button>
+    <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
+      <ul class="navbar-nav navbar-nav-hover mx-auto">
+      </ul>
+      <ul class="navbar-nav d-lg-block d-none">
+        <li class="nav-item">
+          @if (!isAuthenticated)
+          {
+            <a asp-action="Login" asp-controller="Auth" class="btn btn-sm  bg-white  btn-round mb-0 me-1">Sign in</a>
+          }
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header bg-gradient-primary  position-relative m-3 border-radius-xl">
+  <img src="../../img/shapes/waves-white.svg" alt="pattern-lines" class="position-absolute opacity-6 start-0 top-0 w-100">
+  <div class="container pb-lg-9 pb-10 pt-7 postion-relative z-index-2">
+    <div class="row">
+      <div class="col-md-6 mx-auto text-center">
+        <h3 class="text-white">Search Case Number / ID</h3>
+        <p class="text-white">Provide the case number generated after registration of your case</p>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-7 mx-auto text-center">
+        <form id="form-search">
+          <div class="col">
+            <div class="card shadow-card">
+              <div class="card-body p-1 pt-2">
+                <div class="container-fluid d-sm-block d-lg-flex px-0 mt-1">
+
+                  <div class="col">
+                    @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, textValue)
+                  </div>
+
+                  <div class="col-12 col-lg-4 h-auto">
+                    <div class="px-2 d-flex mx-2 pb-2 h-100 justify-content-center align-content-center">
+                      <button type="submit" class="w-100 h-auto btn bg-gradient-primary btn-sm mb-0" id="btn-search">
+                        Search
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="container">
+                  <input type="hidden" class="col-12" value="" name="v" placeholder="mainValue" id="hdn-searchVal" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

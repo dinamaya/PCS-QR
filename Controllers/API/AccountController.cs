@@ -92,8 +92,15 @@ namespace CCIMS.Web.Controllers.API
 				response.Message = "Account (" + requestDto.Id + ") Updated";
 
 				return Ok(response);
-			}
-			catch (Exception ex)
+      }
+      catch (InvalidOperationException ex)
+      {
+        response.Message = ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+      catch (Exception ex)
 			{
 				response.Message = "Error: " + ex.Message;
 				response.IsSuccess = false;
