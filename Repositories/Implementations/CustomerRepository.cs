@@ -90,6 +90,7 @@ namespace CCIMS.Web.Repositories
           Email = c.Email,
           ContactNo = c.ContactNumber,
           Address = c.Address,
+          DateCreated = c.DateCreated
         })
         .FirstOrDefaultAsync() ?? 
         throw new Exception(Exceptions.Message.INVALID_CATEGORY);

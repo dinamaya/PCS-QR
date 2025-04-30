@@ -9,6 +9,7 @@
 			public const string SIDEBAR = @"../Shared/_SideBarPartial";
 			public const string NAVBAR = @"../Shared/_NavBarPartial";
 			public const string FOOTER = @"../Shared/_FooterPartial";
+			public const string TIMELINE_TRANSACTIONS = @"../Shared/Timeline/_TransactionsPartial";
 
 			public static class Inputs
 			{
