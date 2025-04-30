@@ -14,9 +14,11 @@ namespace CCIMS.Web.Models.Entities.Main
 		public string LastName { get; set; }
 		[Required]
 		public string Address { get; set; }
-		[Required]
+		[Required(ErrorMessage = "Contact number is required.")]
+		[RegularExpression(@"^\d+$", ErrorMessage = "Only numeric characters are allowed.")]
 		public string ContactNumber { get; set; }
-		[Required]
+		[Required(ErrorMessage = "Email address is required.")]
+		[EmailAddress(ErrorMessage = "Invalid email address format.")]
 		public string Email { get; set; }
 		public string? ModifiedBy { get; set; }
 		[Required]

@@ -39,8 +39,8 @@ namespace CCIMS.Web.Repositories.Implementations
 				return false;
 			}
 
-			if (--tokenInfo.RemainingUses <= 0)
-				_validTokens.TryRemove(token, out _);
+			//if (--tokenInfo.RemainingUses <= 0)
+			//	_validTokens.TryRemove(token, out _);
 
 			qRToken = _validTokens.GetValueOrDefault(token)!;
 			return qRToken != null;

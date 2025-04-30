@@ -1,4 +1,6 @@
-﻿@using CCIMS.Web.App_Code._Globals.Constants
+﻿@model CCIMS.Web.Models.DTOs.CreateCustomerDto
+
+@using CCIMS.Web.App_Code._Globals.Constants
 @{
 	ViewData["Title"] = "Customer Form";
 	Layout = "~/Views/Shared/_PublicLayout.cshtml"; 
@@ -38,33 +40,39 @@
 								</div>
 							}
 
-							<form method="post" action="/Customer/Register" id="customerForm">
+							<form method="post" action="@Url.Action("Register", "Customer", new { token = Model.Token })" id="customerForm">
 								@Html.AntiForgeryToken()
 								<input type="hidden" name="Token" value="@Context.Request.Query["token"]" />
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>
-										<input class="form-control" type="text" name="FirstName" placeholder="eg. Juan" required />
+										<input class="form-control" type="text" asp-for="FirstName" required />
+										<span asp-validation-for="FirstName" class="text-danger"></span>
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label>Last Name</label>
-										<input class="form-control" type="text" name="LastName" placeholder="eg. dela Cruz" required />
+										<input class="form-control" type="text" asp-for="LastName" required />
+										<span asp-validation-for="LastName" class="text-danger"></span>
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>Contact Number</label>
-										<input class="form-control" type="text" name="ContactNumber" placeholder="eg. 09171234567" required />
+										<input class="form-control" type="text" asp-for="ContactNumber" pattern="\d*" title="Only numbers are allowed" required />
+										<span asp-validation-for="ContactNumber" class="text-danger"></span>
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label>Email Address</label>
-										<input class="form-control" type="email" name="Email" placeholder="eg. myemail@gmail.com" required />
+										<input class="form-control" type="email" asp-for="Email" required />
+										<span asp-validation-for="Email" class="text-danger"></span>
 									</div>
 								</div>
+
 								<div class="row mt-3">
 									<div class="col">
 										<label>Address</label>
-										<input class="form-control" type="text" name="Address" placeholder="eg. 123 Ortigas Ave, Pasig City, Metro Manila" required />
+										<input class="form-control" type="text" asp-for="Address" required />
+										<span asp-validation-for="Address" class="text-danger"></span>
 									</div>
 								</div>							
 								<div class="row mt-3">
@@ -80,13 +88,14 @@
 
 								<!-- Privacy Policy Checkbox -->
 								<div class="row mt-4">
-									<div class="col-12"> 
+									<div class="col-12">
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" id="privacyPolicyCheckbox" name="PrivacyPolicyAccepted" required>
+											<input class="form-check-input" type="checkbox" id="privacyPolicyCheckbox" asp-for="PrivacyPolicyAccepted" required>
 											<label class="form-check-label" for="privacyPolicyCheckbox">
 												I agree to let VST ECS process my personal data in order to manage my case submission, in accordance with
 												<a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal" class="text-info">VST ECS Privacy Notice</a>.
 											</label>
+											<span asp-validation-for="PrivacyPolicyAccepted" class="text-danger"></span>
 										</div>
 									</div>
 								</div>
