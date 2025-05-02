@@ -22,25 +22,22 @@ namespace CCIMS.Web.Controllers
 
 		public IActionResult Index()
 		{
-
-            
-            var agingCasesCount = _context.AgingCasesVs.Count();
+      var agingCasesCount = _context.AgingCasesVs.Count();
 			var closedCasesCount = _context.ClosedCasesVs.Count();
-            var casesCreatedToday = _context.CasesCreatedTodayVs.Count();
-            var totalCasesCount = _context.Cases.Count();
-            var weeklyCasesChart = _context.WeeklyCasesChartVs.ToList();
-            var weeklyAgingCasesChart = _context.WeeklyAgingCasesChartVs.ToList();
+      var casesCreatedToday = _context.CasesCreatedTodayVs.Count();
+      var totalCasesCount = _context.Cases.Count();
+      var weeklyCasesChart = _context.WeeklyCasesChartVs.ToList();
+      var weeklyAgingCasesChart = _context.WeeklyAgingCasesChartVs.ToList();
 
-            ViewBag.AgingCasesCount = agingCasesCount;
+      ViewBag.AgingCasesCount = agingCasesCount;
 			ViewBag.ClosedCasesCount = closedCasesCount;
 			ViewBag.CasesCreatedToday = casesCreatedToday;
-            ViewBag.TotalCasesCount = totalCasesCount;
-            ViewBag.WeeklyCasesChart = weeklyCasesChart;
-            ViewBag.WeeklyAgingCasesChart = weeklyAgingCasesChart;
+      ViewBag.TotalCasesCount = totalCasesCount;
+      ViewBag.WeeklyCasesChart = weeklyCasesChart;
+      ViewBag.WeeklyAgingCasesChart = weeklyAgingCasesChart;
 
-            return View();
-
-        }
+      return View();
+    }
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()

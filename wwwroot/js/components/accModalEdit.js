@@ -1,4 +1,4 @@
-﻿import { displayErrors, showErrorModal, handleError, resetNotifs, isNullOrEmpty } from "../utils.js";
+﻿import { displayErrors, showErrorModal, handleError, resetNotifs, isNullOrEmpty, showErrorModal2 } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -142,6 +142,35 @@ function submit(e) {
 	});
 }
 
+function deleteData(e)
+{
+	if (!e.isConfirmed) return;
+
+	const deleteUrl = new URL(window.baseUrl, window.location.origin);
+	deleteUrl.searchParams.set('id', inputs.hdnAccId.val());
+
+	console.log(deleteUrl);
+
+	$.ajax({
+		url: deleteUrl,
+		method: 'DELETE',
+		success: function (response)
+		{
+			const modalEl = $('#modal-edit');
+			const modalInstance = bootstrap.Modal.getInstance(modalEl);
+			modalInstance.hide();
+
+			setTimeout(() => {
+				const url = new URL(window.location.href);
+				url.searchParams.set('q', window.okEditParam);
+				window.location.href = url.toString();
+			}, 300);
+		},
+		error: (error) =>
+			handleError(error, "Account Edit Failed", "There was a problem while editing the account.", notifs)
+	});
+}
+
 function getSelectedPasswordOption() 
 {
 	const selectedRadio = document.querySelector(`input[name="${_radioGroupName}"]:checked`);
@@ -179,10 +208,39 @@ function put() {
 		});
 }
 
+function onDelete()
+{
+	Swal.mixin({
+		customClass: {
+			confirmButton: 'btn bg-gradient-success',
+			cancelButton: 'btn bg-gradient-danger'
+		},
+		buttonsStyling: !1
+	})
+		.fire({
+			title: 'Delete Account?',
+			text: 'This will delete the current account!',
+			icon: 'question',
+			confirmButtonText: 'Delete',
+			cancelButtonText: 'Cancel',
+			reverseButtons: !0,
+			showCancelButton: !0
+		})
+		.then(deleteData)
+		.catch(e => {
+			showErrorModal2(e.message, "Account Delete Failed", "There was a problem while deleting the account.");
+		});
+}
+
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {
 		event.preventDefault();
 		put();
+	});
+
+	$('#btn-delete').click(function (event) {
+		event.preventDefault();
+		onDelete();
 	});
 });

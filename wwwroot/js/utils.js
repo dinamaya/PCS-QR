@@ -30,6 +30,18 @@ export function showErrorModal(message, title, defaultMessage, notifs) {
   console.error(title, _message);
 }
 
+export function showErrorModal2(message, title, defaultMessage)
+{
+  const _message = message || defaultMessage;
+  Swal.fire({
+    title: title,
+    text: _message,
+    icon: "error"
+  });
+
+  console.error(title, _message);
+}
+
 export function handleError(error, title, defaultMessage, notifs)
 {
   try
@@ -48,14 +60,12 @@ export function handleError(error, title, defaultMessage, notifs)
   }
 }
 
-export function handleUpdateError(data, title, defaultMessage, notifs) {
+export function handleModalError(data, title, defaultMessage, notifs) {
   try {
     const response = data.responseText;
     const result = JSON.parse(response);
     const errors = result.errors;
 
-    if (!errors)
-      throw new DOMException(result.message);
 
     displayErrors(errors, notifs);
   }
