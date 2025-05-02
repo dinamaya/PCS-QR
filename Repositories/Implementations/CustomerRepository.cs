@@ -39,9 +39,9 @@ namespace CCIMS.Web.Repositories
       if (!_tokenProvider.IsValid(createCustomerDto.Token, out QRTokenDto? token) || token == null)
         throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-      bool serialExists = await _context.Cases.AnyAsync(c => c.SerialNumber == createCustomerDto.SerialNumber);
-      if (serialExists)
-        throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
+            bool serialExistsNotClosed = await _context.LatestCasesVs.AnyAsync(c => c.SerialNumber == createCustomerDto.SerialNumber && c.Status != "Closed");
+            if (serialExistsNotClosed)
+                throw new Exception("Serial number already exists. Please provide a unique serial number.");
 
       var customer = new Customer
       {
