@@ -3,6 +3,7 @@ using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Repositories.Interfaces;
 using System.Collections.Concurrent;
 using CCIMS.Web.App_Code._Globals;
+using CCIMS.Web.App_Code._Globals.Constants;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -10,21 +11,20 @@ namespace CCIMS.Web.Repositories.Implementations
 	{
 		private readonly ConcurrentDictionary<string, QRTokenDto> _validTokens = new();
 
-		public string GenerateToken(int minutesToExpire, int remainingUses, string qrHashedId)
+		public string Generate(string qrHashedId)
 		{
-			string token = Utils.Security.GenerateExtendedGuid("tk",5);
+			string token = Utils.Security.GenerateExtendedGuid(string.Empty, 2);
 
 			_validTokens[token] = new QRTokenDto
 			{
-				Expiry = DateTime.UtcNow.AddMinutes(minutesToExpire),
-				RemainingUses = remainingUses,
+				Expiry = DateTime.UtcNow.AddMinutes(Database.Token.EXPIRE_MIN),
 				QRID = qrHashedId
       };
 
 			return token;
 		}
 
-    public bool IsValidToken(string token, out QRTokenDto? qRToken)
+    public bool IsValid(string token, out QRTokenDto? qRToken)
 		{
 			if (string.IsNullOrWhiteSpace(token) || !_validTokens.TryGetValue(token, out var tokenInfo))
 			{
@@ -39,11 +39,10 @@ namespace CCIMS.Web.Repositories.Implementations
 				return false;
 			}
 
-			//if (--tokenInfo.RemainingUses <= 0)
-			//	_validTokens.TryRemove(token, out _);
-
 			qRToken = _validTokens.GetValueOrDefault(token)!;
 			return qRToken != null;
 		}
-	}
+
+    public void Remove(string tokenKey) => _validTokens.TryRemove(tokenKey, out _);
+  }
 }

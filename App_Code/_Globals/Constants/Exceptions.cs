@@ -25,6 +25,7 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_ACCOUNT_DELETE = "Account Deletion Failed. Please contact the administrator";
 
 			public const string UNRECOGNIZED_SERIALNUMBER = $"Serial number not recognize";
+			public const string INVALID_SERIALNUMBER_EXIST = "Serial number already exists. Please provide a unique serial number.";
 
 
       public static class Config

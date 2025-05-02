@@ -27,9 +27,7 @@ namespace CCIMS.Web.Repositories.Implementations
         using var img = Pix.LoadFromFile(filePath);
         using var page = engine.Process(img);
 
-        var ocrText = page.GetText();
-        var match = Regex.Match(ocrText, RegEx.SERIALNUMBER);
-        return match.Success ? match.Value : Exceptions.Message.UNRECOGNIZED_SERIALNUMBER;
+        return page.GetText();
       });
     }
   }

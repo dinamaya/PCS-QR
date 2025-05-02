@@ -19,5 +19,9 @@
     {
       public const int MAX_SIZE = 5 * 1024 * 1024; // 10 MB1
     }
+    public abstract class Token
+    {
+      public const int EXPIRE_MIN = 15; // 15 Mins
+    }
   }
 }
