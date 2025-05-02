@@ -38,10 +38,7 @@ namespace CCIMS.Web.Controllers
       try
       {
         QRTokenDto? qrToken = null;
-        if (!_tokenProvider.IsValid(token, out qrToken))
-          throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
-
-        if (qrToken == null)
+        if (!_tokenProvider.IsValid(token, out qrToken) || qrToken == null)
           throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
         string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);

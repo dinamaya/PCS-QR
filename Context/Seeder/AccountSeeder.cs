@@ -49,6 +49,7 @@ namespace CCIMS.Web.Context.Seeder
           {
             UserName = "aldin_amaya",
             PersonID = context.People.FindAsync(p1.Id).Result.Id,
+            Email = "aldin_amaya@gmail.com",
             CreatedBy = "1",
             ModifiedBy = "1",
             DateCreated = date,
@@ -63,6 +64,7 @@ namespace CCIMS.Web.Context.Seeder
           {
             UserName = "kenjie_sama",
             PersonID = context.People.FindAsync(p2.Id).Result.Id,
+            Email = "kenjie@gmail.com",
             CreatedBy = acc1.Id,
             ModifiedBy = acc1.Id,
             DateCreated = date,

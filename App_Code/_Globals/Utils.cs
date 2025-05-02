@@ -43,7 +43,12 @@ namespace CCIMS.Web.App_Code._Globals
 				
 				return bytes;
 			}
-		}
+
+      public static string CleanString(string value) => string.IsNullOrWhiteSpace(value) ? string.Empty : Uri.EscapeDataString(value.Trim());
+
+      public static string DecodeString(string value) => string.IsNullOrWhiteSpace(value) ? string.Empty : Uri.UnescapeDataString(value.Trim());
+
+    }
 
     public static string GetTimestamp(string message, DateTime dateTime)
     {

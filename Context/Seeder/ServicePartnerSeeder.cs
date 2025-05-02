@@ -58,8 +58,33 @@ namespace CCIMS.Web.Context.Seeder
 					IsActive = true
 				};
 
+				QRCode qr1 = new QRCode()
+				{
+					ServicePartnerId = sp1.Id,
+					DateCreated = date,
+					DateModified = date,
+					IsActive = true
+        };
+				QRCode qr2 = new QRCode()
+				{
+					ServicePartnerId = sp2.Id,
+					DateCreated = date,
+					DateModified = date,
+					IsActive = true
+        };
+				QRCode qr3 = new QRCode()
+				{
+					ServicePartnerId = sp3.Id,
+					DateCreated = date,
+					DateModified = date,
+					IsActive = true
+        };
+
         await context.ServicePartners.AddRangeAsync(sp1, sp2, sp3);
-				await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
+
+        await context.QRCodes.AddRangeAsync(qr1, qr2, qr3);
+        await context.SaveChangesAsync();
 			}
 		}
 
