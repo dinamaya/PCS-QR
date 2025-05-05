@@ -63,7 +63,7 @@
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label asp-for="Email">Email Address</label>
-										<input class="form-control" type="email" asp-for="Email" required pattern="@RegEx.EMAIL_LOCAL" />
+										<input class="form-control" type="email" asp-for="Email" required pattern="@RegEx.EMAIL_STRICT" />
 										<span asp-validation-for="Email" class="text-danger"></span>
 									</div>
 								</div>
