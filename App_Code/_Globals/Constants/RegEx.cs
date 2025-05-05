@@ -13,7 +13,8 @@ namespace CCIMS.Web.App_Code._Globals.Constants
     [StringSyntax(StringSyntaxAttribute.Regex)] public const string NAMES = @"^[\p{L}\s_.,ñÑ]+$";
     [StringSyntax(StringSyntaxAttribute.Regex)] public const string USERNAME = @"^[\p{L}0-9_.]+$";
 	[StringSyntax(StringSyntaxAttribute.Regex)] public const string PHONE = @"^\d+$";
-	[StringSyntax(StringSyntaxAttribute.Regex)] public const string EMAIL_LOCAL = @"^[\w\.\-]+@[\w\-]+(\.[\w\-]+)*\.[a-zA-Z]{2,}$";
+	[StringSyntax(StringSyntaxAttribute.Regex)] public const string EMAIL_LOCAL = @"^[a-zA-Z0-9._%+-]+(?=@)";
+	[StringSyntax(StringSyntaxAttribute.Regex)] public const string EMAIL_STRICT = @"^[\w\.\-]+@[\w\-]+(\.[\w\-]+)*\.[a-zA-Z]{2,}$";
 
 		public static class Characters
     {

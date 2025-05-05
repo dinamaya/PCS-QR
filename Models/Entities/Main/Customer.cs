@@ -21,7 +21,7 @@ namespace CCIMS.Web.Models.Entities.Main
 		[RegularExpression(RegEx.PHONE, ErrorMessage = "Only numeric characters are allowed.")]
 		public string ContactNumber { get; set; }
 		[Required(ErrorMessage = "Email address is required.")]
-		[RegularExpression(RegEx.EMAIL_LOCAL, ErrorMessage = "Invalid email format.")]
+		[RegularExpression(RegEx.EMAIL_STRICT, ErrorMessage = "Invalid email format.")]
 		public string Email { get; set; }
 		public string? ModifiedBy { get; set; }
 		[Required]
