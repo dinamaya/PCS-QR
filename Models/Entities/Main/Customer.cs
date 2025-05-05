@@ -1,6 +1,7 @@
 ﻿using CCIMS.Web.Models.Abstracts;
 using CCIMS.Web.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using CCIMS.Web.App_Code._Globals.Constants;
 
 namespace CCIMS.Web.Models.Entities.Main
 {
@@ -9,16 +10,18 @@ namespace CCIMS.Web.Models.Entities.Main
 		public Customer() : base("CST") { }
 
 		[Required]
+		[RegularExpression(RegEx.NAMES, ErrorMessage = "First name contains invalid characters.")]
 		public string FirstName { get; set; }
 		[Required]
+		[RegularExpression(RegEx.NAMES, ErrorMessage = "Last name contains invalid characters.")]
 		public string LastName { get; set; }
 		[Required]
 		public string Address { get; set; }
 		[Required(ErrorMessage = "Contact number is required.")]
-		[RegularExpression(@"^\d+$", ErrorMessage = "Only numeric characters are allowed.")]
+		[RegularExpression(RegEx.PHONE, ErrorMessage = "Only numeric characters are allowed.")]
 		public string ContactNumber { get; set; }
 		[Required(ErrorMessage = "Email address is required.")]
-		[EmailAddress(ErrorMessage = "Invalid email address format.")]
+		[RegularExpression(RegEx.EMAIL_LOCAL, ErrorMessage = "Invalid email format.")]
 		public string Email { get; set; }
 		public string? ModifiedBy { get; set; }
 		[Required]
