@@ -30,7 +30,7 @@ export function showErrorModal(message, title, defaultMessage, notifs) {
   console.error(title, _message);
 }
 
-export function showErrorModal2(message, title, defaultMessage)
+export function showErrorSimpleModal(message, title, defaultMessage)
 {
   const _message = message || defaultMessage;
   Swal.fire({
@@ -46,6 +46,12 @@ export function handleError(error, title, defaultMessage, notifs)
 {
   try
   {
+    if (error.status == 401)
+    {
+      showErrorSimpleModal("Please refresh the page", "Session expired")
+      return;
+    }
+
     const response = error.responseText;
     const result = JSON.parse(response);
     const errors = result.errors;
@@ -77,4 +83,13 @@ export function handleModalError(data, title, defaultMessage, notifs) {
 
 export function isNullOrEmpty(text) {
   return text == "" || text == null;
+}
+
+export function checkErrorResponse(respone) {
+  if (respone.status == 401) {
+    showErrorSimpleModal("Please refresh the page", "Session expired")
+    throw new Error("Session expired"); 
+  }
+
+  return respone.json();
 }

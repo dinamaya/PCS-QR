@@ -1,4 +1,4 @@
-﻿import { displayErrors, showErrorModal, handleError, resetNotifs, isNullOrEmpty, showErrorModal2 } from "../utils.js";
+﻿import { checkErrorResponse, showErrorModal, handleError, resetNotifs, isNullOrEmpty, showErrorSimpleModal } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -68,40 +68,34 @@ export function initModal(
 	_radioGroupName = radioGroupName;
 }
 
-export function onEdit(button) {
-  try
-  {
-	  const row = button.closest("tr");
-	  const accId = row.dataset.accId;
+export function onEdit(button)
+{
+	const row = button.closest("tr");
+	const accId = row.dataset.accId;
 
-	  inputs.hdnAccId.val(accId);
-	  const _url = `${window.baseUrl}?id=${accId}`
+	inputs.hdnAccId.val(accId);
+	const _url = `${window.baseUrl}?id=${accId}`
 
-		fetch(_url)
-			.then(response => response.json())
-			.then(data => {
-				const result = data.result;
+	$.ajax({
+		url: _url,
+		method: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			const result = data.result;
 
-				if (data && result) {
-					inputs.lname.val(result.lastName);
-					inputs.fname.val(result.firstName);
-					inputs.uname.val(result.username);
-					inputs.email.val(result.email);
-					inputs.type.setChoiceByValue(result.type);
-				}
-				else
-				{
-					showErrorModal(e.message, "Account Not Found", "There was a problem while fetching the account.", notifs);
-				}
-			})
-			.catch(e => {
-				showErrorModal(e.message, "Account Fetching Failed", "There was a problem while fetching the account.", notifs);
-			})
-	}
-	catch (e) {
-		showErrorModal(e.message, "Account Fetching Failed", "There was a problem while fetching the account.", notifs);
-	}
-
+			if (data && result) {
+				inputs.lname.val(result.lastName);
+				inputs.fname.val(result.firstName);
+				inputs.uname.val(result.username);
+				inputs.email.val(result.email);
+				inputs.type.setChoiceByValue(result.type);
+			}
+			else {
+				showErrorModal("No Result", "Account Not Found", "There was a problem while fetching the account.", notifs);
+			}
+		},
+		error: (error) => handleError(error, "Account Fetching Failed", "There was a problem while fetching the account.", notifs)
+	});
 }
 
 function submit(e) {
@@ -228,7 +222,7 @@ function onDelete()
 		})
 		.then(deleteData)
 		.catch(e => {
-			showErrorModal2(e.message, "Account Delete Failed", "There was a problem while deleting the account.");
+			showErrorSimpleModal(e.message, "Account Delete Failed", "There was a problem while deleting the account.");
 		});
 }
 

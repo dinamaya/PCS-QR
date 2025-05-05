@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CCIMS.Web.Controllers
 {
-	[Authorize]
-	public class OperationController : Controller
+  [Authorize(Roles = "OPS")]
+  public class OperationController : Controller
 	{
 		private readonly IOperationsRepository _opsRepo;
 

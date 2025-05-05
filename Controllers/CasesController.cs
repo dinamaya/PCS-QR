@@ -20,7 +20,7 @@ namespace CCIMS.Web.Controllers
 			_transRepo = transRepo;
 		}
 
-    [Authorize, HttpGet]
+    [Authorize(Roles = "OPS"), HttpGet]
 		public async Task<IActionResult> Update(string id)
     {
       var _case = await _caseRepo.GetById(id);

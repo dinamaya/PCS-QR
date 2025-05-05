@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CCIMS.Web.Controllers
 {
-  [Authorize]
 	public class CMSController : Controller
 	{
     private readonly IServicePartnerRepository _spRepo;
@@ -24,11 +23,14 @@ namespace CCIMS.Web.Controllers
       _configRepo = configRepo;
       _caseRepo = caseRepo;
     }
+
+    [Authorize]
     public IActionResult Index()
     {
       return View();
     }
 
+    [Authorize(Roles = "SPA")]
     public async Task<IActionResult> ServicePartner()
     {
       try
@@ -42,6 +44,7 @@ namespace CCIMS.Web.Controllers
       }
     }
 
+    [Authorize(Roles = "OPS")]
     public async Task<IActionResult> Account(string? q)
     {
       try
@@ -63,6 +66,7 @@ namespace CCIMS.Web.Controllers
       }
     }
 
+    [Authorize]
     public async Task<IActionResult> Cases(string? c = null, string? v = null)
     {
       try
