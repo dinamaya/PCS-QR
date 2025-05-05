@@ -106,7 +106,7 @@ function submit(e)
       setTimeout(() => {
         const url = new URL(window.location.href);
 
-        url.searchParams.set('q', window.okEditParam);
+        url.searchParams.set('q', window.okCreateParam);
         window.location.href = url.toString();
       }, 300);
     },

@@ -156,7 +156,7 @@ function deleteData(e)
 
 			setTimeout(() => {
 				const url = new URL(window.location.href);
-				url.searchParams.set('q', window.okEditParam);
+				url.searchParams.set('q', window.okDeleteParam);
 				window.location.href = url.toString();
 			}, 300);
 		},
