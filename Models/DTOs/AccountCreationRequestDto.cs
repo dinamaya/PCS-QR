@@ -1,8 +1,10 @@
-﻿namespace CCIMS.Web.Models.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CCIMS.Web.Models.DTOs
 {
 	public class AccountCreationRequestDto : AccountBasicInfoDto
   {
-		public string Password { get; set; }
-		public string RetypePass { get; set; }
+    [Required(ErrorMessage = "Password is required.")] public string Password { get; set; }
+    [Required(ErrorMessage = "Retype Password is required.")] public string RetypePass { get; set; }
 	}
 }

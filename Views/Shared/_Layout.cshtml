@@ -10,6 +10,11 @@
 	string _lname = User.GetIdentityClaim(AuthClaims.LASTNAME);
 	string _username = User.GetIdentityClaim(ClaimTypes.Name);
 	string _role = User.GetIdentityClaim(AuthClaims.ROLE);
+
+	var _controller = ViewContext.RouteData.Values["Controller"].ToString();
+	var _action = ViewContext.RouteData.Values["Action"].ToString();
+	bool _inTracking = _controller.Equals("Cases") && _action.Equals("Tracking");
+
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -45,12 +50,12 @@
 
 </head>
 <body class="g-sidenav-show bg-gray-100">
-	@await Html.PartialAsync(Routes.Partials.SIDEBAR, new SideBarViewModel(_user.IsAuthenticated))
+	@await Html.PartialAsync(Routes.Partials.SIDEBAR, new SideBarViewModel(_user.IsAuthenticated && !_inTracking))
 
 	<!-- Main Content -->
 	<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
 
-		@await Html.PartialAsync(Routes.Partials.NAVBAR, new NavBarViewModel(_user.IsAuthenticated, _username, _role, _fname, _lname))
+		@await Html.PartialAsync(Routes.Partials.NAVBAR, new NavBarViewModel(_user.IsAuthenticated && !_inTracking, _username, _role, _fname, _lname))
 
 		<div class="container-fluid px-0">
 			@RenderBody()
