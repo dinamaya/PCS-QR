@@ -38,7 +38,7 @@ namespace CCIMS.Web.App_Code._Globals.Validtors.Properties
       RuleFor(x => x.Email)
         .NotEmpty().WithMessage("Email is required.")
         .EmailAddress().WithMessage("Email must be valid.")
-        .Matches(RegEx.EMAIL_LOCAL).WithMessage("Email username part contains invalid characters.")
+        .Matches(RegEx.EMAIL_LOCAL).WithMessage("Email part contains invalid characters.")
         .Must(email =>
         {
           var allowedDomains = configRepo.GetAllowedEmailDomains();

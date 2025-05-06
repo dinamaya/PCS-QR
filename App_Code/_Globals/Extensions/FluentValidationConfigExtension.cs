@@ -17,6 +17,7 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
       services.AddFluentValidationAutoValidation();
       services.AddValidatorsFromAssemblyContaining<AccountCreationRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<AccountEditRequestValidator>();
+      services.AddValidatorsFromAssemblyContaining<ServicePartnerValidator>();
     }
   }
 }
