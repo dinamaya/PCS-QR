@@ -1,7 +1,9 @@
 ﻿@using CCIMS.Web.App_Code._Globals.Constants
 @using CCIMS.Web.Models.ViewModels
 @model IEnumerable<StatusRowViewModel>
-
+@{
+  ViewData[Keys.ViewData.TITLE] = "OPS | Status";
+}
 <script src="~/js/plugins/datatables.js"></script>
 <script src="~/js/plugins/choices.min.js"></script>
 

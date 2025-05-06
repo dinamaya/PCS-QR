@@ -6,7 +6,9 @@
 @model CaseDetailsViewModel
 
 @{
-  var customer = (CustomerDetailsViewModel) ViewData[Keys.ViewData.CUSTOMER];
+  ViewData[Keys.ViewData.TITLE] = "Case Update";
+
+  var customer = (CustomerDetailsViewModel)ViewData[Keys.ViewData.CUSTOMER];
   var transactions = (IEnumerable<CaseTransactionsViewModel>)ViewData[Keys.ViewData.TRANSACTIONS];
   var _case = (CaseDetailsViewModel)ViewData[Keys.ViewData.CASE];
   

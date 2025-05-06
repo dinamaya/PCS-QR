@@ -7,6 +7,8 @@
 @model string
 
 @{
+  ViewData[Keys.ViewData.TITLE] = "Case Tracking";
+
   var _user = User.Identities.FirstOrDefault();
   bool isAuthenticated = _user.IsAuthenticated;
 
