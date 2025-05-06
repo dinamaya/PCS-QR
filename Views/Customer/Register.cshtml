@@ -1,0 +1,172 @@
+﻿@model CCIMS.Web.Models.DTOs.CreateCustomerDto
+
+@using CCIMS.Web.App_Code._Globals.Constants
+@{
+	ViewData[Keys.ViewData.TITLE] = "Customer Form";
+	Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+<!-- Add in your HTML head -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+
+<div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('/img/curved-images/curved9.jpg');" );">
+	<span class="mask bg-gradient-dark opacity-6"></span>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-5 text-center mx-auto">
+				<h1 class="text-white mb-2 mt-5">Welcome!</h1>
+				<p class="text-lead text-white">Create a new case.</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid py-4">
+	<div class="row mt-lg-n12 mt-md-n13 mt-n12 justify-content-center">
+		<div class="col-12">
+			<div class="mb-5">
+				<!--form panels-->
+				<div class="row">
+					<div class="col-12 col-lg-8 m-auto">
+						<!--single form panel-->
+						<div class="card p-3 border-radius-xl bg-white mb-5">
+							<h5 class="font-weight-bolder mb-0">Customer Case Form</h5>
+							<p class="mb-0 text-sm">Please provide your details to help us process your case efficiently.</p>
+
+							@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+							{
+								<div class="alert alert-warning" role="alert">
+									@ViewBag.ErrorMessage
+								</div>
+							}
+
+							<form method="post" action="@Url.Action("Register", "Customer", new { token = Model.Token })" id="customerForm">
+								@Html.AntiForgeryToken()
+								<input type="hidden" name="Token" value="@Context.Request.Query["token"]" />
+								<div class="row mt-3">
+									<div class="col-12 col-sm-6">
+										<label>First Name</label>
+										<input class="form-control" type="text" asp-for="FirstName" required />
+										<span asp-validation-for="FirstName" class="text-danger"></span>
+									</div>
+									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
+										<label>Last Name</label>
+										<input class="form-control" type="text" asp-for="LastName" required />
+										<span asp-validation-for="LastName" class="text-danger"></span>
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col-12 col-sm-6">
+										<label>Contact Number</label>
+										<input class="form-control" type="text" asp-for="ContactNumber" title="Only numbers are allowed" required />
+										<span asp-validation-for="ContactNumber" class="text-danger"></span>
+									</div>
+									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
+										<label asp-for="Email">Email Address</label>
+										<input class="form-control" type="email" asp-for="Email" required pattern="@RegEx.EMAIL_STRICT" />
+										<span asp-validation-for="Email" class="text-danger"></span>
+									</div>
+								</div>
+
+								<div class="row mt-3">
+									<div class="col">
+										<label>Address</label>
+										<input class="form-control" type="text" asp-for="Address" required />
+										<span asp-validation-for="Address" class="text-danger"></span>
+									</div>
+								</div>							
+								<div class="row mt-3">
+									<label class="col-12">Serial Number</label>
+									<div class="col-9 mt-3 mt-sm-0">
+										<input id="txt-sn" class="form-control" type="text" name="SerialNumber" placeholder="eg. 987654321" required />
+									</div>
+									<div class="col-3 mt-3 mt-sm-0">
+										<input class="d-none" type="file" id="file-scan" accept="image/*" onchange="handleFileChange()" capture="environment" />
+										<button class="btn bg-gradient-primary mb-0 me-2 w-100" onclick="triggerCamera()" type="button" name="button">Scan</button>
+									</div>
+								</div>
+
+								<!-- Privacy Policy Checkbox -->
+								<div class="row mt-4">
+									<div class="col-12">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="privacyPolicyCheckbox" asp-for="PrivacyPolicyAccepted" required>
+											<label class="form-check-label" for="privacyPolicyCheckbox">
+												I agree to let VST ECS process my personal data in order to manage my case submission, in accordance with
+												<a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal" class="text-info">VST ECS Privacy Notice</a>.
+											</label>
+											<span asp-validation-for="PrivacyPolicyAccepted" class="text-danger"></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="text-left mt-4">
+									<button class="btn bg-gradient-dark ms-auto mb-0" type="submit" title="Send">Submit</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@(await Html.PartialAsync(Routes.Partials.Customer.MODAL_SCAN))
+@(await Html.PartialAsync(Routes.Partials.Customer.MODAL_POLICY))
+
+
+<script defer>
+	let cropper = null;
+	let modalElem = null;		
+	let modal = null;
+
+	$(document).ready(function () {
+		modalElem = document.getElementById('modal-edit-img');
+		modal = new bootstrap.Modal(modalElem);
+	});
+
+	function triggerCamera() {
+		document.getElementById('file-scan').click();
+	}
+
+	function handleFileChange() {
+
+		var input = document.getElementById('file-scan');
+
+		const file = input.files[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = readFile;
+		
+		reader.readAsDataURL(file);
+	}
+
+	function readFile(e){
+
+		const img = e.target.result
+		const imgPreviewer = document.getElementById("img-preview");
+		imgPreviewer.src = img;
+
+		img.onload = loadCropper(imgPreviewer)
+	}
+
+	function loadCropper(imgPreviewer)
+	{
+		modal.show();
+
+		modalElem.addEventListener('shown.bs.modal', () => {
+			if (cropper) cropper.destroy();
+
+			cropper = new Cropper(imgPreviewer, {
+				aspectRatio: NaN,
+				zoomable: true,
+				scalable: true,
+				viewMode: 1,
+			});
+		}, { once: true });
+	}
+
+</script>

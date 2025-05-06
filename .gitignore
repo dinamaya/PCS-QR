@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/bin/Debug/net8.0
+/.vs
+/obj
+/Properties
+/Migrations
+/Attachments/SN
+/bin/Release/net8.0
+/CCIMS.Web.csproj.user

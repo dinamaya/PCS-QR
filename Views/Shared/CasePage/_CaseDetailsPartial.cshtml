@@ -1,0 +1,96 @@
+﻿@using CCIMS.Web.App_Code._Globals
+@using CCIMS.Web.Models.ViewModels
+
+@model CaseDetailsViewModel
+
+<div class="card blur shadow-blur max-height-vh-70">
+	<div class="card-header shadow-lg">
+		<div class="row">
+			<div class="col-md-10">
+				<div class="d-flex align-items-center">
+					<div class="icon icon-shape bg-gradient-dark shadow text-center border-radius-md">
+						<i class="ni ni-credit-card text-lg opacity-10" aria-hidden="true"></i>
+					</div>
+					<div class="ms-3">
+						<h6 class="mb-0 d-block">Case Details</h6>
+						<span class="text-sm text-dark opacity-8">@Utils.GetTimestamp("Date issued ", Model.DateCreated)</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card-body overflow-auto overflow-x-hidden">
+		<div class="row pb-3">
+			<div class="col-12 col-lg-7">
+				<h6 class="mb-3">Case Number</h6>
+				<div class="border-dashed border-1 border-secondary border-radius-md p-3">
+					<p class="text-xs mb-2">@Utils.GetTimestamp("Generated ", Model.DateCreated)</p>
+					<div class="d-flex align-items-center">
+						<div class="form-group w-70">
+							<div class="input-group bg-gray-200">
+								<input class="form-control form-control-sm" id="txt-casenum" value="@Model.CaseNumber" type="text" disabled>
+							</div>
+						</div>
+						<button onclick="onCopy()" class="btn btn-sm btn-outline-secondary ms-2 px-3">Copy</button>
+					</div>
+					<p class="text-xs mb-1">You cannot generate case number</p>
+				</div>
+			</div>
+
+			<div class="col-12 col-lg-5 mt-3 mt-lg-0">
+				<h6 class="mb-3">Other Information</h6>
+				<ul class="list-group">
+					<li class="list-group-item border-0 d-flex p-3 bg-gray-100 border-radius-lg">
+						<div class="d-flex flex-column">
+							<span class="mb-2 text-sm">Serial Number: <span class="text-dark font-weight-bold ms-2">@Model.SerialNumber</span></span>
+							<span class="mb-2 text-sm">Service Partner: <span class="text-dark ms-2 font-weight-bold">@Model.ServicePartner</span></span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		@if (string.IsNullOrEmpty(Model.Description))
+		{
+			<div class="d-flex py-3">
+				<span class="h6 m-0 pe-4">Description:</span>
+				<span class="badge bg-gradient-secondary">Unavailable</span>
+			</div>
+		}
+		else
+		{
+			<div class="row py-3">
+				<div class="h6 mb-0">Description</div>
+				<span class="text-sm text-dark opacity-8 ps-5">@Model.Description</span>
+			</div>
+		}
+
+	</div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+	<div class="toast align-items-center w-100" id="tst-casenum" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="d-flex">
+			<div class="toast-body">
+				Case Number <b class="px-1">@Model.CaseNumber</b> Copied
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	const toast = document.getElementById('tst-casenum');
+	const copyText = document.getElementById("txt-casenum");
+
+	function onCopy() 
+	{
+		copyText.select();
+		copyText.setSelectionRange(0, 99999);
+		navigator.clipboard.writeText(copyText.value);
+
+		const toastBs = bootstrap.Toast.getOrCreateInstance(toast);
+		toastBs.show()
+	}
+</script>

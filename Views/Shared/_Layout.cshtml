@@ -1,0 +1,85 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants;
+@using CCIMS.Web.Models.ViewModels.Partials
+@using System.Security.Claims
+
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+@{
+	var _user = User.Identities.FirstOrDefault();
+	string _fname = User.GetIdentityClaim(AuthClaims.FIRSTNAME);
+	string _lname = User.GetIdentityClaim(AuthClaims.LASTNAME);
+	string _username = User.GetIdentityClaim(ClaimTypes.Name);
+	string _role = User.GetIdentityClaim(AuthClaims.ROLE);
+
+	var _controller = ViewContext.RouteData.Values["Controller"].ToString();
+	var _action = ViewContext.RouteData.Values["Action"].ToString();
+	bool _inTracking = _controller.Equals("Cases") && _action.Equals("Tracking");
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
+	<meta name="3DQrHandAttrib" content="https://www.vecteezy.com/free-png/qr-code-3d"/>
+
+	<link rel="apple-touch-icon" sizes="76x76" href="~/img/icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" href="~/img/icons/favicon.ico">
+	<title>@ViewData[Keys.ViewData.TITLE] - CCIMS</title>
+
+	<!--     Fonts and icons     -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+
+	<!-- Nucleo Icons -->
+	<link href="~/css/nucleo-icons.css" rel="stylesheet" />
+	<link href="~/css/nucleo-svg.css" rel="stylesheet" />
+
+	<!-- Font Awesome Icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+	<link href="~/css/nucleo-svg.css" rel="stylesheet" />
+
+	<!-- CSS Files -->
+	<link id="pagestyle" href="~/css/soft-ui-dashboard.css" rel="stylesheet" />
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Github buttons -->
+	<script async defer src="https://buttons.github.io/buttons.js"></script>
+	
+	<!-- Sweet Alerts-->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
+
+</head>
+<body class="g-sidenav-show bg-gray-100">
+	@await Html.PartialAsync(Routes.Partials.SIDEBAR, new SideBarViewModel(_user.IsAuthenticated && !_inTracking, _controller, _action))
+
+	<!-- Main Content -->
+	<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+
+		@await Html.PartialAsync(Routes.Partials.NAVBAR, new NavBarViewModel(_user.IsAuthenticated && !_inTracking, _username, _role, _fname, _lname))
+
+		<div class="container-fluid px-0">
+			@RenderBody()
+		</div>
+		@await Html.PartialAsync(Routes.Partials.FOOTER)
+	</main>
+
+	<!-- Scripts -->
+	<script src="~/js/core/popper.min.js" defer></script>
+	<script src="~/js/core/bootstrap.min.js" defer></script>
+	<script src="~/js/plugins/perfect-scrollbar.min.js" defer></script>
+	<script src="~/js/soft-ui-dashboard.min.js" defer></script>
+	
+	<script>
+		var win = navigator.platform.indexOf('Win') > -1;
+		if (win && document.querySelector('#sidenav-scrollbar')) {
+			var options = {
+				damping: '0.5'
+			}
+			Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+		}
+	</script>
+
+</body>
+</html>

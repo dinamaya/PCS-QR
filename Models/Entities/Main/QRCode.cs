@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using CCIMS.Web.Models.Abstracts;
+using CCIMS.Web.Models.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CCIMS.Web.Models.Entities.Main
+{
+  public class QRCode : HashedEntity, ICreatable, IModifiable, IActivatable
+  {
+		public QRCode() : base("QRC") {}
+
+    public string ServicePartnerId { get; set; }
+
+    public DateTime DateCreated { get;  set; }
+    public DateTime DateModified { get; set; }
+    public bool IsActive { get; set; }
+
+    [ForeignKey(nameof(ServicePartnerId))]
+    public virtual ServicePartner ServicePartner { get; set; }
+  }
+}

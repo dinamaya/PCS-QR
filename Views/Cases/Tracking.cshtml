@@ -1,0 +1,238 @@
+﻿@using CCIMS.Web.App_Code._Globals
+@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.App_Code._Globals.Extensions
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Models.ViewModels.Partials
+
+@model string
+
+@{
+  ViewData[Keys.ViewData.TITLE] = "Case Tracking";
+
+  var _user = User.Identities.FirstOrDefault();
+  bool isAuthenticated = _user.IsAuthenticated;
+
+  var caseNumber = new InputFieldViewModel()
+      {
+        IdName = "textVal",
+        Title = "Case Number",
+        ClassName = "col mx-2 mb-2 ",
+        InputClassName = "border-0",
+        IsLabelVisible = false,
+        IsCompact = true,
+        Value = Model,
+        AspName = "refNo"
+      };
+
+  var _case = (CaseDetailsViewModel) ViewData[Keys.ViewData.CASE];
+  var customer = (CustomerDetailsViewModel) ViewData[Keys.ViewData.CUSTOMER];
+  var transactions = (IEnumerable<CaseTransactionsViewModel>) ViewData[Keys.ViewData.TRANSACTIONS];
+
+  string avatar = customer != null ? customer.Firstname.ElementAt(0).ToString().ToUpper() + customer?.Lastname.ElementAt(0).ToString().ToUpper() : " ";
+
+}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
+  <div class="container">
+    <a class="navbar-brand m-0 px-4 text-white" asp-action="Index" asp-controller="Dashboard">
+      <img src="../img/icons/icon_vst_sm.svg" class="navbar-brand-img h-100" style="max-height: 2.2rem;" alt="main_logo">
+      <span class="ms-1 font-weight-bolder fs-6">CCI Monitoring System</span>
+    </a>
+    <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon mt-2">
+        <span class="navbar-toggler-bar bar1"></span>
+        <span class="navbar-toggler-bar bar2"></span>
+        <span class="navbar-toggler-bar bar3"></span>
+      </span>
+    </button>
+    <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
+      <ul class="navbar-nav navbar-nav-hover mx-auto">
+      </ul>
+      <ul class="navbar-nav d-lg-block d-none">
+        <li class="nav-item">
+          @if (!isAuthenticated)
+          {
+            <a asp-action="Login" asp-controller="Auth" class="btn btn-sm  bg-white  btn-round mb-0 me-1">Sign in</a>
+          }
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header bg-gradient-primary  position-relative m-3 border-radius-xl">
+  <img src="../../img/shapes/waves-white.svg" alt="pattern-lines" class="position-absolute opacity-6 start-0 top-0 w-100">
+  <div class="container pb-7 pt-7 postion-relative z-index-2">
+    <div class="row">
+      <div class="col-md-6 mx-auto text-center">
+        <h3 class="text-white">Search Case Number / ID</h3>
+        <p class="text-white">Provide the case number generated after registration of your case</p>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-7 mx-auto text-center">
+        <form >
+          <div class="col">
+            <div class="card shadow-card">
+              <div class="card-body p-1 pt-2">
+                <div class="container-fluid d-sm-block d-lg-flex px-0 mt-1">
+
+                  <div class="col">
+                    @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, caseNumber)
+                  </div>
+
+                  <div class="col-12 col-lg-4 h-auto">
+                    <div class="px-2 d-flex mx-2 pb-2 h-100 justify-content-center align-content-center">
+                      <button type="submit" class="w-100 h-auto btn bg-gradient-primary btn-sm mb-0" id="btn-search">
+                        Search
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="mt-n6">
+  <div class="container">
+    <div class="tab-content tab-space">
+      <div class="tab-pane active" id="monthly">
+        <div class="row">
+
+          @if (customer != null && transactions != null)
+          {
+            <div class="mb-0 col-12 col-lg-5">
+              <div class="card blur  shadow-blur overflow-auto overflow-x-hidden mb-4 mb-lg-0">
+                <div class="card-header pb-2">
+                  <h6>Transactions Timeline</h6>
+                </div>
+                <div class="card-body p-3">
+                  @(await Html.PartialAsync(Routes.Partials.TIMELINE_TRANSACTIONS, transactions))
+                </div>
+              </div>
+            </div>
+            <div class="mb-4 col-12 col-lg-7">
+              <div class="mb-4">
+                <div class="card shadow-blur max-height-vh-70">
+                  <div class="card-header">
+                    <div class="row">
+                      <div class="d-flex align-items-center">
+                        <div class="icon icon-shape bg-gradient-primary shadow text-center align-middle border-radius-md d-flex justify-content-center align-items-center">
+                          <div style="letter-spacing: 3px;" class="text-white fs-5">
+                            @avatar
+                          </div>
+                        </div>
+
+                        <div class="ms-3">
+                          <h6 class="mb-0 d-block">Customer Details</h6>
+                          <span class="text-sm text-dark opacity-8">@Utils.GetTimestamp("Date created ", customer.DateCreated)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-body overflow-auto overflow-x-hidden pt-0 pb-3">
+                    <div class="row border-0 d-flex p-3 bg-gray-100 border-radius-md">
+                      <div class="col-12 col-lg-6">
+                        <div class="mb-2 text-sm">Name: <span class="text-dark font-weight-bold ms-2">@(customer.Firstname + " " + customer.Lastname)</span></div>
+                        <div class="mb-2 text-sm">Address: <span class="text-dark ms-2 font-weight-bold">@customer.Address</span></div>
+                      </div>
+                      <div class="col-12 col-lg-6">
+                        <div class="mb-2 text-sm">Email: <span class="text-dark font-weight-bold ms-2">@customer.Email</span></div>
+                        <div class="mb-2 text-sm">Contact No: <span class="text-dark ms-2 font-weight-bold">@customer.ContactNo</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+                  <div class="toast align-items-center w-100" id="tst-casenum" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                      <div class="toast-body">
+                        Case Number <b class="px-1">Model.CaseNumber</b> Copied
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <div class="card shadow-blur max-height-vh-70">
+                  <div class="card-header">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <div class="d-flex align-items-center">
+                          <div class="icon icon-shape bg-gradient-dark shadow text-center border-radius-md">
+                            <i class="ni ni-credit-card text-lg opacity-10" aria-hidden="true"></i>
+                          </div>
+                          <div class="ms-3">
+                            <h6 class="mb-0 d-block">Case Details</h6>
+                            <span class="text-sm text-dark opacity-8">@Utils.GetTimestamp("Date issued ", _case.DateCreated)</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-body overflow-auto overflow-x-hidden pt-0 pb-3">
+                    <div class="row border-0 d-flex p-3 bg-gray-100 border-radius-md">
+                      <div class="cl-12 mb-2 text-sm">Case Number / ID: <span class="text-dark font-weight-bold ms-2">@(_case.CaseNumber)</span></div>
+                      <div class="col-12 col-lg-6">
+                        <div class="mb-2 text-sm">Serial Number: <span class="text-dark ms-2 font-weight-bold">@_case.SerialNumber</span></div>
+                      </div>
+                      <div class="col-12 col-lg-6">
+                        <div class="mb-2 text-sm">Service Partner: <span class="text-dark ms-2 font-weight-bold">@_case.ServicePartner</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+                  <div class="toast align-items-center w-100" id="tst-casenum" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                      <div class="toast-body">
+                        Case Number <b class="px-1">Model.CaseNumber</b> Copied
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+          
+          @if (!string.IsNullOrEmpty((string)ViewData[Keys.ViewData.ERROR]))
+          {
+            <div class="mb-4">
+              <div class="card shadow-blur max-height-vh-70">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="d-flex align-items-center">
+                      <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+                        <i class="fa-solid fa-triangle-exclamation text-lg opacity-10" aria-hidden="true"></i>
+                      </div>
+
+                      <div class="ms-3">
+                        <h6 class="mb-0 d-block">@((string)ViewData[Keys.ViewData.ERROR])</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="py-5"></div>

@@ -1,0 +1,33 @@
+﻿@using CCIMS.Web.Models.ViewModels.Partials
+@model InputFieldViewModel
+
+@{
+  string className = Model.IsCompact ? "text-start py-0" : "text-start py-3";
+  string inputClassName = $"form-control {Model.InputClassName}";
+  string containerClassName = $"input-group {Model.InputContainerClassName}";
+
+  string type = Model.Type.ToString().ToLower();
+}
+
+<div class="@Model.ClassName">
+  <div class="@className">
+    @if (Model.IsLabelVisible)
+    {
+      <label for='@Model.Id' class='form-label fs-5 fw-bold'>@Model.Title</label>
+    }
+
+    <div class='@containerClassName'>
+      @if (Model.IsDisabled)
+      {
+        <input type='@type' id='@Model.Id' name='@Model.Name' class='@inputClassName' placeholder='@Model.PlaceHolder' value='@Model.Value' disabled />
+      }
+      else
+      {
+        <input type='@type' id='@Model.Id' name='@Model.Name' class='@inputClassName' placeholder='@Model.PlaceHolder' value='@Model.Value' />
+      }
+    </div>
+    <span id='@Model.NotifId' class="text-danger text-sm"></span>
+  </div>
+
+</div>
+  

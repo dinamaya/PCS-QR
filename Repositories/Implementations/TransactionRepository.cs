@@ -1,0 +1,101 @@
+﻿using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.Context;
+using CCIMS.Web.Models.DTOs;
+using CCIMS.Web.Models.Entities.Main;
+using CCIMS.Web.Models.ViewModels;
+using CCIMS.Web.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
+using System.Xml.Linq;
+
+namespace CCIMS.Web.Repositories.Implementations
+{
+  public class TransactionRepository : ITransactionRepository
+  {
+    private readonly MainDbContext _mainDb;
+    private readonly IOperationsRepository _opsRepo;
+
+    public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo)
+    {
+      _mainDb = mainDb;
+      _opsRepo = opsRepo;
+    }
+
+    public string InsertedId { get; set; }
+
+    public async Task CreateAsync(TransactionCreationDto data, string createdBy)
+    {
+      var date = DateTime.Now.ToLocalTime();
+
+      var transactions = _mainDb.Transactions.Where(s => s.IsActive && s.CaseID == data.CaseId);
+      if (transactions.Any())
+      {
+        await transactions
+        .ExecuteUpdateAsync(qr => qr
+          .SetProperty(p => p.IsActive, false)
+          .SetProperty(p => p.DateModified, date)
+          .SetProperty(p => p.ModifiedBy, createdBy)
+        );
+      }
+
+      Transaction transaction = new()
+      {
+        CaseID = data.CaseId,
+        Comments =  data.Comments,
+        StatusId = data.StatusId,
+        CreatedBy = createdBy,
+        DateCreated = date,
+        ModifiedBy = createdBy,
+        DateModified = date,
+        IsActive = true,
+      };
+
+      await _mainDb.Transactions.AddAsync(transaction);
+      await _mainDb.SaveChangesAsync();
+
+      InsertedId = transaction.Id.ToString();
+    }
+
+    public async Task<IEnumerable<CaseTransactionsViewModel>> GetAllByCaseId(long caseId)
+    {
+      return await _mainDb.TransactionsVs
+        .Where(t => t.CaseId == caseId)
+        .Select(t => new CaseTransactionsViewModel()
+        {
+          StatusName = t.Status,
+          Comments = t.Comments,
+          TransactionId = t.Id.ToString(),
+          TransactionDate = t.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          Icon = ""
+        })
+        .ToListAsync();
+    }
+
+    public async Task<IEnumerable<DropdownOptionViewModel>> GetExistingStatusByCaseId(long caseId)
+    {
+      return await _mainDb.TransactionsVs
+        .Where(t => t.CaseId == caseId)
+        .Select(t => new DropdownOptionViewModel()
+        {
+          Label = t.Status,
+          Value = t.StatusId
+        })
+        .ToListAsync();
+    }
+
+    public async Task<IEnumerable<DropdownOptionViewModel>> GetAvailableStatusByCaseId(long caseId)
+    {
+      var existingStats = await GetExistingStatusByCaseId(caseId);
+      var allStats = await  _opsRepo.GetOptions();
+      var availStats = allStats.Where(s => !existingStats.Any(x => x.Value == s.Value))
+        .Select(s => new DropdownOptionViewModel()
+        {
+          Label = s.Label,
+          Value = s.Value
+        })
+        .ToList();
+
+      return availStats;
+    }
+  }
+}

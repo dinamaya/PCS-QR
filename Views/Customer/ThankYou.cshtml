@@ -1,0 +1,42 @@
+﻿@using CCIMS.Web.App_Code._Globals
+@model string
+
+@{
+  ViewData[Keys.ViewData.TITLE] = "Thank You";
+	Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+<body class="error-page">
+	<main class="main-content mt-0">
+		<div>
+			<section class="min-vh-100 d-flex align-items-center">
+				<div class="container">
+					<div class="row mt-lg-0 mt-8">
+						<div class="col-lg-5 my-auto">
+							<h1 class="display-1 text-bolder text-gradient text-warning fadeIn1 fadeInBottom mt-5">Thank You!</h1>
+							<h2 class="fadeIn3 fadeInBottom opacity-8">Your request has been successfully submitted.</h2>
+
+							<p class="lead opacity-6 fadeIn2 fadeInBottom">
+								Your <strong>Case Number</strong> is <strong>@Model</strong>. Please keep this number for your records—it will help us locate your case if you need to contact us.
+							</p>
+
+							<p class="lead opacity-6 fadeIn2 fadeInBottom">
+								Our team is reviewing your case, and we’ll get back to you as soon as possible. You will receive a confirmation email with your case details shortly. If you have any further questions, feel free to reach out to our support team. We appreciate your patience and trust in our service!
+							</p>
+							<button type="button" class="btn bg-gradient-warning mt-4 fadeIn2 fadeInBottom"
+											onclick="window.location.href='https://vstecs.com.ph';">
+								Go to VST ECS Website
+							</button>
+							<a class="btn bg-gradient-dark mt-4 fadeIn2 fadeInBottom" asp-action="Tracking" asp-controller="Cases" asp-route-refNo="@(Utils.Security.CleanString(Model))">
+								Track Case
+							</a>
+						</div>
+						<div class="col-lg-7 my-auto">
+							<img class="w-100 fadeIn1 fadeInBottom" src="~/img/illustrations/successokay.png" alt="Success!">
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</main>
+</body>
