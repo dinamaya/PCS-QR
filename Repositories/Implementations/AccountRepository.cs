@@ -77,6 +77,7 @@ namespace CCIMS.Web.Repositories.Implementations
 				LastName = a.LastName,
 				Email = a.Email,
 				Username = a.UserName,
+				CreatedBy = a.Creator,
 				DateCreated = a.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
 				Type = a.RoleName,
 			})
