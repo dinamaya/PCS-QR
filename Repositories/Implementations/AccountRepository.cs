@@ -28,7 +28,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
 		public async Task CreateAsync(AccountCreationRequestDto creationRequest, string createdBy)
 		{
-			var date = DateTime.UtcNow;
+			var date = DateTime.UtcNow.ToLocalTime();
 
 			var person = new Person
 			{
