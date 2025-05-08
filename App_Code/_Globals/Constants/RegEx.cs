@@ -15,6 +15,8 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 	[StringSyntax(StringSyntaxAttribute.Regex)] public const string PHONE = @"^\d+$";
 	[StringSyntax(StringSyntaxAttribute.Regex)] public const string EMAIL_LOCAL = @"^[a-zA-Z0-9._%+-]+(?=@)";
 	[StringSyntax(StringSyntaxAttribute.Regex)] public const string EMAIL_STRICT = @"^[\w\.\-]+@[\w\-]+(\.[\w\-]+)*\.[a-zA-Z]{2,}$";
+	[StringSyntax(StringSyntaxAttribute.Regex)] public const string COMMON = @"^[\p{L}\p{N}\.\,""'\-_/]+$";
+	[StringSyntax(StringSyntaxAttribute.Regex)] public const string CONTACT_NUMBER = @"^\+?[\d\s\-()]{7,20}$";
 	[StringSyntax(StringSyntaxAttribute.Regex)] public const string NON_EMPTY_WHITESPACE = @"(.|\s)*\S(.|\s)*";
 
     public static class Characters
