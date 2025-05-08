@@ -3,6 +3,7 @@ using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CCIMS.Web.Controllers
 {
@@ -19,7 +20,7 @@ namespace CCIMS.Web.Controllers
 			_transRepo = transRepo;
 		}
 
-    [Authorize, HttpGet]
+    [Authorize(Roles = "OPS"), HttpGet]
 		public async Task<IActionResult> Update(string id)
     {
       var _case = await _caseRepo.GetById(id);
@@ -36,19 +37,30 @@ namespace CCIMS.Web.Controllers
     }
     
 		[HttpGet]
-		public async Task<IActionResult> Tracking(string referenceNo)
+		public async Task<IActionResult> Tracking(string? refNo)
     {
-      //var _case = await _caseRepo.GetById(referenceNo);
-      //long caseId = long.Parse(_case.Id);
-      //var transactions = await _transRepo.GetAllByCaseId(caseId);
+      try
+      {
+        if (!refNo.IsNullOrEmpty())
+        {
+          var _case = await _caseRepo.GetByCaseNumber(refNo);
+          long caseId = long.Parse(_case.Id);
+          var transactions = await _transRepo.GetAllByCaseId(caseId);
 
-      //var customer = await _customerRepo.GetById(_case.CustomerId);
+          var customer = await _customerRepo.GetById(_case.CustomerId);
 
-      //ViewData[Keys.ViewData.CUSTOMER] = customer;
-      //ViewData[Keys.ViewData.CASE] = _case;
-      //ViewData[Keys.ViewData.TRANSACTIONS] = transactions;
+          ViewData[Keys.ViewData.CUSTOMER] = customer;
+          ViewData[Keys.ViewData.CASE] = _case;
+          ViewData[Keys.ViewData.TRANSACTIONS] = transactions;
+        }
 
-      return View(referenceNo);
+        return View("Tracking", refNo);
+      }
+      catch (Exception ex)
+      {
+        ViewData[Keys.ViewData.ERROR] = ex.Message;
+        return View("Tracking", refNo);
+      }
     }
 
     [HttpPost, ValidateAntiForgeryToken]

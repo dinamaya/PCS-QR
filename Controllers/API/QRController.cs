@@ -41,7 +41,7 @@ namespace CCIMS.Web.Controllers.API
       if (!doesExist)
         throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
 
-      var token = _tokenProvider.GenerateToken(15, 3, data);
+      var token = _tokenProvider.Generate(data);
 			return Ok(new { token });
 		}
 

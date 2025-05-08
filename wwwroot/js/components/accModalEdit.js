@@ -1,4 +1,4 @@
-﻿import { displayErrors, showErrorModal, handleError, resetNotifs, isNullOrEmpty } from "../utils.js";
+﻿import { checkErrorResponse, showErrorModal, handleError, resetNotifs, isNullOrEmpty, showErrorSimpleModal } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -68,40 +68,34 @@ export function initModal(
 	_radioGroupName = radioGroupName;
 }
 
-export function onEdit(button) {
-  try
-  {
-	  const row = button.closest("tr");
-	  const accId = row.dataset.accId;
+export function onEdit(button)
+{
+	const row = button.closest("tr");
+	const accId = row.dataset.accId;
 
-	  inputs.hdnAccId.val(accId);
-	  const _url = `${window.baseUrl}?id=${accId}`
+	inputs.hdnAccId.val(accId);
+	const _url = `${window.baseUrl}?id=${accId}`
 
-		fetch(_url)
-			.then(response => response.json())
-			.then(data => {
-				const result = data.result;
+	$.ajax({
+		url: _url,
+		method: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			const result = data.result;
 
-				if (data && result) {
-					inputs.lname.val(result.lastName);
-					inputs.fname.val(result.firstName);
-					inputs.uname.val(result.username);
-					inputs.email.val(result.email);
-					inputs.type.setChoiceByValue(result.type);
-				}
-				else
-				{
-					showErrorModal(e.message, "Account Not Found", "There was a problem while fetching the account.", notifs);
-				}
-			})
-			.catch(e => {
-				showErrorModal(e.message, "Account Fetching Failed", "There was a problem while fetching the account.", notifs);
-			})
-	}
-	catch (e) {
-		showErrorModal(e.message, "Account Fetching Failed", "There was a problem while fetching the account.", notifs);
-	}
-
+			if (data && result) {
+				inputs.lname.val(result.lastName);
+				inputs.fname.val(result.firstName);
+				inputs.uname.val(result.username);
+				inputs.email.val(result.email);
+				inputs.type.setChoiceByValue(result.type);
+			}
+			else {
+				showErrorModal("No Result", "Account Not Found", "There was a problem while fetching the account.", notifs);
+			}
+		},
+		error: (error) => handleError(error, "Account Fetching Failed", "There was a problem while fetching the account.", notifs)
+	});
 }
 
 function submit(e) {
@@ -134,6 +128,35 @@ function submit(e) {
 			setTimeout(() => {
 				const url = new URL(window.location.href);
 				url.searchParams.set('q', window.okEditParam);
+				window.location.href = url.toString();
+			}, 300);
+		},
+		error: (error) =>
+			handleError(error, "Account Edit Failed", "There was a problem while editing the account.", notifs)
+	});
+}
+
+function deleteData(e)
+{
+	if (!e.isConfirmed) return;
+
+	const deleteUrl = new URL(window.baseUrl, window.location.origin);
+	deleteUrl.searchParams.set('id', inputs.hdnAccId.val());
+
+	console.log(deleteUrl);
+
+	$.ajax({
+		url: deleteUrl,
+		method: 'DELETE',
+		success: function (response)
+		{
+			const modalEl = $('#modal-edit');
+			const modalInstance = bootstrap.Modal.getInstance(modalEl);
+			modalInstance.hide();
+
+			setTimeout(() => {
+				const url = new URL(window.location.href);
+				url.searchParams.set('q', window.okDeleteParam);
 				window.location.href = url.toString();
 			}, 300);
 		},
@@ -179,10 +202,39 @@ function put() {
 		});
 }
 
+function onDelete()
+{
+	Swal.mixin({
+		customClass: {
+			confirmButton: 'btn bg-gradient-success',
+			cancelButton: 'btn bg-gradient-danger'
+		},
+		buttonsStyling: !1
+	})
+		.fire({
+			title: 'Delete Account?',
+			text: 'This will delete the current account!',
+			icon: 'question',
+			confirmButtonText: 'Delete',
+			cancelButtonText: 'Cancel',
+			reverseButtons: !0,
+			showCancelButton: !0
+		})
+		.then(deleteData)
+		.catch(e => {
+			showErrorSimpleModal(e.message, "Account Delete Failed", "There was a problem while deleting the account.");
+		});
+}
+
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {
 		event.preventDefault();
 		put();
+	});
+
+	$('#btn-delete').click(function (event) {
+		event.preventDefault();
+		onDelete();
 	});
 });

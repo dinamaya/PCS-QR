@@ -11,7 +11,11 @@ public partial class CasesCreatedTodayV
 
     public string CustomerId { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+	public string FirstName { get; set; } = null!; 
+
+	public string LastName { get; set; } = null!;  
+
+	public string Description { get; set; } = null!;
 
     public string QrcodeId { get; set; } = null!;
 

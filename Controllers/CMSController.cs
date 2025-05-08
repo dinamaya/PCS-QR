@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CCIMS.Web.Controllers
 {
-  [Authorize]
 	public class CMSController : Controller
 	{
     private readonly IServicePartnerRepository _spRepo;
@@ -24,11 +23,14 @@ namespace CCIMS.Web.Controllers
       _configRepo = configRepo;
       _caseRepo = caseRepo;
     }
+
+    [Authorize]
     public IActionResult Index()
     {
       return View();
     }
 
+    [Authorize(Roles = "SPA")]
     public async Task<IActionResult> ServicePartner()
     {
       try
@@ -42,6 +44,7 @@ namespace CCIMS.Web.Controllers
       }
     }
 
+    [Authorize(Roles = "OPS")]
     public async Task<IActionResult> Account(string? q)
     {
       try
@@ -50,6 +53,7 @@ namespace CCIMS.Web.Controllers
         {
           if(q.Equals(Queries.SUCCESS_CREATE)) ViewData[Keys.ViewData.SUCCESS] = "Account Created Successfully";
           if(q.Equals(Queries.SUCCESS_EDIT)) ViewData[Keys.ViewData.SUCCESS] = "Account Edited Successfully";
+          if(q.Equals(Queries.SUCCESS_DELETE)) ViewData[Keys.ViewData.SUCCESS] = "Account Deleted Successfully";
         }
 
         var results = await _accountRepo.GetAll();
@@ -63,6 +67,7 @@ namespace CCIMS.Web.Controllers
       }
     }
 
+    [Authorize]
     public async Task<IActionResult> Cases(string? c = null, string? v = null)
     {
       try

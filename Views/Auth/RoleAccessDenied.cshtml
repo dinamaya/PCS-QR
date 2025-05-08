@@ -1,0 +1,43 @@
+﻿
+<style>
+	.err-description{
+		font-weight: 600;
+		font-style: normal;
+		font-weight: 600;
+		font-size: 32px;
+		line-height: 39px;
+		max-width: 595px;
+		color: #000000;
+	}
+	.z-3 {
+		z-index: 3;
+	}
+	.err-code {
+		font-style: normal;
+		font-weight: 500;
+		font-size: 400px;
+		color: #ECECED;
+		z-index: 1;
+	}
+
+	.err-bg{
+		background: #F8F8F8;
+	}
+</style>
+
+
+
+<div class="align-self-stretch flex-fill h-auto mt-5 d-flex justify-content-center align-items-center">
+	<div class="container-fluid d-flex justify-content-center align-items-center err-bg h-100">
+		<div class="p-0 m-0 lh-1 position-relative d-flex justify-content-center align-items-center">
+			<div class="err-code">403</div>
+			<div class="position-absolute z-3 mt-5 pt-5">
+				<div class="err-description text-center">
+					Oops... You do not have permission to access this resource.
+				</div>
+				<div class="">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

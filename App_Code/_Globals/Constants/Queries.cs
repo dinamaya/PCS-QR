@@ -9,6 +9,7 @@
 		public const string MIGRATE = "mYK4h0zV";
 		public const string ERROR = "eRtvPnV1";
 
+    public const string SUCCESS_DELETE = "scZpmNld";
     public const string SUCCESS_EDIT = "sMr1xl0e";
     public const string SUCCESS_CREATE = "sZcJakmc";
   }

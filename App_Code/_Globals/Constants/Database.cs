@@ -7,7 +7,7 @@
     {
       public const string DISPLAY = "MMM. d, yyyy";
       public const string DISPLAY2 = "MMMM d, yyyy";
-      public const string DISPLAY_COMPLETE = "MMMM d, yyyy (HH:mm tt)";
+      public const string DISPLAY_COMPLETE = "MMMM d, yyyy (hh:mm tt)";
       public const string SEARCH = "MM/dd/yyyy";
       public const string INPUT = "MMddyyyy";
       public const string INPUT2 = "yyyy-MM-dd";
@@ -18,6 +18,10 @@
     public abstract class File
     {
       public const int MAX_SIZE = 5 * 1024 * 1024; // 10 MB1
+    }
+    public abstract class Token
+    {
+      public const int EXPIRE_MIN = 15; // 15 Mins
     }
   }
 }

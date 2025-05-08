@@ -49,20 +49,20 @@ namespace CCIMS.Web.Context
                 entity.Property(e => e.DayOfWeek).HasMaxLength(30);
             });
 
-            modelBuilder.Entity<CasesCreatedTodayV>(entity =>
-            {
-                entity
-                    .HasNoKey()
-                    .ToView("CasesCreatedToday_v");
+			modelBuilder.Entity<CasesCreatedTodayV>(entity =>
+			{
+				entity
+					.HasNoKey()
+					.ToView("CasesCreatedToday_v");
 
-                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.QrcodeId)
-                    .HasMaxLength(450)
-                    .HasColumnName("QRCodeId");
-            });
+				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+				entity.Property(e => e.Id).ValueGeneratedOnAdd();
+				entity.Property(e => e.QrcodeId)
+					.HasMaxLength(450)
+					.HasColumnName("QRCodeId");
+			});
 
-            modelBuilder.Entity<ClosedCasesV>(entity =>
+			modelBuilder.Entity<ClosedCasesV>(entity =>
             {
                 entity
                     .HasNoKey()

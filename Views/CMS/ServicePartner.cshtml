@@ -3,7 +3,9 @@
 @model IEnumerable<ServicePartnerRowViewModel>
 
 <script src="~/js/plugins/datatables.js"></script>
-
+@{
+  ViewData[Keys.ViewData.TITLE] = "CMS | Service Partners";
+}
 <div>
   <div class="container-fluid py-4">
     <div class="row">

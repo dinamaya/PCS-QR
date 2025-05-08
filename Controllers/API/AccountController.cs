@@ -14,6 +14,7 @@ namespace CCIMS.Web.Controllers.API
 {
 	[Route("api/account")]
 	[ApiController]
+	[Authorize]
 	public class AccountController : ControllerBase
 	{
 		private readonly AuthDbContext _authDb;
@@ -28,7 +29,7 @@ namespace CCIMS.Web.Controllers.API
       _userManager = userManager;
     }
 
-    [HttpPost, Authorize]
+    [HttpPost]
 		public async Task<ActionResult<ResponseDto>> Post([FromBody] AccountCreationRequestDto creationRequest)
 		{
       var response = new ResponseDto();
@@ -60,7 +61,7 @@ namespace CCIMS.Web.Controllers.API
 			}
 		}
 
-		[HttpGet, Authorize]
+		[HttpGet]
 		public async Task<ActionResult<ResponseDto<AccountEditResponseDto>>> Get([FromQuery] string id)
 		{
 			var response = new ResponseDto<AccountEditResponseDto>();
@@ -80,7 +81,7 @@ namespace CCIMS.Web.Controllers.API
 			}
 		}
 
-		[HttpPut, Authorize]
+		[HttpPut]
 		public async Task<ActionResult<ResponseDto>> Put([FromBody] AccountEditRequestDto requestDto)
 		{
 			var response = new ResponseDto();
@@ -90,6 +91,34 @@ namespace CCIMS.Web.Controllers.API
 				await _accountRepo.EditAsync(requestDto, accountId);
 
 				response.Message = "Account (" + requestDto.Id + ") Updated";
+
+				return Ok(response);
+      }
+      catch (InvalidOperationException ex)
+      {
+        response.Message = ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+      catch (Exception ex)
+			{
+				response.Message = "Error: " + ex.Message;
+				response.IsSuccess = false;
+
+				return BadRequest(response);
+			}
+		}
+
+		[HttpDelete]
+    public async Task<ActionResult<ResponseDto>> Delete([FromQuery] string id)
+		{
+			var response = new ResponseDto();
+			try
+			{
+				await _accountRepo.DeactivateAsync(id);
+
+				response.Message = "Account (" + id + ") Deleted";
 
 				return Ok(response);
       }

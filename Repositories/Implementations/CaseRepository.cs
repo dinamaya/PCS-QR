@@ -119,5 +119,22 @@ namespace CCIMS.Web.Repositories
         .Select(c => c.Status)
         .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_CASE);
     }
+
+    public async Task<CaseDetailsViewModel> GetByCaseNumber(string caseNumber)
+    {
+      return await _context.CaseDetailsVs
+        .Where(c => c.CaseNumber == caseNumber)
+        .Select(_case => new CaseDetailsViewModel()
+        {
+          Id = _case.Id.ToString(),
+          CustomerId = _case.CustomerId,
+          DateCreated = _case.DateCreated,
+          CaseNumber = _case.CaseNumber,
+          ServicePartner = _case.SpName,
+          SerialNumber = _case.SerialNumber,
+          Description = _case.Description
+        })
+        .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_CASE);
+    }
   }
 }

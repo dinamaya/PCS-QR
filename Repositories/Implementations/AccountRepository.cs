@@ -28,7 +28,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
 		public async Task CreateAsync(AccountCreationRequestDto creationRequest, string createdBy)
 		{
-			var date = DateTime.UtcNow;
+			var date = DateTime.UtcNow.ToLocalTime();
 
 			var person = new Person
 			{
@@ -77,6 +77,7 @@ namespace CCIMS.Web.Repositories.Implementations
 				LastName = a.LastName,
 				Email = a.Email,
 				Username = a.UserName,
+				CreatedBy = a.Creator,
 				DateCreated = a.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
 				Type = a.RoleName,
 			})
@@ -166,6 +167,25 @@ namespace CCIMS.Web.Repositories.Implementations
 
 			if (isEmailExist)
 				throw new InvalidOperationException(Exceptions.Message.INVALID_EMAIL);
+    }
+
+    public async Task DeactivateAsync(string id)
+    {
+      using var transaction = await _authDb.Database.BeginTransactionAsync();
+
+      var account = await _authDb.Accounts.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
+      var person = await _authDb.People.FindAsync(account.PersonID) ?? throw new Exception(Exceptions.Message.INVALID_PERSONREFERENCE);
+
+      account.IsActive = false;
+      person.IsActive = false;
+
+      var result = await _userManager.UpdateAsync(account);
+      if (!result.Succeeded)
+        throw new Exception(Exceptions.Message.INVALID_ACCOUNT_DELETE);
+
+      _authDb.People.Update(person);
+      await _authDb.SaveChangesAsync();
+      await transaction.CommitAsync();
     }
   }
 }

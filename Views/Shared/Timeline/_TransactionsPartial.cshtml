@@ -1,0 +1,43 @@
+﻿@using CCIMS.Web.Models.ViewModels
+@model IEnumerable<CaseTransactionsViewModel>
+
+<div class="timeline timeline-one-side" data-timeline-axis-style="dotted">
+  @{
+    int x = 0;
+    foreach (var transaction in Model)
+    {
+      <div class="timeline-block mb-3">
+        <span class="timeline-step">
+          @switch (transaction.StatusName)
+          {
+            case "On-Queue":
+              <i class="fa-solid fa-arrow-right-to-bracket text-success text-gradient"></i>
+              break;
+            case "For DTS Approval":
+              <i class="fa-solid fa-thumbs-up text-success text-gradient"></i>
+              break;
+            case "Parts Requested":
+              <i class="fa-solid fa-gear text-success text-gradient"></i>
+              break;
+            case "Closed":
+              <i class="fa-solid fa-circle-check text-success text-gradient"></i>
+              break;
+            default:
+              <i class="ni ni-check-bold text-success text-gradient"></i>
+              break;
+          }
+        </span>
+        <div class="timeline-content">
+          <h6 class="text-dark text-sm font-weight-bold mb-0">@transaction.StatusName</h6>
+          <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">@transaction.TransactionDate</p>
+          <p class="text-sm mt-3 mb-2">
+            @transaction.Comments
+          </p>
+          <span class="badge badge-sm bg-gradient-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Transaction ID">#@transaction.TransactionId</span>
+        </div>
+      </div>
+
+      x++;
+    }
+  }
+</div>

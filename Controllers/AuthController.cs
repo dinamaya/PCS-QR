@@ -82,5 +82,6 @@ namespace CCIMS.Web.Controllers
 			return RedirectToAction("Index", "Auth");
 		}
 
-	}
+    [HttpGet] public IActionResult RoleAccessDenied() => View();
+  }
 }
