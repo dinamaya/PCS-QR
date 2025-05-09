@@ -1,7 +1,5 @@
 ﻿export function displayErrors(errors, notifElems) {
-  for (const spans of Object.values(notifElems)) {
-    spans[0].innerText = "";
-  }
+  resetNotifs(notifElems);
 
   for (const [key, messages] of Object.entries(errors)) {
     const notif = notifElems[key]?.[0];
@@ -139,4 +137,69 @@ export function confirmAction2(positiveText, title, description, errorTitle, err
     .catch(e => {
       showErrorSimpleModal(e.message, errorTitle, errorDescription);
     });
+}
+
+
+export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifList) {
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify(dto),
+    success: function (response) {
+      hideModal(modalId);
+      refreshPage(window.okEditParam);
+    },
+    error: (error) =>
+      handleError(error, errorTitle, errorDescription, notifList)
+  });
+}
+
+export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList) {
+
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(dto),
+    success: function (response) {
+      hideModal(modalId);
+      refreshPage(window.okCreateParam);
+    },
+    error: (error) =>
+      handleError(error, errorTitle, errorDescription, notifList)
+  });
+}
+
+export function httpDelete(url, dto, modalId, errorTitle, errorDescription, notifList) {
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'DELETE',
+    contentType: 'application/json',
+    data: JSON.stringify(dto),
+    success: function (response) {
+      hideModal(modalId);
+      refreshPage(window.okDeleteParam);
+    },
+    error: (error) =>
+      handleError(error, errorTitle, errorDescription, notifList)
+  });
+}
+
+
+function refreshPage(queryParam) {
+  setTimeout(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('q', queryParam);
+    window.location.href = url.toString();
+  }, 300);
+}
+
+function hideModal(modalId) {
+  const modalEl = $(`#${modalId}`);
+  const modalInstance = bootstrap.Modal.getInstance(modalEl);
+  modalInstance.hide();
 }

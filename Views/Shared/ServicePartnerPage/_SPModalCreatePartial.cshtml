@@ -82,6 +82,7 @@
 </div>
 
 <script type="module">
-	import { initModal as initCreateModal} from '/js/components/spModalCreate.js';
+	import { initModal as initCreateModal, initModalNotifs as initCreateModalNotifs} from '/js/components/spModalCreate.js';
 	initCreateModal('@spName.Id', '@compName.Id', '@contPerson.Id', '@contNo.Id', '@email.Id');
+	initCreateModalNotifs('@spName.NotifId', '@compName.NotifId', '@contPerson.NotifId', '@contNo.NotifId', '@email.NotifId');
 </script>

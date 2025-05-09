@@ -1,4 +1,4 @@
-﻿import { confirmAction, confirmAction2, handleError, resetNotifs, showErrorModal, showErrorSimpleModal } from "../utils.js";
+﻿import { confirmAction, confirmAction2, handleError, resetNotifs, showErrorModal, showErrorSimpleModal, httpPut, httpDelete } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -115,25 +115,14 @@ function edit(e, errorTitle, errorDescription, notifList) {
 		RetypePass: inputs.pass2.val(),
 	};
 
-	$.ajax({
-		url: window.baseUrl,
-		method: 'PUT',
-		contentType: 'application/json',
-		data: JSON.stringify(dto),
-		success: function (response) {
-			const modalEl = $('#modal-edit');
-			const modalInstance = bootstrap.Modal.getInstance(modalEl);
-			modalInstance.hide();
-
-			setTimeout(() => {
-				const url = new URL(window.location.href);
-				url.searchParams.set('q', window.okEditParam);
-				window.location.href = url.toString();
-			}, 300);
-		},
-		error: (error) =>
-			handleError(error, errorTitle, errorDescription, notifList)
-	});
+	httpPut(
+		window.baseUrl,
+		dto,
+		'modal-edit',
+		errorTitle,
+		errorDescription,
+		notifList
+	);
 }
 
 function deactivate(e, errorTitle, errorDescription)
@@ -143,7 +132,7 @@ function deactivate(e, errorTitle, errorDescription)
 	const deleteUrl = new URL(window.baseUrl, window.location.origin);
 	deleteUrl.searchParams.set('id', inputs.hdnAccId.val());
 
-	console.log(deleteUrl);
+	httpDelete(deleteUrl, );
 
 	$.ajax({
 		url: deleteUrl,

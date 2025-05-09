@@ -1,5 +1,5 @@
 ﻿import { accountCreationRequestDto } from "../dtos/accountCreationRequestDto.js";
-import { displayErrors, showErrorModal, handleError, confirmAction } from "../utils.js";
+import { handleError, confirmAction } from "../utils.js";
 
 let inputs = {
   lname: null,

@@ -6,9 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CCIMS.Web.App_Code._Globals.Validtors.Objects
 {
-  public class ServicePartnerValidator : AbstractValidator<SPCreationRequestDto>
+  public class ServicePartnerCreationRequestValidator : AbstractValidator<SPCreationRequestDto>
   {
-    public ServicePartnerValidator(IConfigurationRepository configRepo)
+    public ServicePartnerCreationRequestValidator(IConfigurationRepository configRepo)
     {
       RuleFor(x => x.Name)
         .NotEmpty().WithMessage("Service Partner name is required.")
