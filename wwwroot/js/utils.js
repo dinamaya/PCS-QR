@@ -93,3 +93,50 @@ export function checkErrorResponse(respone) {
 
   return respone.json();
 }
+
+// Use only on the Put and Post Requests
+export function confirmAction(positiveText, title, description, errorTitle, errorDescription, notifList, submitCallback) {
+  Swal.mixin({
+    customClass: {
+      confirmButton: 'btn bg-gradient-success',
+      cancelButton: 'btn bg-gradient-danger'
+    },
+    buttonsStyling: !1
+  })
+    .fire({
+      title: title,
+      text: description,
+      icon: 'question',
+      confirmButtonText: positiveText,
+      cancelButtonText: 'Cancel',
+      reverseButtons: !0,
+      showCancelButton: !0
+    })
+    .then(e => submitCallback(e, errorTitle, errorDescription, notifList))
+    .catch(e => {
+      showErrorModal(e.message, errorTitle, errorDescription, notifList);
+    });
+}
+
+export function confirmAction2(positiveText, title, description, errorTitle, errorDescription, submitCallback) {
+  Swal.mixin({
+    customClass: {
+      confirmButton: 'btn bg-gradient-success',
+      cancelButton: 'btn bg-gradient-danger'
+    },
+    buttonsStyling: !1
+  })
+    .fire({
+      title: title,
+      text: description,
+      icon: 'question',
+      confirmButtonText: positiveText,
+      cancelButtonText: 'Cancel',
+      reverseButtons: !0,
+      showCancelButton: !0
+    })
+    .then(e => submitCallback(e, errorTitle, errorDescription))
+    .catch(e => {
+      showErrorSimpleModal(e.message, errorTitle, errorDescription);
+    });
+}

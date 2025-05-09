@@ -1,5 +1,5 @@
 ﻿import { accountCreationRequestDto } from "../dtos/accountCreationRequestDto.js";
-import { displayErrors, showErrorModal, handleError } from "../utils.js";
+import { displayErrors, showErrorModal, handleError, confirmAction } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -56,31 +56,7 @@ export function initModal(
   inputs.type = $(`#${typeId}`);
 }
 
-function post()
-{
-  Swal.mixin({
-    customClass: {
-      confirmButton: 'btn bg-gradient-success',
-      cancelButton: 'btn bg-gradient-danger'
-    },
-    buttonsStyling: !1
-  })
-    .fire({
-      title: 'Create Account?',
-      text: 'This will create current account with the provided details!',
-      icon: 'question',
-      confirmButtonText: 'Create',
-      cancelButtonText: 'Cancel',
-      reverseButtons: !0,
-      showCancelButton: !0
-    })
-    .then(submit)
-    .catch(e => {
-      showErrorModal(e.message, "Account Creation Failed", "There was a problem while creating the account.", notifs);
-    });
-}
-
-function submit(e)
+function submit(e, errorTitle, errorDescription, notifList)
 {
   if (!e.isConfirmed) return;
 
@@ -110,7 +86,7 @@ function submit(e)
         window.location.href = url.toString();
       }, 300);
     },
-    error: (error) => handleError(error, "Account Creation Failed", "There was a problem while creating the account.", notifs)
+    error: (error) => handleError(error, errorTitle, errorDescription, notifList)
   });
 }
 
@@ -118,6 +94,14 @@ function submit(e)
 $(document).ready(function () {
   $('#form-create').submit(function (event) {
     event.preventDefault();
-    post();
+    confirmAction(
+      'Create',
+      'Create Account?',
+      'This will create current account with the provided details!',
+      'Account Creation Failed',
+      'There was a problem while creating the account.',
+      notifs,
+      submit
+    );
   });
 });

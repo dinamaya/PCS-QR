@@ -1,4 +1,4 @@
-﻿import { checkErrorResponse, showErrorModal, handleError, resetNotifs, isNullOrEmpty, showErrorSimpleModal } from "../utils.js";
+﻿import { confirmAction, confirmAction2, handleError, resetNotifs, showErrorModal, showErrorSimpleModal } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -98,7 +98,7 @@ export function onEdit(button)
 	});
 }
 
-function submit(e) {
+function edit(e, errorTitle, errorDescription, notifList) {
 	if (!e.isConfirmed) return;
 
 	resetNotifs(notifs);
@@ -132,11 +132,11 @@ function submit(e) {
 			}, 300);
 		},
 		error: (error) =>
-			handleError(error, "Account Edit Failed", "There was a problem while editing the account.", notifs)
+			handleError(error, errorTitle, errorDescription, notifList)
 	});
 }
 
-function deleteData(e)
+function deactivate(e, errorTitle, errorDescription)
 {
 	if (!e.isConfirmed) return;
 
@@ -161,7 +161,7 @@ function deleteData(e)
 			}, 300);
 		},
 		error: (error) =>
-			handleError(error, "Account Edit Failed", "There was a problem while editing the account.", notifs)
+			handleError(error, errorTitle, errorDescription, notifs)
 	});
 }
 
@@ -179,62 +179,30 @@ function getSelectedPasswordOption()
 	return '';
 }
 
-function put() {
-	Swal.mixin({
-		customClass: {
-			confirmButton: 'btn bg-gradient-success',
-			cancelButton: 'btn bg-gradient-danger'
-		},
-		buttonsStyling: !1
-	})
-		.fire({
-			title: 'Edit Account?',
-			text: 'This will edit the current account with the provided details!',
-			icon: 'question',
-			confirmButtonText: 'Create',
-			cancelButtonText: 'Cancel',
-			reverseButtons: !0,
-			showCancelButton: !0
-		})
-		.then(submit)
-		.catch(e => {
-			showErrorModal(e.message, "Account Edit Failed", "There was a problem while creating the account.", notifs);
-		});
-}
-
-function onDelete()
-{
-	Swal.mixin({
-		customClass: {
-			confirmButton: 'btn bg-gradient-success',
-			cancelButton: 'btn bg-gradient-danger'
-		},
-		buttonsStyling: !1
-	})
-		.fire({
-			title: 'Delete Account?',
-			text: 'This will delete the current account!',
-			icon: 'question',
-			confirmButtonText: 'Delete',
-			cancelButtonText: 'Cancel',
-			reverseButtons: !0,
-			showCancelButton: !0
-		})
-		.then(deleteData)
-		.catch(e => {
-			showErrorSimpleModal(e.message, "Account Delete Failed", "There was a problem while deleting the account.");
-		});
-}
-
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {
 		event.preventDefault();
-		put();
+		confirmAction(
+			'Edit',
+			'Edit Account?',
+			'This will edit the current account with the provided details!',
+			"Account Edit Failed",
+			"There was a problem while editing the account.",
+			notifs,
+			edit
+		);
 	});
 
 	$('#btn-delete').click(function (event) {
 		event.preventDefault();
-		onDelete();
+		confirmAction2(
+			'Delete',
+			'Delete Account?',
+			'This will delete the current account!',
+			"Account Edit Failed",
+			"There was a problem while editing the account.",
+			deactivate
+		);
 	});
 });
