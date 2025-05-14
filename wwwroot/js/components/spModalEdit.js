@@ -54,6 +54,7 @@ export function initModalNotifs(
 
 export function onEdit(button)
 {
+	resetNotifs(notifs);
 	const row = button.closest("tr");
 	const spId = row.dataset.spId;
 

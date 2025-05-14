@@ -70,6 +70,7 @@ export function initModal(
 
 export function onEdit(button)
 {
+	resetNotifs(notifs);
 	const row = button.closest("tr");
 	const accId = row.dataset.accId;
 
