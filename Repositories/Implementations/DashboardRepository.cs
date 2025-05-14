@@ -35,10 +35,7 @@ namespace CCIMS.Web.Repositories
 		public async Task<List<WeeklyAgingCasesChartV>> GetWeeklyAgingCasesChartAsync() =>
 			await _context.WeeklyAgingCasesChartVs.ToListAsync();
 
-		public async Task<List<CasesCreatedTodayV>> GetLatestCaseSubmissionsAsync(int count = 3) =>
-			await _context.CasesCreatedTodayVs
-				.OrderByDescending(c => c.DateCreated)
-				.Take(count)
-				.ToListAsync();
+		public async Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync() =>
+			await _context.LatestCasesSubmissionVs.ToListAsync();
 	}
 }

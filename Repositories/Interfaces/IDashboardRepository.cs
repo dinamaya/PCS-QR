@@ -13,6 +13,6 @@ namespace CCIMS.Web.Repositories.Interfaces
 		Task<int> GetTotalCasesCountAsync();
 		Task<List<WeeklyCasesChartV>> GetWeeklyCasesChartAsync();
 		Task<List<WeeklyAgingCasesChartV>> GetWeeklyAgingCasesChartAsync();
-		Task<List<CasesCreatedTodayV>> GetLatestCaseSubmissionsAsync(int count = 3);
+		Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync();
 	}
 }
