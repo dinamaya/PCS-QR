@@ -123,18 +123,17 @@ namespace CCIMS.Web.Context
 		  entity.Property(e => e.StatusId).HasMaxLength(450);
 	  });
 
-			modelBuilder.Entity<ServicePartnersV>(entity =>
-				  {
-					  entity
-							  .HasNoKey()
-							  .ToView("ServicePartners_v");
+      modelBuilder.Entity<ServicePartnersV>(entity =>
+      {
+        entity
+            .HasNoKey()
+            .ToView("ServicePartners_v");
 
-					  entity.Property(e => e.CreatorUsername).HasMaxLength(256);
-					  entity.Property(e => e.QrId).HasMaxLength(450);
-					  entity.Property(e => e.SpId).HasMaxLength(450);
-				  });
+        entity.Property(e => e.QrId).HasMaxLength(450);
+        entity.Property(e => e.SpId).HasMaxLength(450);
+      });
 
-			modelBuilder.Entity<StatusesV>(entity =>
+      modelBuilder.Entity<StatusesV>(entity =>
 			{
 				entity
 						.HasNoKey()
