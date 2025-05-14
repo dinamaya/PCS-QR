@@ -1,4 +1,4 @@
-﻿import { checkErrorResponse, showErrorModal, handleError, resetNotifs, isNullOrEmpty, showErrorSimpleModal } from "../utils.js";
+﻿import { confirmAction, confirmAction2, handleError, resetNotifs, showErrorModal, showErrorSimpleModal, httpPut, httpDelete } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -70,6 +70,7 @@ export function initModal(
 
 export function onEdit(button)
 {
+	resetNotifs(notifs);
 	const row = button.closest("tr");
 	const accId = row.dataset.accId;
 
@@ -98,7 +99,7 @@ export function onEdit(button)
 	});
 }
 
-function submit(e) {
+function edit(e, errorTitle, errorDescription, notifList) {
 	if (!e.isConfirmed) return;
 
 	resetNotifs(notifs);
@@ -115,35 +116,24 @@ function submit(e) {
 		RetypePass: inputs.pass2.val(),
 	};
 
-	$.ajax({
-		url: window.baseUrl,
-		method: 'PUT',
-		contentType: 'application/json',
-		data: JSON.stringify(dto),
-		success: function (response) {
-			const modalEl = $('#modal-edit');
-			const modalInstance = bootstrap.Modal.getInstance(modalEl);
-			modalInstance.hide();
-
-			setTimeout(() => {
-				const url = new URL(window.location.href);
-				url.searchParams.set('q', window.okEditParam);
-				window.location.href = url.toString();
-			}, 300);
-		},
-		error: (error) =>
-			handleError(error, "Account Edit Failed", "There was a problem while editing the account.", notifs)
-	});
+	httpPut(
+		window.baseUrl,
+		dto,
+		'modal-edit',
+		errorTitle,
+		errorDescription,
+		notifList
+	);
 }
 
-function deleteData(e)
+function deactivate(e, errorTitle, errorDescription)
 {
 	if (!e.isConfirmed) return;
 
 	const deleteUrl = new URL(window.baseUrl, window.location.origin);
 	deleteUrl.searchParams.set('id', inputs.hdnAccId.val());
 
-	console.log(deleteUrl);
+	httpDelete(deleteUrl, );
 
 	$.ajax({
 		url: deleteUrl,
@@ -161,7 +151,7 @@ function deleteData(e)
 			}, 300);
 		},
 		error: (error) =>
-			handleError(error, "Account Edit Failed", "There was a problem while editing the account.", notifs)
+			handleError(error, errorTitle, errorDescription, notifs)
 	});
 }
 
@@ -179,62 +169,30 @@ function getSelectedPasswordOption()
 	return '';
 }
 
-function put() {
-	Swal.mixin({
-		customClass: {
-			confirmButton: 'btn bg-gradient-success',
-			cancelButton: 'btn bg-gradient-danger'
-		},
-		buttonsStyling: !1
-	})
-		.fire({
-			title: 'Edit Account?',
-			text: 'This will edit the current account with the provided details!',
-			icon: 'question',
-			confirmButtonText: 'Create',
-			cancelButtonText: 'Cancel',
-			reverseButtons: !0,
-			showCancelButton: !0
-		})
-		.then(submit)
-		.catch(e => {
-			showErrorModal(e.message, "Account Edit Failed", "There was a problem while creating the account.", notifs);
-		});
-}
-
-function onDelete()
-{
-	Swal.mixin({
-		customClass: {
-			confirmButton: 'btn bg-gradient-success',
-			cancelButton: 'btn bg-gradient-danger'
-		},
-		buttonsStyling: !1
-	})
-		.fire({
-			title: 'Delete Account?',
-			text: 'This will delete the current account!',
-			icon: 'question',
-			confirmButtonText: 'Delete',
-			cancelButtonText: 'Cancel',
-			reverseButtons: !0,
-			showCancelButton: !0
-		})
-		.then(deleteData)
-		.catch(e => {
-			showErrorSimpleModal(e.message, "Account Delete Failed", "There was a problem while deleting the account.");
-		});
-}
-
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {
 		event.preventDefault();
-		put();
+		confirmAction(
+			'Edit',
+			'Edit Account?',
+			'This will edit the current account with the provided details!',
+			"Account Edit Failed",
+			"There was a problem while editing the account.",
+			notifs,
+			edit
+		);
 	});
 
 	$('#btn-delete').click(function (event) {
 		event.preventDefault();
-		onDelete();
+		confirmAction2(
+			'Delete',
+			'Delete Account?',
+			'This will delete the current account!',
+			"Account Delete Failed",
+			"There was a problem while deleting the account.",
+			deactivate
+		);
 	});
 });

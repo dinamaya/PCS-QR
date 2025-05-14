@@ -72,7 +72,11 @@
 	<script src="~/js/soft-ui-dashboard.min.js" defer></script>
 	
 	<script>
-		var win = navigator.platform.indexOf('Win') > -1;
+		window.okEditParam = '@Queries.SUCCESS_EDIT';
+		window.okCreateParam = '@Queries.SUCCESS_CREATE';
+		window.okDeleteParam = '@Queries.SUCCESS_DELETE';
+
+			var win = navigator.platform.indexOf('Win') > -1;
 		if (win && document.querySelector('#sidenav-scrollbar')) {
 			var options = {
 				damping: '0.5'

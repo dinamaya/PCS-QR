@@ -1,7 +1,5 @@
 ﻿export function displayErrors(errors, notifElems) {
-  for (const spans of Object.values(notifElems)) {
-    spans[0].innerText = "";
-  }
+  resetNotifs(notifElems);
 
   for (const [key, messages] of Object.entries(errors)) {
     const notif = notifElems[key]?.[0];
@@ -66,6 +64,25 @@ export function handleError(error, title, defaultMessage, notifs)
   }
 }
 
+export function handleSimpleError(error, title, defaultMessage) {
+  try {
+    if (error.status == 401) {
+      showErrorSimpleModal("Please refresh the page", "Session expired")
+      return;
+    }
+
+    const response = error.responseText;
+    const result = JSON.parse(response);
+    const errors = result.errors;
+
+    if (!errors)
+      throw new DOMException(result.message);
+  }
+  catch (e) {
+    showErrorSimpleModal(e.message, title, defaultMessage);
+  }
+}
+
 export function handleModalError(data, title, defaultMessage, notifs) {
   try {
     const response = data.responseText;
@@ -92,4 +109,114 @@ export function checkErrorResponse(respone) {
   }
 
   return respone.json();
+}
+
+// Use only on the Put and Post Requests
+export function confirmAction(positiveText, title, description, errorTitle, errorDescription, notifList, submitCallback) {
+  Swal.mixin({
+    customClass: {
+      confirmButton: 'btn bg-gradient-success',
+      cancelButton: 'btn bg-gradient-danger'
+    },
+    buttonsStyling: !1
+  })
+    .fire({
+      title: title,
+      text: description,
+      icon: 'question',
+      confirmButtonText: positiveText,
+      cancelButtonText: 'Cancel',
+      reverseButtons: !0,
+      showCancelButton: !0
+    })
+    .then(e => submitCallback(e, errorTitle, errorDescription, notifList))
+    .catch(e => {
+      showErrorModal(e.message, errorTitle, errorDescription, notifList);
+    });
+}
+
+export function confirmAction2(positiveText, title, description, errorTitle, errorDescription, submitCallback) {
+  Swal.mixin({
+    customClass: {
+      confirmButton: 'btn bg-gradient-success',
+      cancelButton: 'btn bg-gradient-danger'
+    },
+    buttonsStyling: !1
+  })
+    .fire({
+      title: title,
+      text: description,
+      icon: 'question',
+      confirmButtonText: positiveText,
+      cancelButtonText: 'Cancel',
+      reverseButtons: !0,
+      showCancelButton: !0
+    })
+    .then(e => submitCallback(e, errorTitle, errorDescription))
+    .catch(e => {
+      showErrorSimpleModal(e.message, errorTitle, errorDescription);
+    });
+}
+
+
+export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifList) {
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify(dto),
+    success: function (response) {
+      hideModal(modalId);
+      refreshPage(window.okEditParam);
+    },
+    error: (error) =>
+      handleError(error, errorTitle, errorDescription, notifList)
+  });
+}
+
+export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList) {
+
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(dto),
+    success: function (response) {
+      hideModal(modalId);
+      refreshPage(window.okCreateParam);
+    },
+    error: (error) =>
+      handleError(error, errorTitle, errorDescription, notifList)
+  });
+}
+
+export function httpDelete(url, modalId, errorTitle, errorDescription, notifList) {
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'DELETE',
+    success: function (response) {
+      hideModal(modalId);
+      refreshPage(window.okDeleteParam);
+    },
+    error: (error) =>
+      handleSimpleError(error, errorTitle, errorDescription)
+  });
+}
+
+
+function refreshPage(queryParam) {
+  setTimeout(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('q', queryParam);
+    window.location.href = url.toString();
+  }, 300);
+}
+
+function hideModal(modalId) {
+  const modalEl = $(`#${modalId}`);
+  const modalInstance = bootstrap.Modal.getInstance(modalEl);
+  modalInstance.hide();
 }

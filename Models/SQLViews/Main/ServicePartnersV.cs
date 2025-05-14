@@ -1,14 +1,10 @@
-﻿using System;
-
-namespace CCIMS.Web.Models.SQLViews.Main;
+﻿namespace CCIMS.Web.Models.SQLViews.Main;
 
 public partial class ServicePartnersV
 {
-  public string? SpId { get; set; }
-
   public string? QrId { get; set; }
 
-  public string? QrDescription { get; set; }
+  public string SpId { get; set; } = null!;
 
   public DateTime? QrDateCreated { get; set; }
 
@@ -24,9 +20,5 @@ public partial class ServicePartnersV
 
   public DateTime SpDateCreated { get; set; }
 
-  public string? CreatorFirstName { get; set; }
-
-  public string? CreatorLastName { get; set; }
-
-  public string? CreatorUsername { get; set; }
+  public string? Creator { get; set; }
 }

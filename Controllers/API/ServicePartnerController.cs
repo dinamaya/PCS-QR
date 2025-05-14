@@ -14,6 +14,7 @@ namespace CCIMS.Web.Controllers.API
 {
   [Route("api/sp")]
   [ApiController]
+  [Authorize]
   public class ServicePartnerController : ControllerBase
   {
     private readonly IServicePartnerRepository _spRepo;
@@ -25,7 +26,7 @@ namespace CCIMS.Web.Controllers.API
 			_qrRepo = qrRepo;
 		}
 
-		[HttpPost, Authorize]
+		[HttpPost]
     public async Task<ActionResult<ResponseDto>> Post([FromBody] SPCreationRequestDto creationDto)
     {
 			var response = new ResponseDto();
@@ -60,7 +61,7 @@ namespace CCIMS.Web.Controllers.API
 			}
 		} 
 
-    [HttpGet, Authorize]
+    [HttpGet]
     public async Task<ActionResult<ResponseDto<SPEditResponseDto>>> Get([FromQuery] string id)
     {
 			var response = new ResponseDto<SPEditResponseDto>();
@@ -83,7 +84,7 @@ namespace CCIMS.Web.Controllers.API
 			}
     }
 
-    [HttpPut, Authorize]
+    [HttpPut]
     public async Task<ActionResult<ResponseDto>> Put([FromBody] SPEditRequestDto requestDto)
     {
 			var response = new ResponseDto<SPEditResponseDto>();
@@ -106,6 +107,34 @@ namespace CCIMS.Web.Controllers.API
 
 				return BadRequest(response);
 			}
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult<ResponseDto>> Delete([FromQuery] string id)
+    {
+      var response = new ResponseDto();
+      try
+      {
+        await _spRepo.DeactivateAsync(id);
+
+        response.Message = "Service Partner (" + id + ") Deleted";
+
+        return Ok(response);
+      }
+      catch (InvalidOperationException ex)
+      {
+        response.Message = ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
     }
   }
 }

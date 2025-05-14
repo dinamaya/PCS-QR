@@ -61,7 +61,7 @@ namespace CCIMS.Web.Repositories.Implementations
           ContactNumber = s.ContactNumber,
           ContactEmail = s.Email,
           ContactPerson = s.ContactPerson,
-          CreatedBy = s.CreatorLastName.IsNullOrEmpty() || s.CreatorFirstName.IsNullOrEmpty() ? "" : s.CreatorLastName + ", " + s.CreatorFirstName,
+          CreatedBy = s.Creator,
           SpDateCreated = s.SpDateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           QrDateCreated = s.QrDateCreated.ToString(),
         })
@@ -106,5 +106,20 @@ namespace CCIMS.Web.Repositories.Implementations
 
 			await _mainDb.SaveChangesAsync();
 		}
-	}
+
+    public async Task DeactivateAsync(string id)
+    {
+      var date = DateTime.Now.ToLocalTime();
+     
+      var sp = await _mainDb.ServicePartners.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_SPREFERENCE);
+      sp.IsActive = false;
+      sp.DateModified = date;
+      await _mainDb.SaveChangesAsync();
+
+      var qr = await _mainDb.QRCodes.Where(q => q.ServicePartnerId == sp.Id).FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_QRREFERENCE2);
+      qr.IsActive = false;
+      qr.DateModified = date;
+      await _mainDb.SaveChangesAsync();
+    }
+  }
 }

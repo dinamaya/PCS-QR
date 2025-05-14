@@ -91,8 +91,9 @@
 </div>
 
 <script type="module">
-	import { initModal as initEditModal, onEdit as editSp, resetModal as resetEditModal } from '/js/components/spModalEdit.js';
+	import { initModal as initEditModal, onEdit as editSp, resetModal as resetEditModal, initModalNotifs as initEditNotifs } from '/js/components/spModalEdit.js';
 	initEditModal('@spName.Id', '@compName.Id', '@contPerson.Id', '@contNo.Id', '@email.Id', 'hdn-edit-spId');
+	initEditNotifs('@spName.NotifId', '@compName.NotifId', '@contPerson.NotifId', '@contNo.NotifId', '@email.NotifId');
 	window.editSp = editSp;
 	window.resetEditModal = resetEditModal;
 </script>

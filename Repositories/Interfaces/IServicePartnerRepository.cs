@@ -4,8 +4,8 @@ using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-	public interface IServicePartnerRepository : ICreateRepository<SPCreationRequestDto> , IEditRepository<SPEditRequestDto>
-	{
+	public interface IServicePartnerRepository : ICreateRepository<SPCreationRequestDto> , IEditRepository<SPEditRequestDto>, IDeactivateRepository
+  {
 		Task<SPEditResponseDto> GetById(string id);
     Task<IEnumerable<ServicePartnerRowViewModel>> GetAll();
 	}
