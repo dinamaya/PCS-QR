@@ -171,17 +171,22 @@ namespace CCIMS.Web.Repositories.Implementations
 
     public async Task DeactivateAsync(string id)
     {
-      using var transaction = await _authDb.Database.BeginTransactionAsync();
+      var date = DateTime.Now.ToLocalTime();
 
+      using var transaction = await _authDb.Database.BeginTransactionAsync();
+			
       var account = await _authDb.Accounts.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
       var person = await _authDb.People.FindAsync(account.PersonID) ?? throw new Exception(Exceptions.Message.INVALID_PERSONREFERENCE);
 
+			account.DateModified = date;
       account.IsActive = false;
-      person.IsActive = false;
 
       var result = await _userManager.UpdateAsync(account);
       if (!result.Succeeded)
         throw new Exception(Exceptions.Message.INVALID_ACCOUNT_DELETE);
+      
+			person.DateModified = date;
+      person.IsActive = false;
 
       _authDb.People.Update(person);
       await _authDb.SaveChangesAsync();
