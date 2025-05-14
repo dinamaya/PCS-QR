@@ -1,4 +1,4 @@
-﻿import { confirmAction, confirmAction2, handleError, resetNotifs, showErrorModal, showErrorSimpleModal } from "../utils.js";
+﻿import { confirmAction, confirmAction2, handleError, resetNotifs, showErrorModal, httpPut, httpDelete } from "../utils.js";
 
 let inputs = {
 	spName : null,
@@ -110,39 +110,54 @@ function edit(e, errorTitle, errorDescription, notifList)
 		email: inputs.email.val()
 	};
 
+	httpPut(
+		inputs.url,
+		dto,
+		'modal-edit',
+		errorTitle,
+		errorDescription,
+		notifList
+	);
+}
 
-	fetch(inputs.url, {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(dto)
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.isSuccess) {
-				console.log("Edit successful:", data);
-				$("#modal-edit").modal("hide");
+function deactivate(e, errorTitle, errorDescription) {
+	if (!e.isConfirmed) return;
 
-				setTimeout(() => {
-					location.reload();
-				}, 500);
-			}
-			else {
-				console.error("Edit failed:", data.message);
-				alert("Edit failed: " + data.message);
-			}
-		})
-		.catch(ex => {
-			console.error("Error during PUT request:", ex);
-			alert("Something went wrong.");
-		});
+	const deleteUrl = new URL(inputs.url, window.location.origin);
+	deleteUrl.searchParams.set('id', inputs.hdnSpId.val());
 
+	httpDelete(
+		deleteUrl,
+		'modal-edit',
+		errorTitle,
+		errorDescription
+	);
 }
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {
 		event.preventDefault();
-		edit();
+		confirmAction(
+			'Edit',
+			'Edit Service Partner?',
+			'This will edit the current service partner with the provided details!',
+			"Service Partner Edit Failed",
+			"There was a problem while editing the service partner.",
+			notifs,
+			edit
+		);
+	});
+
+	
+	$('#btn-delete').click(function (event) {
+		event.preventDefault();
+		confirmAction2(
+			'Delete',
+			'Delete Service Partner?',
+			'This will delete the current service partner!',
+			"Service Partner Delete Failed",
+			"There was a problem while deleting the service partner.",
+			deactivate
+		);
 	});
 });

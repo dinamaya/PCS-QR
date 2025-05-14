@@ -64,6 +64,25 @@ export function handleError(error, title, defaultMessage, notifs)
   }
 }
 
+export function handleSimpleError(error, title, defaultMessage) {
+  try {
+    if (error.status == 401) {
+      showErrorSimpleModal("Please refresh the page", "Session expired")
+      return;
+    }
+
+    const response = error.responseText;
+    const result = JSON.parse(response);
+    const errors = result.errors;
+
+    if (!errors)
+      throw new DOMException(result.message);
+  }
+  catch (e) {
+    showErrorSimpleModal(e.message, title, defaultMessage);
+  }
+}
+
 export function handleModalError(data, title, defaultMessage, notifs) {
   try {
     const response = data.responseText;
@@ -173,19 +192,17 @@ export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifL
   });
 }
 
-export function httpDelete(url, dto, modalId, errorTitle, errorDescription, notifList) {
+export function httpDelete(url, modalId, errorTitle, errorDescription, notifList) {
   console.log(url);
   $.ajax({
     url: url,
     method: 'DELETE',
-    contentType: 'application/json',
-    data: JSON.stringify(dto),
     success: function (response) {
       hideModal(modalId);
       refreshPage(window.okDeleteParam);
     },
     error: (error) =>
-      handleError(error, errorTitle, errorDescription, notifList)
+      handleSimpleError(error, errorTitle, errorDescription)
   });
 }
 

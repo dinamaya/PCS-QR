@@ -28,18 +28,7 @@ namespace CCIMS.Web.App_Code._Globals.Validtors.Objects
       RuleFor(x => x.Email)
         .NotEmpty().WithMessage("Email is required.")
         .EmailAddress().WithMessage("Email must be valid.")
-        .Matches(RegEx.EMAIL_LOCAL).WithMessage("Email part contains invalid characters.")
-        .Must(email =>
-        {
-          var allowedDomains = configRepo.GetAllowedEmailDomains();
-
-          if (email.IsNullOrEmpty())
-            return false;
-
-          var domainPart = email.Split('@').LastOrDefault()?.Split('.').FirstOrDefault()?.ToLowerInvariant();
-
-          return !string.IsNullOrWhiteSpace(domainPart) && allowedDomains.Contains(domainPart);
-        }).WithMessage("Email domain is not allowed.");
+        .Matches(RegEx.EMAIL_STRICT).WithMessage("Email contains invalid characters.");
 
       RuleFor(x => x.ContactPerson)
         .NotEmpty().WithMessage("Contact Person is required.")

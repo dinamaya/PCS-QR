@@ -10,8 +10,6 @@ namespace CCIMS.Web.App_Code._Globals.Validtors.Objects
     public ServicePartnerEditRequestValidator(ServicePartnerCreationRequestValidator spCreationRequestValidator)
     {
       Include(spCreationRequestValidator);
-
-
     }
   }
 }

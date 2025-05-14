@@ -190,8 +190,8 @@ $(document).ready(function () {
 			'Delete',
 			'Delete Account?',
 			'This will delete the current account!',
-			"Account Edit Failed",
-			"There was a problem while editing the account.",
+			"Account Delete Failed",
+			"There was a problem while deleting the account.",
 			deactivate
 		);
 	});
