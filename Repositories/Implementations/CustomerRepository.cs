@@ -41,7 +41,7 @@ namespace CCIMS.Web.Repositories
 
             if (string.IsNullOrWhiteSpace(createCustomerDto.FirstName))
             {
-                throw new ArgumentException("First name cannot be empty or only spaces.");
+                throw new ArgumentException("First name cannot be empty or only spaces."); 
             }
 
             if (string.IsNullOrWhiteSpace(createCustomerDto.LastName))
@@ -49,7 +49,12 @@ namespace CCIMS.Web.Repositories
                 throw new ArgumentException("Last name cannot be empty or only spaces.");
             }
 
-            if (string.IsNullOrWhiteSpace(createCustomerDto.SerialNumber))
+			if (string.IsNullOrWhiteSpace(createCustomerDto.Address))
+			{
+				throw new ArgumentException("Address name cannot be empty or only spaces.");
+			}
+
+			if (string.IsNullOrWhiteSpace(createCustomerDto.SerialNumber))
             {
                 throw new ArgumentException("Serial number cannot be empty or only spaces.");
             }
