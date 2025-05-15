@@ -26,7 +26,7 @@ namespace CCIMS.Web.Repositories
 
 		public async Task CreateAsync(Case newCase, string createdBy)
 		{
-			newCase.CaseNumber = Guid.NewGuid().ToString(); // TODO Implement CaseNumber based on the given template
+			newCase.CaseNumber = GenerateCaseNumber();
 			newCase.DateCreated = DateTime.UtcNow.ToLocalTime();
 			newCase.IsActive = true;
 			newCase.ModifiedBy = string.Empty;
@@ -136,5 +136,7 @@ namespace CCIMS.Web.Repositories
         })
         .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_CASE);
     }
+
+    public string GenerateCaseNumber() => "CC"+Guid.NewGuid().ToString("N")[..4].ToUpper() + DateTime.Now.ToLocalTime().ToString(Database.DateFormat.CASEID);
   }
 }

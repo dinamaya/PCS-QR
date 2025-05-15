@@ -48,7 +48,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
     private async Task DeactivateActiveQRs(string spId)
     {
-      var now = DateTime.Now;
+      var now = DateTime.Now.ToLocalTime();
 
       await _mainDb.QRCodes
           .Where(s => s.IsActive && s.ServicePartnerId == spId)

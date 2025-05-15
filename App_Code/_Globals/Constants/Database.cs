@@ -12,7 +12,7 @@
       public const string INPUT = "MMddyyyy";
       public const string INPUT2 = "yyyy-MM-dd";
       public const string UNIQUE_INPUT = "MMddyyyyHHmmssfff";
-      public const string CONUMBER = "yyMMddhhmmssfff";
+      public const string CASEID = "yyMMddfff";
     }
 
     public abstract class File
