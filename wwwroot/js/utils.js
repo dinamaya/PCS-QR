@@ -158,6 +158,29 @@ export function confirmAction2(positiveText, title, description, errorTitle, err
     });
 }
 
+export function httpGet(url, errorTitle, errorDescription, successCallBack, errorCallBack)
+{
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'GET',
+    success: function (response) {
+      console.log("Response:", response);
+      if (response && response.result)
+        successCallBack(response);
+      else
+      {
+        if (errorCallBack) errorCallBack();
+        handleSimpleError("Invalid generation", errorTitle, errorDescription);
+      }
+    },
+    error: (error) =>
+    {
+      handleSimpleError(error, errorTitle, errorDescription);
+      if (errorCallBack) errorCallBack();
+    }
+  });
+}
 
 export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifList) {
   console.log(url);
@@ -219,4 +242,16 @@ function hideModal(modalId) {
   const modalEl = $(`#${modalId}`);
   const modalInstance = bootstrap.Modal.getInstance(modalEl);
   modalInstance.hide();
+}
+
+export function download(href, filename) {
+  const link = document.createElement('a');
+  link.href = href;
+  link.download = filename;
+  link.style.display = 'none';
+
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
 }

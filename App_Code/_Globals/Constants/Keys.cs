@@ -12,6 +12,7 @@
 			public const string CUSTOMER = "CustomerDetails";
 			public const string CASE = "CaseDetails";
 			public const string TRANSACTIONS = "TransactionDetails";
+			public const string SPNAME = "SpName";
 
 			public static class Types
 			{
