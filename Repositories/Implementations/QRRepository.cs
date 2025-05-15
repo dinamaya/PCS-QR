@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Drawing;
 using System.Drawing.Imaging;
 using CCIMS.Web.App_Code._Globals;
-using Svg;
 
 namespace CCIMS.Web.Repositories.Implementations
 {

@@ -29,6 +29,7 @@ namespace CCIMS.Web.Controllers
 			ViewBag.WeeklyCasesChart = await _dashboardRepo.GetWeeklyCasesChartAsync();
 			ViewBag.WeeklyAgingCasesChart = await _dashboardRepo.GetWeeklyAgingCasesChartAsync();
 			ViewBag.LatestCaseSubmission = await _dashboardRepo.GetLatestCaseSubmissionsAsync();
+			ViewBag.Top3ServicePartnersAgingCases = await _dashboardRepo.GetTop3ServicePartnersAgingCases();
 
 			return View();
 		}

@@ -14,5 +14,6 @@ namespace CCIMS.Web.Repositories.Interfaces
 		Task<List<WeeklyCasesChartV>> GetWeeklyCasesChartAsync();
 		Task<List<WeeklyAgingCasesChartV>> GetWeeklyAgingCasesChartAsync();
 		Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync();
+		Task<List<Top3ServicePartnersAgingCasesV>> GetTop3ServicePartnersAgingCases();
 	}
 }

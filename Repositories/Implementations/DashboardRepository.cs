@@ -37,5 +37,8 @@ namespace CCIMS.Web.Repositories
 
 		public async Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync() =>
 			await _context.LatestCasesSubmissionVs.ToListAsync();
+
+		public async Task<List<Top3ServicePartnersAgingCasesV>> GetTop3ServicePartnersAgingCases() =>
+			await _context.Top3ServicePartnersAgingCasesVs.ToListAsync();
 	}
 }
