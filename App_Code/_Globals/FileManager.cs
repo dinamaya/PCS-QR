@@ -43,7 +43,7 @@ namespace CCIMS.Web.App_Code._Globals
 		public string GetUniqueFileName(IFormFile file)
 		{
 			string ext = Path.GetExtension(file.FileName);
-			string fn = DateTime.Now.ToLocalTime().ToString(Database.DateFormat.CONUMBER) + "-"+ Utils.Security.GenerateExtendedGuid("SN",2);
+			string fn = DateTime.Now.ToLocalTime().ToString(Database.DateFormat.CASEID) + "-"+ Utils.Security.GenerateExtendedGuid("SN",2);
 			return fn + ext;
 		}
 	}

@@ -8,5 +8,6 @@ namespace CCIMS.Web.Repositories.Interfaces
 		Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value);
 		Task<string> GetCurrentStatus(long caseId);
 		Task<CaseDetailsViewModel> GetByCaseNumber(string caseNumber);
+		string GenerateCaseNumber();
   }
 }

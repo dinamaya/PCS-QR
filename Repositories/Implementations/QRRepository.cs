@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Drawing;
 using System.Drawing.Imaging;
 using CCIMS.Web.App_Code._Globals;
-using Svg;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -49,7 +48,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
     private async Task DeactivateActiveQRs(string spId)
     {
-      var now = DateTime.Now;
+      var now = DateTime.Now.ToLocalTime();
 
       await _mainDb.QRCodes
           .Where(s => s.IsActive && s.ServicePartnerId == spId)
