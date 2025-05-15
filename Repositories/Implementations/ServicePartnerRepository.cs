@@ -121,5 +121,13 @@ namespace CCIMS.Web.Repositories.Implementations
       qr.DateModified = date;
       await _mainDb.SaveChangesAsync();
     }
+
+    public async Task<string> GetNameByQrId(string qrId)
+    {
+      return await _mainDb.ServicePartnersVs
+        .Where(s => s.QrId == qrId)
+        .Select(s => s.SpName)
+        .FirstOrDefaultAsync() ?? "";
+    }
   }
 }

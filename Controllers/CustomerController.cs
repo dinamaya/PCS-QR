@@ -18,11 +18,12 @@ namespace CCIMS.Web.Controllers
     private readonly IConfigurationRepository _configRepo;
     private readonly ITokenProvider _tokenProvider;
     private readonly ISecurityRepository _securityRepo;
+    private readonly IServicePartnerRepository _spRepo;
     private readonly MainDbContext _mainDb;
 
     public CustomerController(
         ICustomerRepository customerRepository,
-        ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo, IConfigurationRepository configRepo, ITokenProvider tokenProvider)
+        ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo, IConfigurationRepository configRepo, ITokenProvider tokenProvider, IServicePartnerRepository spRepo)
     {
       _customerRepository = customerRepository;
       _logger = logger;
@@ -30,6 +31,7 @@ namespace CCIMS.Web.Controllers
       _tokenProvider = tokenProvider;
       _mainDb = mainDb;
       _securityRepo = securityRepo;
+      _spRepo = spRepo;
     }
 
     [HttpGet]
@@ -42,11 +44,13 @@ namespace CCIMS.Web.Controllers
           throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
         string origQrId = await _securityRepo.DecryptIDAsync(qrToken!.QRID);
+        
         bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == origQrId);
         if (!doesExist)
           throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
 
         var model = new CreateCustomerDto { Token = token };
+        ViewData[Keys.ViewData.SPNAME] = await _spRepo.GetNameByQrId(origQrId);
 
         return View(model);
       }

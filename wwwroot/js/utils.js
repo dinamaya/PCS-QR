@@ -158,21 +158,27 @@ export function confirmAction2(positiveText, title, description, errorTitle, err
     });
 }
 
-export function httpGet(url, dto, modalId, errorTitle, errorDescription, notifList)
+export function httpGet(url, errorTitle, errorDescription, successCallBack, errorCallBack)
 {
-
   console.log(url);
   $.ajax({
     url: url,
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify(dto),
+    method: 'GET',
     success: function (response) {
-      hideModal(modalId);
-      refreshPage(window.okCreateParam);
+      console.log("Response:", response);
+      if (response && response.result)
+        successCallBack(response);
+      else
+      {
+        if (errorCallBack) errorCallBack();
+        handleSimpleError("Invalid generation", errorTitle, errorDescription);
+      }
     },
     error: (error) =>
-      handleError(error, errorTitle, errorDescription, notifList)
+    {
+      handleSimpleError(error, errorTitle, errorDescription);
+      if (errorCallBack) errorCallBack();
+    }
   });
 }
 
