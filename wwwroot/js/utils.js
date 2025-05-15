@@ -158,6 +158,23 @@ export function confirmAction2(positiveText, title, description, errorTitle, err
     });
 }
 
+export function httpGet(url, dto, modalId, errorTitle, errorDescription, notifList)
+{
+
+  console.log(url);
+  $.ajax({
+    url: url,
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(dto),
+    success: function (response) {
+      hideModal(modalId);
+      refreshPage(window.okCreateParam);
+    },
+    error: (error) =>
+      handleError(error, errorTitle, errorDescription, notifList)
+  });
+}
 
 export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifList) {
   console.log(url);
@@ -219,4 +236,16 @@ function hideModal(modalId) {
   const modalEl = $(`#${modalId}`);
   const modalInstance = bootstrap.Modal.getInstance(modalEl);
   modalInstance.hide();
+}
+
+export function download(href, filename) {
+  const link = document.createElement('a');
+  link.href = href;
+  link.download = filename;
+  link.style.display = 'none';
+
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
 }

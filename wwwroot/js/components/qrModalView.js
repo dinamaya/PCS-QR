@@ -1,4 +1,4 @@
-﻿import { qrCreationRequestDto } from '../dtos/qrCreationRequestDto.js';
+﻿import { download } from '../utils.js';
 
 var hdnQrId = null;
 var hdnSpId = null;
@@ -33,6 +33,7 @@ export function viewQr(button)
 					if (data.result) {
 						const qrImage = `data:image/png;base64,${data.result}`;
 						$("#img-qrCode").attr("src", qrImage);
+						$("#txt-spname").html(data.message);
 					}
 					else {
 						$("#img-qrCode").attr("src", "/img/qr_placeholder.png");
@@ -58,22 +59,12 @@ export function downloadQr() {
 		fetch(_url)
 			.then(response => response.json())
 			.then(data => {
-				console.log(data);
-
-				if (data && data.result) {
+				if (data && data.result)
+				{
 					const qrImage = `data:image/png;base64,${data.result}`;
-
 					$("#img-qrCode").attr("src", qrImage);
 
-					const link = document.createElement('a');
-					link.href = qrImage;
-					link.download = `QR_${qrId}.png`;
-					link.style.display = 'none';
-
-					document.body.appendChild(link);
-					link.click();
-
-					document.body.removeChild(link);
+					download(qrImage, `QR_${qrId}.png`);
 				}
 				else {
 					console.error("No valid data received from server.");

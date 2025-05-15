@@ -3,6 +3,8 @@
 @model IEnumerable<ServicePartnerRowViewModel>
 
 <script src="~/js/plugins/datatables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
+
 @{
   ViewData[Keys.ViewData.TITLE] = "CMS | Service Partners";
 }
@@ -43,7 +45,8 @@
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Service Partner Name</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Company Name</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Number</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Email</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Contact Person</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created By</th>
                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date Created</th>
                   </tr>
