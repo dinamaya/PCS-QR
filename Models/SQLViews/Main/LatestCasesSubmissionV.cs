@@ -19,7 +19,7 @@ public partial class LatestCasesSubmissionV
 
     public string LastName { get; set; } = null!;
 
-    public string ServicePartnerName { get; set; } = null!;
-
     public DateTime DateCreated { get; set; }
+
+    public string ServicePartnerName { get; set; } = null!;
 }

@@ -28,8 +28,8 @@ namespace CCIMS.Web.Context
         public virtual DbSet<CasesCreatedTodayV> CasesCreatedTodayVs { get; set; }
         public virtual DbSet<WeeklyCasesChartV> WeeklyCasesChartVs { get; set; }
         public virtual DbSet<WeeklyAgingCasesChartV> WeeklyAgingCasesChartVs { get; set; }
-		public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
-		public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
+        public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
+        public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -40,16 +40,16 @@ namespace CCIMS.Web.Context
 					.ToView("Top3ServicePartnersAgingCases_v");
 			});
 
-			modelBuilder.Entity<LatestCasesSubmissionV>(entity =>
-			{
-				entity
-					.HasNoKey()
-					.ToView("LatestCasesSubmission_v");
+            modelBuilder.Entity<LatestCasesSubmissionV>(entity =>
+            {
+                entity
+                    .HasNoKey()
+                    .ToView("LatestCasesSubmission_v");
 
-				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-			});
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            });
 
-			modelBuilder.Entity<WeeklyAgingCasesChartV>(entity =>
+            modelBuilder.Entity<WeeklyAgingCasesChartV>(entity =>
             {
                 entity
                     .HasNoKey()
