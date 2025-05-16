@@ -30,8 +30,10 @@ namespace CCIMS.Web.Controllers
 			ViewBag.WeeklyAgingCasesChart = await _dashboardRepo.GetWeeklyAgingCasesChartAsync();
 			ViewBag.LatestCaseSubmission = await _dashboardRepo.GetLatestCaseSubmissionsAsync();
 			ViewBag.Top3ServicePartnersAgingCases = await _dashboardRepo.GetTop3ServicePartnersAgingCases();
+            ViewBag.TopAgingCases = await _dashboardRepo.GetTopAgingCases();
 
-			return View();
+
+            return View();
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -30,10 +30,18 @@ namespace CCIMS.Web.Context
         public virtual DbSet<WeeklyAgingCasesChartV> WeeklyAgingCasesChartVs { get; set; }
         public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
         public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
+        public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<Top3ServicePartnersAgingCasesV>(entity =>
+            modelBuilder.Entity<TopAgingCasesV>(entity =>
+            {
+                entity
+                    .HasNoKey()
+                    .ToView("TopAgingCases_v");
+            });
+
+            modelBuilder.Entity<Top3ServicePartnersAgingCasesV>(entity =>
 			{
 				entity
 					.HasNoKey()

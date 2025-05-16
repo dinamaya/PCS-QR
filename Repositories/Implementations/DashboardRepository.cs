@@ -40,5 +40,9 @@ namespace CCIMS.Web.Repositories
 
 		public async Task<List<Top3ServicePartnersAgingCasesV>> GetTop3ServicePartnersAgingCases() =>
 			await _context.Top3ServicePartnersAgingCasesVs.ToListAsync();
-	}
+
+        public async Task<List<TopAgingCasesV>> GetTopAgingCases() =>
+            await _context.TopAgingCasesVs.ToListAsync();
+    }
 }
+
