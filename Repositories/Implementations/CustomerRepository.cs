@@ -104,5 +104,21 @@ namespace CCIMS.Web.Repositories
         .FirstOrDefaultAsync() ??
         throw new Exception(Exceptions.Message.INVALID_CATEGORY);
     }
+
+    public async Task EditAsync(CustomerEditRequestDto editRequestDto, string modifiedBy)
+    {
+      var date = DateTime.Now.ToLocalTime();
+      var customer = await _context.Customers.FindAsync(editRequestDto.Id) ?? throw new Exception(Exceptions.Message.INVALID_CUSTOMER);
+
+      customer.ModifiedBy = modifiedBy;
+      customer.DateModified = date;
+      customer.FirstName = editRequestDto.FirstName;
+      customer.LastName = editRequestDto.LastName;
+      customer.Email = editRequestDto.Email;
+      customer.ContactNumber = editRequestDto.ContactNo;
+      customer.Address = editRequestDto.Address;
+
+      await _context.SaveChangesAsync();
+    }
   }
 }

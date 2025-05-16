@@ -47,6 +47,7 @@
 				public const string CASE_DETAILS = @"../Shared/CasePage/_CaseDetailsPartial";
 				public const string SEARCH = @"../Shared/CasePage/_SearchBarPartial";
 				public const string STAT_UPDATE_MODAL = @"../Shared/CasePage/_ModalStatusUpdatePartial";
+				public const string CUSTOMER_UPDATE_MODAL = @"../Shared/CasePage/_CustomerModalEditPartial";
 			}
 
 			public static class Operation

@@ -21,19 +21,31 @@ namespace CCIMS.Web.Controllers
 		}
 
     [Authorize(Roles = "OPS"), HttpGet]
-		public async Task<IActionResult> Update(string id)
+		public async Task<IActionResult> Update(string id, string? q = null)
     {
-      var _case = await _caseRepo.GetById(id);
-      long caseId = long.Parse(_case.Id);
-      var transactions = await _transRepo.GetAllByCaseId(caseId);
+      try
+      {
+        if (!q.IsNullOrEmpty())
+        {
+          if (q.Equals(Queries.SUCCESS_EDIT)) ViewData[Keys.ViewData.SUCCESS] = "Customer Edited Successfully";
+        }
 
-      var customer = await _customerRepo.GetById(_case.CustomerId);
+        var _case = await _caseRepo.GetById(id);
+        long caseId = long.Parse(_case.Id);
+        var transactions = await _transRepo.GetAllByCaseId(caseId);
 
-      ViewData[Keys.ViewData.CUSTOMER] = customer;
-      ViewData[Keys.ViewData.CASE] = _case;
-      ViewData[Keys.ViewData.TRANSACTIONS] = transactions;
+        var customer = await _customerRepo.GetById(_case.CustomerId);
 
-      return View();
+        ViewData[Keys.ViewData.CUSTOMER] = customer;
+        ViewData[Keys.ViewData.CASE] = _case;
+        ViewData[Keys.ViewData.TRANSACTIONS] = transactions;
+
+        return View();
+      }
+      catch (Exception ex)
+      {
+        return RedirectToAction("Index", "Dashboard");
+      }
     }
     
 		[HttpGet]
