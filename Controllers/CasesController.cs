@@ -20,8 +20,8 @@ namespace CCIMS.Web.Controllers
 			_transRepo = transRepo;
 		}
 
-    [Authorize(Roles = "OPS"), HttpGet]
-		public async Task<IActionResult> Update(string id, string? q = null)
+    [Authorize, HttpGet]
+    public async Task<IActionResult> Update(string id, string? q = null)
     {
       try
       {

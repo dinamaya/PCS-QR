@@ -48,7 +48,7 @@
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>
-										<input class="form-control" type="text" asp-for="FirstName" required pattern="@RegEx.NON_EMPTY_WHITESPACE"/>
+										<input class="form-control" type="text" asp-for="FirstName" required pattern="@RegEx.NON_EMPTY_WHITESPACE" />
 										<span asp-validation-for="FirstName" class="text-danger"></span>
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
@@ -76,7 +76,7 @@
 										<input class="form-control" type="text" asp-for="Address" required pattern="@RegEx.NON_EMPTY_WHITESPACE" />
 										<span asp-validation-for="Address" class="text-danger"></span>
 									</div>
-								</div>							
+								</div>
 								<div class="row mt-3">
 									<label class="col-12">Serial Number</label>
 									<div class="col-12 col-sm-6 col-lg-9 mt-3 mt-sm-0">
@@ -121,7 +121,7 @@
 
 <script defer>
 	let cropper = null;
-	let modalElem = null;		
+	let modalElem = null;
 	let modal = null;
 
 	$(document).ready(function () {
@@ -142,11 +142,11 @@
 
 		const reader = new FileReader();
 		reader.onload = readFile;
-		
+
 		reader.readAsDataURL(file);
 	}
 
-	function readFile(e){
+	function readFile(e) {
 
 		const img = e.target.result
 		const imgPreviewer = document.getElementById("img-preview");
@@ -155,8 +155,7 @@
 		img.onload = loadCropper(imgPreviewer)
 	}
 
-	function loadCropper(imgPreviewer)
-	{
+	function loadCropper(imgPreviewer) {
 		modal.show();
 
 		modalElem.addEventListener('shown.bs.modal', () => {

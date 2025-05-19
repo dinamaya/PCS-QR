@@ -39,7 +39,27 @@ namespace CCIMS.Web.Repositories
       if (!_tokenProvider.IsValid(createCustomerDto.Token, out QRTokenDto? token) || token == null)
         throw new Exception(Exceptions.Message.INVALID_QRTOKEN);
 
-			var existingCase = await _context.LatestCasesVs
+            if (string.IsNullOrWhiteSpace(createCustomerDto.FirstName))
+            {
+                throw new ArgumentException("First name cannot be empty or only spaces."); 
+            }
+
+            if (string.IsNullOrWhiteSpace(createCustomerDto.LastName))
+            {
+                throw new ArgumentException("Last name cannot be empty or only spaces.");
+            }
+
+			if (string.IsNullOrWhiteSpace(createCustomerDto.Address))
+			{
+				throw new ArgumentException("Address name cannot be empty or only spaces.");
+			}
+
+			if (string.IsNullOrWhiteSpace(createCustomerDto.SerialNumber))
+            {
+                throw new ArgumentException("Serial number cannot be empty or only spaces.");
+            }
+
+            var existingCase = await _context.LatestCasesVs
 	            .Where(c => c.SerialNumber == createCustomerDto.SerialNumber && c.Status != "Closed")
 	            .Select(c => new { c.CaseNumber })
 	            .FirstOrDefaultAsync();

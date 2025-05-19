@@ -28,9 +28,35 @@ namespace CCIMS.Web.Context
         public virtual DbSet<CasesCreatedTodayV> CasesCreatedTodayVs { get; set; }
         public virtual DbSet<WeeklyCasesChartV> WeeklyCasesChartVs { get; set; }
         public virtual DbSet<WeeklyAgingCasesChartV> WeeklyAgingCasesChartVs { get; set; }
+        public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
+        public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
+        public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+            modelBuilder.Entity<TopAgingCasesV>(entity =>
+            {
+                entity
+                    .HasNoKey()
+                    .ToView("TopAgingCases_v");
+            });
+
+            modelBuilder.Entity<Top3ServicePartnersAgingCasesV>(entity =>
+			{
+				entity
+					.HasNoKey()
+					.ToView("Top3ServicePartnersAgingCases_v");
+			});
+
+            modelBuilder.Entity<LatestCasesSubmissionV>(entity =>
+            {
+                entity
+                    .HasNoKey()
+                    .ToView("LatestCasesSubmission_v");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            });
+
             modelBuilder.Entity<WeeklyAgingCasesChartV>(entity =>
             {
                 entity
@@ -49,20 +75,20 @@ namespace CCIMS.Web.Context
                 entity.Property(e => e.DayOfWeek).HasMaxLength(30);
             });
 
-            modelBuilder.Entity<CasesCreatedTodayV>(entity =>
-            {
-                entity
-                    .HasNoKey()
-                    .ToView("CasesCreatedToday_v");
+			modelBuilder.Entity<CasesCreatedTodayV>(entity =>
+			{
+				entity
+					.HasNoKey()
+					.ToView("CasesCreatedToday_v");
 
-                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.QrcodeId)
-                    .HasMaxLength(450)
-                    .HasColumnName("QRCodeId");
-            });
+				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+				entity.Property(e => e.Id).ValueGeneratedOnAdd();
+				entity.Property(e => e.QrcodeId)
+					.HasMaxLength(450)
+					.HasColumnName("QRCodeId");
+			});
 
-            modelBuilder.Entity<ClosedCasesV>(entity =>
+			modelBuilder.Entity<ClosedCasesV>(entity =>
             {
                 entity
                     .HasNoKey()
