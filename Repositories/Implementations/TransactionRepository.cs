@@ -41,7 +41,7 @@ namespace CCIMS.Web.Repositories.Implementations
       Transaction transaction = new()
       {
         CaseID = data.CaseId,
-        Comments =  data.Comments,
+        Comments = data.Comments,
         StatusId = data.StatusId,
         CreatedBy = createdBy,
         DateCreated = date,
@@ -86,7 +86,7 @@ namespace CCIMS.Web.Repositories.Implementations
     public async Task<IEnumerable<DropdownOptionViewModel>> GetAvailableStatusByCaseId(long caseId)
     {
       var existingStats = await GetExistingStatusByCaseId(caseId);
-      var allStats = await  _opsRepo.GetOptions();
+      var allStats = await _opsRepo.GetOptions();
       var availStats = allStats.Where(s => !existingStats.Any(x => x.Value == s.Value))
         .Select(s => new DropdownOptionViewModel()
         {
@@ -96,6 +96,25 @@ namespace CCIMS.Web.Repositories.Implementations
         .ToList();
 
       return availStats;
+    }
+
+    public async Task<TransactionEditResponseDto> GetById(long id)
+    {
+      var transaction = await _mainDb
+        .TransactionsVs
+        .AsNoTracking()
+        .Where(t => t.Id == id)
+        .Select(t => new TransactionEditResponseDto()
+        {
+          IsCommentable = t.IsCommentable,
+          Remarks = t.Comments
+        })
+        .FirstOrDefaultAsync();
+
+      if (!transaction.IsCommentable)
+        throw new Exception(Exceptions.Message.INVALID_TRANSACTION_UNCOMMENTABLE);
+
+      return transaction;
     }
   }
 }

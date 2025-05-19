@@ -48,6 +48,8 @@
 				public const string SEARCH = @"../Shared/CasePage/_SearchBarPartial";
 				public const string STAT_UPDATE_MODAL = @"../Shared/CasePage/_ModalStatusUpdatePartial";
 				public const string CUSTOMER_UPDATE_MODAL = @"../Shared/CasePage/_CustomerModalEditPartial";
+				public const string CASE_UPDATE_MODAL = @"../Shared/CasePage/_CaseModalEditPartial";
+				public const string TRANSACTION_UPDATE_MODAL = @"../Shared/CasePage/_TransactionRemarksModalEditPartial";
 			}
 
 			public static class Operation

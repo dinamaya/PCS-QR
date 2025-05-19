@@ -1,0 +1,13 @@
+﻿.transaction-comment {
+  cursor: pointer;
+}
+.transaction-comment .btn-edit {
+  display: none;
+}
+.transaction-comment:hover {
+  background-color: #f8f9fa !important;
+  border-radius: 0.6em;
+}
+.transaction-comment:hover .btn-edit {
+  display: initial;
+}

@@ -272,3 +272,17 @@ export function addChoicesSelectEvent(elemId, placeHolderValue, eventCallback) {
   $elem.on('input', eventCallback);
   $elem.attr('placeholder', placeHolderValue);
 }
+
+
+export function onCopy(toastElemId, btnCopyId)
+{
+  const toast = document.getElementById(toastElemId);
+  const copyText = document.getElementById(btnCopyId);
+
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(copyText.value);
+
+  const toastBs = bootstrap.Toast.getOrCreateInstance(toast);
+  toastBs.show()
+}
