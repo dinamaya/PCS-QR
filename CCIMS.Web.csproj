@@ -7,6 +7,10 @@
     <RootNamespace>CCIMS.Web</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="BuildWebCompiler2022" Version="1.14.10" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
@@ -38,6 +42,10 @@
 	<ItemGroup>
 	  <Folder Include="Attachments\SN\" />
 	  <Folder Include="wwwroot\js\es6\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="compilerconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
