@@ -12,11 +12,13 @@ namespace CCIMS.Web.Controllers.API
   {
     private readonly ISecurityRepository _secRepo;
     private readonly IQRRepository _qrRepo;
+    private readonly ICaseRepository _caseRepo;
 
-    public TestController(ISecurityRepository secRepo, IQRRepository qrRepo)
+    public TestController(ISecurityRepository secRepo, IQRRepository qrRepo, ICaseRepository caseRepo)
     {
       _secRepo = secRepo;
       _qrRepo = qrRepo;
+      _caseRepo = caseRepo;
     }
 
     [HttpGet("qrLink")]
@@ -27,26 +29,15 @@ namespace CCIMS.Web.Controllers.API
     }
 
 
-    //[HttpPost("qrLink")]
-    //public async Task<string> QrLink([FromBody] QRCreationRequestDto creationDto)
-    //{
-    //  try
-    //  {
-    //    var date = DateTime.Now;
+    [HttpGet("case/ref/generate")]
+    public async Task<string> Case(int x=1)
+    {
+      string result = string.Empty;
 
-    //    await _qrRepo.CreateAsync(new QRCode()
-    //    {
-    //      ServicePartnerId = creationDto.ServicePartnerId,
-    //      DateCreated = date,
-    //      DateModified = date,
-    //      IsActive = true,
-    //    });
+      for (int y=0; y < x; y++)
+        result += _caseRepo.GenerateCaseNumber() + "\n";
 
-    //    return "Successfully Created: ";
-    //  }
-    //  catch (Exception ex) { 
-    //    return "Error: " + ex.Message;
-    //  }
-    //}
+      return result;
+    }
   }
 }
