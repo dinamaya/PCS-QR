@@ -34,7 +34,7 @@ namespace CCIMS.Web.Controllers.API
           Address = result.Address,
         };
 
-        response.Message = "Account (" + id + ") found";
+        response.Message = "Customer (" + id + ") found";
 
         return Ok(response);
       }

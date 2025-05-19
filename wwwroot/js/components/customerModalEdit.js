@@ -53,7 +53,7 @@ export function initModal(
 
 function onEdit()
 {
-	const _url = `${window.baseUrl}?id=${inputs.hdnCustId.val()}`
+	const _url = `${window.custUrl}?id=${inputs.hdnCustId.val()}`
 
 	httpGet(
 		_url,

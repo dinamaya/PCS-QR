@@ -9,5 +9,7 @@ namespace CCIMS.Web.Repositories.Interfaces
 		Task<SPEditResponseDto> GetById(string id);
     Task<IEnumerable<ServicePartnerRowViewModel>> GetAll();
     Task<string> GetNameByQrId(string qrId);
+    Task<string> GetQrIdByName(string name);
+    Task<IEnumerable<DropdownOptionDto>> GetDropdownOptionsByName(string name);
   }
 }

@@ -1,5 +1,6 @@
 ﻿using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
+using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Main;
 using CCIMS.Web.Models.SQLViews.Main;
 using CCIMS.Web.Models.ViewModels;
@@ -15,11 +16,13 @@ namespace CCIMS.Web.Repositories
 	{
 		private readonly MainDbContext _context;
     private readonly IConfigurationRepository _configRepo;
+    private readonly IServicePartnerRepository _spRepo;
 
-    public CaseRepository(MainDbContext context, IConfigurationRepository configRepo)
+    public CaseRepository(MainDbContext context, IConfigurationRepository configRepo, IServicePartnerRepository spRepo)
     {
       _context = context;
       _configRepo = configRepo;
+      _spRepo = spRepo;
     }
 
     public string InsertedId { get; set; }
@@ -138,5 +141,20 @@ namespace CCIMS.Web.Repositories
     }
 
     public string GenerateCaseNumber() => "CC"+Guid.NewGuid().ToString("N")[..4].ToUpper() + DateTime.Now.ToLocalTime().ToString(Database.DateFormat.CASEID);
+
+    public async Task EditAsync(CaseEditRequestDto editRequestDto, string modifiedBy)
+    {
+      var date = DateTime.Now.ToLocalTime();
+      long _caseId = long.Parse(editRequestDto.Id);
+      var _case = await _context.Cases.FindAsync(_caseId) ?? throw new Exception(Exceptions.Message.INVALID_CASE);
+      string _qrId = await _spRepo.GetQrIdByName(editRequestDto.ServicePartner);
+
+      _case.ModifiedBy = modifiedBy;
+      _case.DateModified = date;
+      _case.SerialNumber = editRequestDto.SerialNumber;
+      _case.QRCodeId = _qrId;
+
+      await _context.SaveChangesAsync();
+    }
   }
 }
