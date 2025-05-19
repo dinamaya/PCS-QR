@@ -66,7 +66,8 @@ namespace CCIMS.Web.Repositories.Implementations
           Comments = t.Comments,
           TransactionId = t.Id.ToString(),
           TransactionDate = t.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
-          Icon = ""
+          Icon = "",
+          IsCommentable = t.IsCommentable
         })
         .ToListAsync();
     }
@@ -115,6 +116,18 @@ namespace CCIMS.Web.Repositories.Implementations
         throw new Exception(Exceptions.Message.INVALID_TRANSACTION_UNCOMMENTABLE);
 
       return transaction;
+    }
+
+    public async Task EditAsync(TransactionEditRequestDto editRequestDto, string modifiedBy)
+    {
+      var data = (await _mainDb.Transactions.FindAsync(long.Parse(editRequestDto.Id))) ?? throw new Exception(Exceptions.Message.INVALID_TRANSACTION);
+      var stat = await _opsRepo.GetStatusById(data.StatusId);
+
+      if (!stat.IsCommentable) throw new Exception(Exceptions.Message.INVALID_STATUS);
+      
+      data.Comments = editRequestDto.Remarks;
+
+      await _mainDb.SaveChangesAsync();
     }
   }
 }

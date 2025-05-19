@@ -41,5 +41,27 @@ namespace CCIMS.Web.Controllers.API
       }
     }
 
+    [HttpPut]
+    public async Task<ActionResult<ResponseDto>> Put([FromBody] TransactionEditRequestDto requestDto)
+    {
+      var response = new ResponseDto();
+      try
+      {
+        string modifiedBy = User.GetClaim(AuthClaims.ACCOUNT_ID);
+        await _transRepo.EditAsync(requestDto, modifiedBy);
+
+        response.Message = "Transaction (" + requestDto.Id + ") Updated";
+
+        return Ok(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+    }
+
   }
 }

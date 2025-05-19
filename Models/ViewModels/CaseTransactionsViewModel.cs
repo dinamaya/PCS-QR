@@ -7,5 +7,6 @@
     public string TransactionId { get; set; }
     public string TransactionDate { get; set; }
     public string Icon { get; set; }
+    public bool IsCommentable { get; set; }
   }
 }

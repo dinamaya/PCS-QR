@@ -14,9 +14,8 @@
 
 }
 
-
 <!-- Update Status -->
-<div class="modal fade" id="modal-edit-transaction" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal modal-lg fade" id="modal-edit-transaction" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<form id="form-edit-transaction">
 		<div class="modal-dialog">
 			<div class="modal-content p-2">
@@ -44,11 +43,10 @@
 	</form>
 </div>
 <script type="module">
-
 	import { onEdit as onTransactionEdit, initModalNotifs as initTransactionModalNotifs, initModal as initTransactionModal} from "/js/components/transactionModalEdit.js"
 	window.onTransactionEdit = onTransactionEdit;
 
 	initTransactionModal('@comments.Id', 'hdn-edit-transId');
-	initTransactionModalNotifs('@comments.Id');
+	initTransactionModalNotifs('@comments.NotifId');
 
 </script>

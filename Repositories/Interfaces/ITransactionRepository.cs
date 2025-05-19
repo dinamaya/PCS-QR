@@ -3,7 +3,7 @@ using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-  public interface ITransactionRepository : ICreateRepository<TransactionCreationDto>
+  public interface ITransactionRepository : ICreateRepository<TransactionCreationDto>, IEditRepository<TransactionEditRequestDto>
   {
     Task<IEnumerable<CaseTransactionsViewModel>> GetAllByCaseId(long caseId);
     Task<IEnumerable<DropdownOptionViewModel>> GetExistingStatusByCaseId(long caseId);

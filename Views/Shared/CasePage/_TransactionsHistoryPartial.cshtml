@@ -29,7 +29,7 @@
               <h6 class="text-dark text-sm font-weight-bold mb-0">@transaction.StatusName</h6>
               <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">@transaction.TransactionDate</p>
               
-              @if(!string.IsNullOrEmpty(transaction.Comments))
+              @if(transaction.IsCommentable)
               {
                 <p 
                   class="text-sm my-3 py-2 px-2 transaction-comment"
