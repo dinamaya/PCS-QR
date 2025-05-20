@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CCIMS.Web.Repositories
 {
-	public class CaseRepository : ICaseRepository
+  public class CaseRepository : ICaseRepository
 	{
 		private readonly MainDbContext _context;
     private readonly IConfigurationRepository _configRepo;
@@ -90,7 +90,9 @@ namespace CCIMS.Web.Repositories
         "Serial Number" => _context.LatestCasesVs.Where(c => c.SerialNumber.Contains(value)),
         "Case Number / ID" => _context.LatestCasesVs.Where(c => c.CaseNumber.Contains(value)),
         "Service Partner Name" => _context.LatestCasesVs.Where(c => c.ServicePartnerName.Contains(value)),
-        "Days Aged" => _context.LatestCasesVs.Where(c => EF.Functions.DateDiffDay(c.DateStatusUpdated, DateTime.UtcNow) >= int.Parse(value)),
+        "Days Aged" => _context.LatestCasesVs.Where(c => 
+          c.DateStatusUpdated != null && 
+          EF.Functions.DateDiffDay(c.DateStatusUpdated, DateTime.UtcNow.ToLocalTime()) >= int.Parse(value)),
         _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
       };
     }
@@ -155,6 +157,26 @@ namespace CCIMS.Web.Repositories
       _case.QRCodeId = _qrId;
 
       await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<CaseRowViewModel>> GetDataAged5DaysByServicePartner(string spName)
+    {
+      return await _context.ServicePartnersWithAgingCasesVs
+        .Where(s => s.ServicePartnerName == spName)
+        .Select(
+          c => new CaseRowViewModel()
+          {
+            Id = c.Id.ToString(),
+            CaseNumber = c.CaseNumber,
+            Description = c.Description,
+            Status = c.Status,
+            Comments = c.Comments,
+            CustomerName = c.CustomerName,
+            ServicePartnerName = c.ServicePartnerName,
+            SerialNumber = c.SerialNumber,
+            DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          })
+        .ToListAsync();
     }
   }
 }

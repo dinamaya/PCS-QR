@@ -68,16 +68,23 @@ namespace CCIMS.Web.Controllers
     }
 
     [Authorize]
-    public async Task<IActionResult> Cases(string? c = null, string? v = null)
+    public async Task<IActionResult> Cases(string? c = null, string? v = null, string? d = null)
     {
       try
       {
         await InitializeValues();
-        if (c.IsNullOrEmpty() || v.IsNullOrEmpty())
-          return View(null);
+        IEnumerable<CaseRowViewModel>? results = null;
 
-        var results = await _caseRepo.GetByCategory(c, v);
-        
+        if (!c.IsNullOrEmpty() && !v.IsNullOrEmpty())
+        {
+          if (d.IsNullOrEmpty())
+            results = await _caseRepo.GetByCategory(c, v);
+          else
+            results = null;
+        }
+        else
+          results = await _caseRepo.GetDataAged5DaysByServicePartner(d);
+
         return View(results);
       }
       catch (Exception ex)

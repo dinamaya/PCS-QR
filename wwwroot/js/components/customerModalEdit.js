@@ -86,7 +86,7 @@ function edit(e, errorTitle, errorDescription, notifList) {
 	};
 
 	httpPut(
-		window.baseUrl,
+		window.custUrl,
 		dto,
 		'modal-edit-customer',
 		errorTitle,
