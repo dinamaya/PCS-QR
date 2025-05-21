@@ -69,5 +69,62 @@ namespace CCIMS.Web.Controllers.API
         return BadRequest(response);
       }
     }
+
+    [HttpGet]
+    public async Task<ActionResult<ResponseDto<CaseEditResponseDto>>> Get([FromQuery] string id)
+    {
+      var response = new ResponseDto<CaseEditResponseDto>();
+      try
+      {
+        string createdBy = User.GetClaim(AuthClaims.ACCOUNT_ID);
+        var result = await _caseRepo.GetById(id);
+
+        response.Result = new CaseEditResponseDto()
+        {
+          SerialNumber = result.SerialNumber,
+          ServicePartner = result.ServicePartner,
+        };
+
+        response.Message = "Case (" + id + ") found";
+
+        return Ok(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<ResponseDto>> Put([FromBody] CaseEditRequestDto requestDto)
+    {
+      var response = new ResponseDto();
+      try
+      {
+        string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
+        await _caseRepo.EditAsync(requestDto, accountId);
+
+        response.Message = "Case (" + requestDto.Id + ") Updated";
+
+        return Ok(response);
+      }
+      catch (InvalidOperationException ex)
+      {
+        response.Message = ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+    }
   }
 }

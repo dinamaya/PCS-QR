@@ -1,12 +1,10 @@
 ﻿using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.Models.DTOs;
 
 namespace CCIMS.Web.Models.ViewModels
 {
-  public class DropdownOptionViewModel
+  public class DropdownOptionViewModel : DropdownOptionDto
   {
-    public string Value { get; set; }
-    public string Label { get; set; }
-
     public static DropdownOptionViewModel Default(string Label) => new()
     {
       Value = "",

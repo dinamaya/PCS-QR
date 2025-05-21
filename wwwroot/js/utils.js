@@ -255,3 +255,34 @@ export function download(href, filename) {
 
   document.body.removeChild(link);
 }
+
+export function addChoicesInputEvent(elemId, eventCallback) {
+  $(`#${elemId}`).siblings('.choices__list--multiple').siblings('.choices__input--cloned')
+    .on('input', function (e) {
+      eventCallback(e);
+    });
+}
+
+
+export function addChoicesSelectEvent(elemId, placeHolderValue, eventCallback) {
+  const $elem = $(`#${elemId}`).parent()
+    .siblings('.choices__list.choices__list--dropdown')
+    .find('.choices__input.choices__input--cloned');
+
+  $elem.on('input', eventCallback);
+  $elem.attr('placeholder', placeHolderValue);
+}
+
+
+export function onCopy(toastElemId, btnCopyId)
+{
+  const toast = document.getElementById(toastElemId);
+  const copyText = document.getElementById(btnCopyId);
+
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(copyText.value);
+
+  const toastBs = bootstrap.Toast.getOrCreateInstance(toast);
+  toastBs.show()
+}

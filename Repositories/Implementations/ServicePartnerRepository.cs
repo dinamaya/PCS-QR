@@ -1,5 +1,4 @@
 ﻿using CCIMS.Web.App_Code._Globals.Constants;
-using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Context;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Main;
@@ -128,6 +127,28 @@ namespace CCIMS.Web.Repositories.Implementations
         .Where(s => s.QrId == qrId)
         .Select(s => s.SpName)
         .FirstOrDefaultAsync() ?? "";
+    }
+
+    public async Task<string> GetQrIdByName(string name)
+    {
+      return await _mainDb.ServicePartnersVs
+        .Where(s => s.SpName == name)
+        .Select(s => s.QrId)
+        .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_SPNAME);
+    }
+
+    public async Task<IEnumerable<DropdownOptionDto>> GetDropdownOptionsByName(string name)
+    {
+      string _name = name.ToLower();
+      return await _mainDb.ServicePartners
+        .AsNoTracking()
+        .Where(s => s.Name.ToLower().Contains(name))
+        .Select(s => new DropdownOptionDto
+        {
+          Label = s.Name,
+          Value = s.Name,
+        })
+        .ToListAsync();
     }
   }
 }

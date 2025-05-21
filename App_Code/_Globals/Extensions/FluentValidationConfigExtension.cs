@@ -19,6 +19,7 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
       services.AddValidatorsFromAssemblyContaining<AccountEditRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<ServicePartnerCreationRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<ServicePartnerEditRequestValidator>();
+      services.AddValidatorsFromAssemblyContaining<TransactionEditRequestValidator>();
     }
   }
 }
