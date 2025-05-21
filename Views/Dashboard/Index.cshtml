@@ -155,7 +155,11 @@
                                     </div>
                                     <div class="ms-3">
                                         <div class="numbers">
-                                            <h6 class="mb-0 text-dark text-sm">@caseItem.ServicePartnerName</h6>
+                                            <h6 class="mb-0 text-dark text-sm">
+                                                <a href="/CMS/Cases?d=@caseItem.ServicePartnerName" class="text-dark" style="text-decoration: none; display: inline-block;">
+                                                    <span style="cursor: pointer;" font-weight: bold; onmouseover="this.style.color='#0d6efd'; " onmouseout="this.style.color='inherit';">@caseItem.ServicePartnerName</span>
+                                                </a>
+                                            </h6>
                                             <span class="text-sm">Cases: @caseItem.AgingCaseCount</span>
                                         </div>
                                     </div>
