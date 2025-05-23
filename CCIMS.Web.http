@@ -86,3 +86,35 @@ GET {{CCIMS.Web_HostAddress}}/api/cases?id={{id}}
 GET {{CCIMS.Web_HostAddress}}/api/fetch/sp?name={{name}}
 
 ###
+
+POST {{CCIMS.Web_HostAddress}}/api/test/case/email/test
+Content-Type: application/json
+
+{
+  "email": "ken_napura@msi-ecs.com.ph",
+  "caseNumber": "123456789",
+  "servicePartner": "Test Service Partner",
+  "fullName": "Kenneth Napura"
+}
+
+###
+
+POST {{CCIMS.Web_HostAddress}}/api/test/case/email/test
+Content-Type: application/json
+
+{
+  "email": "aldinamaya@gmail.com",
+  "caseNumber": "123456789",
+  "servicePartner": "Test Service Partner",
+  "fullName": "Aldin Amaya"
+}
+
+###
+POST {{CCIMS.Web_HostAddress}}/api/test/case/email/test
+Content-Type: application/json
+
+{
+  //CustomerEmailDetailsViewModel
+}
+
+###
