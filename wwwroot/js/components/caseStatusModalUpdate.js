@@ -6,6 +6,9 @@
 	commentContainer: null,
 	hdnCaseId: null
 };
+
+let $linkCase = $(`#link-case`);
+
 export function initModal(
 	currStatusId,
 	statusChoiceInstance,
@@ -20,6 +23,7 @@ export function initModal(
 	inputs.comments = $(`#${commentsId}`);
 	inputs.hdnCaseId = $(`#${hdnCaseIdElemId}`);
 	inputs.commentContainer = inputs.comments.parent().parent().parent().parent();
+	
 
 	console.log(inputs);
 }
@@ -43,8 +47,8 @@ export function onEdit(button) {
 					reset();
 					inputs.status.setChoices(result.availableStatus, 'value', 'label', true);
 					inputs.status.setChoiceByValue("", true);
-
 					inputs.currStatus.val(result.currentStatus); 
+					$linkCase.attr('href', `/Cases/Update/${caseId}`);
 				}
 				else
 				{

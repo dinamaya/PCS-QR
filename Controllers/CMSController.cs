@@ -67,7 +67,7 @@ namespace CCIMS.Web.Controllers
       }
     }
 
-    [Authorize]
+    [Authorize(Roles = "SPA")]
     public async Task<IActionResult> Cases(string? c = null, string? v = null, string? d = null)
     {
       try
