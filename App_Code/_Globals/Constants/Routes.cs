@@ -58,6 +58,11 @@
 				public const string STAT_CREATE_MODAL = @"../Shared/OperationPage/_StatusModalCreatePartial";
 				public const string STAT_EDIT_MODAL = @"../Shared/OperationPage/_StatusModalEditPartial";
 			}
+
+			public static class EMAIL
+			{
+				public const string TEST = @"../Shared/Emails/_CaseCreatePartial";
+			}
 		}
 	}
 }

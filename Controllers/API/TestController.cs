@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.Entities.Main;
 using CCIMS.Web.Repositories.Interfaces;
+using CCIMS.Web.Services.Interfaces;
+using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Controllers.API
 {
@@ -13,12 +15,14 @@ namespace CCIMS.Web.Controllers.API
     private readonly ISecurityRepository _secRepo;
     private readonly IQRRepository _qrRepo;
     private readonly ICaseRepository _caseRepo;
+    private readonly IEmailService _emailService;
 
-    public TestController(ISecurityRepository secRepo, IQRRepository qrRepo, ICaseRepository caseRepo)
+    public TestController(ISecurityRepository secRepo, IQRRepository qrRepo, ICaseRepository caseRepo, IEmailService emailService)
     {
       _secRepo = secRepo;
       _qrRepo = qrRepo;
       _caseRepo = caseRepo;
+      _emailService = emailService;
     }
 
     [HttpGet("qrLink")]
@@ -38,6 +42,24 @@ namespace CCIMS.Web.Controllers.API
         result += _caseRepo.GenerateCaseNumber() + "\n";
 
       return result;
+    }
+
+    [HttpPost("case/email/test")]
+    public async Task<ActionResult<ResponseDto>> CaseEmailTest([FromBody] CustomerEmailDetailsViewModel emailDetails)
+    {
+      var response = new ResponseDto();
+      try
+      {
+        await _emailService.TestSendCaseCreationEmailAsync(emailDetails);
+        response.Message = "Email Send Successfully";
+        return response;
+      }
+      catch (Exception ex)
+      {
+        response.IsSuccess = false;
+        response.Message = ex.Message;
+        return response;
+      }
     }
   }
 }

@@ -134,7 +134,7 @@ namespace CCIMS.Web.Repositories.Implementations
       account.DateModified = date;
 			account.ModifiedBy = modifiedBy;
 
-			if (editRequestDto.Password.IsNullOrEmpty())
+			if (!editRequestDto.Password.IsNullOrEmpty())
 				account.PasswordHash = _passHasher.HashPassword(account, editRequestDto.Password);
 			
 			var result = await _userManager.UpdateAsync(account);

@@ -35,7 +35,7 @@
 
 
 <!-- Update Status -->
-<div class="modal fade" id="modal-update-stat" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal modal-lg fade" id="modal-update-stat" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<form id="form-update-stat">
 		<div class="modal-dialog">
 			<div class="modal-content p-2">
@@ -55,14 +55,25 @@
 						<div class="row">
 							@await Html.RenderAsync(comments)
 						</div>
+
+						<div class="row mt-4 text-end">
+						</div>
 					</div>
 				</div>
 
 				<input type="hidden" id="hdn-update-caseId" />
 
 				<div class="modal-footer">
-					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="mx-2 col btn border-1 btn-primary">Update</button>
+					<div class="d-flex container">
+						<div class="flex-grow-0 flex-sm-grow-1">
+							<a target="_blank" id="link-case" class="mx-2 col btn border-1 bg-gradient-dark" href="#">Edit Other Details</a>
+						</div>
+						<div class="justify-content-end">
+							<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+							<button type="submit" class="mx-2 col btn border-1 bg-gradient-primary px-5">Update</button>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>

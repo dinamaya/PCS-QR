@@ -1,0 +1,13 @@
+﻿@using CCIMS.Web.Models.ViewModels
+
+@{      
+  var model = new CustomerEmailDetailsViewModel()
+      {
+        Email = "Sample@gmail.com",
+        CaseNumber = "CC123456789",
+        ServicePartner = "Sample SP",
+        Fullname = "Kenjie Sama",
+      };
+}
+
+@await Html.PartialAsync(Routes.Partials.EMAIL.TEST, model);

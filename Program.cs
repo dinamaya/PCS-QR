@@ -11,6 +11,7 @@ builder.Services.AddAuthConfiguration();
 builder.Services.AddHangfireConfigExtension();
 builder.Services.AddSQLConfiguration(builder.Configuration);
 builder.Services.AddRepositories();
+builder.Services.AddComplexConfiguration(builder.Configuration);
 builder.Services.AddFluentValidationConfiguration();
 
 #endregion
