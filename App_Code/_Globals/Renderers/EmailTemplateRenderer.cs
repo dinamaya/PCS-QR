@@ -8,8 +8,9 @@ namespace CCIMS.Web.App_Code._Globals.Renderers
 
     public EmailTemplateRenderer()
     {
+      string path = Path.Combine(Directory.GetCurrentDirectory(), "Views");
       _engine = new RazorLightEngineBuilder()
-        .UseFileSystemProject(Path.Combine(Directory.GetCurrentDirectory(), "Views"))
+        .UseFileSystemProject(path)
         .UseMemoryCachingProvider()
         .Build();
     }
