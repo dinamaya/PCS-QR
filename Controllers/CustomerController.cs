@@ -86,24 +86,7 @@ namespace CCIMS.Web.Controllers
 
 				string caseNumber = await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
 
-				try
-				{
-					var emailDetails = new CustomerEmailDetailsViewModel
-					{
-						Email = createCustomerDto.Email,
-						Fullname = $"{createCustomerDto.FirstName} {createCustomerDto.LastName}",
-						CaseNumber = caseNumber,
-						ServicePartner = createCustomerDto.ServicePartner
-					};
-
-					await _emailService.TestSendCaseCreationEmailAsync(emailDetails);
-					_logger.LogInformation($"Email notification sent successfully for case: {caseNumber}");
-				}
-				catch (Exception emailEx)
-				{
-					_logger.LogError($"Failed to send email notification for case {caseNumber}: {emailEx.Message}");
-
-				}
+				await _emailService.SendCustomerRegistrationNotificationAsync(createCustomerDto, caseNumber);
 
 				_tokenProvider.Remove(createCustomerDto.Token);
 
