@@ -10,6 +10,7 @@ namespace CCIMS.Web.Models.ViewModels
     public Uri BaseUrl { get; }
     public string WebIcon { get; }
     public string VstIcon { get; }
+    public string CheckIcon { get; }
     public string CharacterImage { get; }
     public string CaseTrackingLink { get; }
 
@@ -20,6 +21,7 @@ namespace CCIMS.Web.Models.ViewModels
       icnFolder = new Uri(imgFolder, "icons/");
       WebIcon = new Uri(icnFolder, "icon_ccims_lg.svg").AbsoluteUri;
       VstIcon = new Uri(icnFolder, "VST-ECS.png").AbsoluteUri;
+      CheckIcon = new Uri(icnFolder, "circle-check-solid.png").AbsoluteUri;
       CharacterImage = new Uri(imgFolder, "illustrations/thank-you1.png").AbsoluteUri;
       CaseTrackingLink = new Uri(BaseUrl, $"Cases/Tracking?refNo={emailDetails.CaseNumber}").AbsoluteUri;
 
