@@ -133,7 +133,11 @@ function deactivate(e, errorTitle, errorDescription)
 	const deleteUrl = new URL(window.baseUrl, window.location.origin);
 	deleteUrl.searchParams.set('id', inputs.hdnAccId.val());
 
-	httpDelete(deleteUrl, );
+	httpDelete(deleteUrl,
+		'modal-edit',
+		errorTitle,
+		errorDescription
+	);
 
 	$.ajax({
 		url: deleteUrl,
