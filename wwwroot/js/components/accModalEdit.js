@@ -133,26 +133,12 @@ function deactivate(e, errorTitle, errorDescription)
 	const deleteUrl = new URL(window.baseUrl, window.location.origin);
 	deleteUrl.searchParams.set('id', inputs.hdnAccId.val());
 
-	httpDelete(deleteUrl, );
-
-	$.ajax({
-		url: deleteUrl,
-		method: 'DELETE',
-		success: function (response)
-		{
-			const modalEl = $('#modal-edit');
-			const modalInstance = bootstrap.Modal.getInstance(modalEl);
-			modalInstance.hide();
-
-			setTimeout(() => {
-				const url = new URL(window.location.href);
-				url.searchParams.set('q', window.okDeleteParam);
-				window.location.href = url.toString();
-			}, 300);
-		},
-		error: (error) =>
-			handleError(error, errorTitle, errorDescription, notifs)
-	});
+	httpDelete(
+		deleteUrl,
+		'modal-edit',
+		errorTitle,
+		errorDescription
+	);
 }
 
 function getSelectedPasswordOption() 

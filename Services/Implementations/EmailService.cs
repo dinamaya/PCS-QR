@@ -1,4 +1,5 @@
-﻿using CCIMS.Web.App_Code._Globals.Constants;
+﻿using CCIMS.Web.App_Code._Globals;
+using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.App_Code._Globals.Renderers;
 using CCIMS.Web.Models.Complex;
 using CCIMS.Web.Models.ViewModels;
@@ -14,20 +15,23 @@ namespace CCIMS.Web.Services.Implementations
 {
   public class EmailService : IEmailService
   {
+    private readonly Server _server;
     private readonly EmailCredential _dev;
     private readonly EmailCredential _prod;
     private readonly IEnumerable<string> _testEmails;
 
-    public EmailService(IOptions<EmailServiceConfig> config)
+    public EmailService(IOptions<EmailServiceConfig> config, Server server)
     {
       _dev = config.Value.Credentials["Dev"];
       _prod = config.Value.Credentials["Prod"];
       _testEmails = config.Value.TestEmails;
+      _server = server;
     }
 
     public async Task TestSendCaseCreationEmailAsync(CustomerEmailDetailsViewModel emailDetails)
     {
-      var htmlBody = await new EmailTemplateRenderer().RenderTemplateAsync(Routes.Partials.EMAIL.TEST, emailDetails);
+      var emailAssets = new CustomerEmailAssetsViewModel(_server, emailDetails);
+      var htmlBody = await new EmailTemplateRenderer().RenderTemplateAsync(Routes.Partials.EMAIL.CASE_CREATION, emailAssets);
       await CreateEmailAsync(
         emailDetails.Email, 
         $"Test CCIMS - Case Filed by {emailDetails.Fullname}", 

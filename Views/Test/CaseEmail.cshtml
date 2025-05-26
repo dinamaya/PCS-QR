@@ -1,13 +1,16 @@
-﻿@using CCIMS.Web.Models.ViewModels
-
+﻿@using CCIMS.Web.App_Code._Globals
+@using CCIMS.Web.Models.ViewModels
+@inject Server _server
 @{      
-  var model = new CustomerEmailDetailsViewModel()
+  var model = new CustomerEmailAssetsViewModel(
+    _server, 
+    new CustomerEmailDetailsViewModel()
       {
         Email = "Sample@gmail.com",
         CaseNumber = "CC123456789",
         ServicePartner = "Sample SP",
-        Fullname = "Kenjie Sama",
-      };
+        Fullname = "First Name M. Last Name",
+    });
 }
 
-@await Html.PartialAsync(Routes.Partials.EMAIL.TEST, model);
+@await Html.PartialAsync(Routes.Partials.EMAIL.TEST, model)
