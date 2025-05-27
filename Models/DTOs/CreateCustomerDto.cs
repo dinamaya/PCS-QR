@@ -28,5 +28,7 @@ namespace CCIMS.Web.Models.DTOs
 
 		[Required]
 		public string Token { get; set; }
+
+		public string ServicePartner { get; set; }
 	}
 }
