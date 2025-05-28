@@ -63,6 +63,7 @@
 			{
 				public const string TEST = @"../Shared/Emails/_CaseCreatePartial";
 				public const string CASE_CREATION = @"./Shared/Emails/_CaseCreatePartial";
+				public const string CASE_CLOSED = @"./Shared/Emails/_CaseClosedPartial";
 			}
 		}
 	}

@@ -64,6 +64,26 @@ namespace CCIMS.Web.Services.Implementations
 			}
 		}
 
+		public async Task SendCaseClosedNotificationAsync(CustomerEmailDetailsViewModel emailDetails)
+		{
+			try
+			{
+				var emailAssets = new CustomerEmailAssetsViewModel(_server, emailDetails);
+				var htmlBody = await new EmailTemplateRenderer().RenderTemplateAsync(Routes.Partials.EMAIL.CASE_CLOSED, emailAssets);
+				await CreateEmailAsync(
+					emailDetails.Email,
+					$"Your Case ({emailDetails.CaseNumber}) Has Been Closed",
+					htmlBody,
+					_dev); // Using _dev as per instruction, can be changed to _prod or based on environment
+				_logger.LogInformation($"Case closed email notification sent successfully for case: {emailDetails.CaseNumber}");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Failed to send case closed email notification for case {emailDetails.CaseNumber}: {ex.Message}");
+				// Optionally rethrow or handle as per application's error handling strategy
+			}
+		}
+
 		private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential)
 		{
 			var message = new MimeMessage();
