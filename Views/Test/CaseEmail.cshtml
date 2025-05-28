@@ -1,9 +1,11 @@
 ﻿@using CCIMS.Web.App_Code._Globals
 @using CCIMS.Web.Models.ViewModels
-@inject Server _server
+@using CCIMS.Web.Repositories.Interfaces
+
+@inject IConfigurationRepository configuration
 @{      
   var model = new CustomerEmailAssetsViewModel(
-    _server, 
+    configuration,
     new CustomerEmailDetailsViewModel()
       {
         Email = "Sample@gmail.com",
