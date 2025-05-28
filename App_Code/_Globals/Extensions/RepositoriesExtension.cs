@@ -24,9 +24,10 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddScoped<ITransactionRepository, TransactionRepository>();
 			services.AddScoped<ICameraRepository, CameraRepository>();
 			services.AddScoped<IDashboardRepository, DashboardRepository>();
+     
+			services.AddScoped<IEmailService, EmailService>();
 
 			services.AddSingleton<ITokenProvider, TokenProvider>();
-			services.AddSingleton<IEmailService, EmailService>();
 
       services.AddSingleton<FileManager>();
       services.AddSingleton<Server>();

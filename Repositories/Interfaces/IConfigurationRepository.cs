@@ -5,7 +5,8 @@ namespace CCIMS.Web.Repositories.Interfaces
 {
 	public interface IConfigurationRepository
 	{
-		string GetDocumentationUrl();
+		string GetBaseUrl();
+    string GetDocumentationUrl();
 		string GetQrScanUrl();
 		string GetPSGCBaseUrl();
 		string GetPSGCProvinces();
