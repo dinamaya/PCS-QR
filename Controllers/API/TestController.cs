@@ -44,13 +44,13 @@ namespace CCIMS.Web.Controllers.API
       return result;
     }
 
-    [HttpPost("case/email/test")]
-    public async Task<ActionResult<ResponseDto>> CaseEmailTest([FromBody] CustomerEmailDetailsViewModel emailDetails)
+    [HttpGet("case/email/test")]
+    public async Task<ActionResult<ResponseDto>> CaseEmailTest(string email, string caseNumber, string sp, string sn, string customerName)
     {
       var response = new ResponseDto();
       try
       {
-        await _emailService.TestSendCaseCreationEmailAsync(emailDetails);
+        await _emailService.TestSendCaseCreationEmailAsync(email, caseNumber, sp, sn, customerName);
         response.Message = "Email Send Successfully";
         return response;
       }

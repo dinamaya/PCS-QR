@@ -1,10 +1,15 @@
-﻿namespace CCIMS.Web.Models.ViewModels
+﻿using CCIMS.Web.Repositories.Interfaces;
+
+namespace CCIMS.Web.Models.ViewModels
 {
-  public class CustomerEmailDetailsViewModel
+  public class CustomerEmailDetailsViewModel : EmailAssetViewModel
   {
     public string Email { get; set; }
-    public string CaseNumber { get; set; }
     public string ServicePartner { get; set; }
     public string Fullname { get; set; }
+
+    public CustomerEmailDetailsViewModel(IConfigurationRepository configRepo, string caseNumber) : base(configRepo, caseNumber)
+    {
+    }
   }
 }
