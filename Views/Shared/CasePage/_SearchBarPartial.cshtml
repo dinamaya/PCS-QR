@@ -2,16 +2,11 @@
 @using CCIMS.Web.App_Code._Globals.Extensions
 @using CCIMS.Web.Models.ViewModels
 @using CCIMS.Web.Models.ViewModels.Partials
-
 <script src="~/js/plugins/flatpickr.min.js"></script>
-
 @{
     var categs = DropdownOptionViewModel.InitOptions("Select Categories", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.CATEGORIES]);
-
     var stats = DropdownOptionViewModel.InitOptions("Select Status", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.STATUS]);
-
     var ages = DropdownOptionViewModel.InitOptions("Select Aged Count", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.AGED]);
-
     var categories = new SelectViewModel()
             {
                 IdName = "category",
@@ -21,7 +16,6 @@
                 ClassName = " h-100",
                 Options = categs
             };
-
     var selectValue = new SelectViewModel()
             {
                 IdName = "selectValue",
@@ -30,7 +24,6 @@
                 IsLabelVisible = false,
                 InputClassName = "border-0"
             };
-
     var textValue = new InputFieldViewModel()
             {
                 IdName = "textVal",
@@ -48,12 +41,12 @@
                 <div class="container-fluid d-sm-block d-lg-flex px-0">
                     @await Html.RenderAsync(categories)
                     @await Html.RenderAsync(selectValue)
-
                     <div class="col">
                         @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, textValue)
                     </div>
-                    <div>
-                        <input class="form-control datepicker" placeholder="Please select date" type="text" onfocus="focused(this)" onfocusout="defocused(this)">
+                    <div class="col mx-2 mb-2">
+                        <input class="form-control datepicker" placeholder="Select date range" type="text"
+                               onfocus="focused(this)" onfocusout="defocused(this)" id="dateRange" name="dateRange">
                     </div>
                     <div class="col-12 col-lg-2 h-auto">
                         <div class="px-2 d-flex mx-2 pb-2 h-100 justify-content-center align-content-center">
@@ -62,34 +55,38 @@
                             </button>
                         </div>
                     </div>
-
                 </div>
                 <div class="container">
                     <input type="hidden" class="col-12" value="" name="v" placeholder="mainValue" id="hdn-searchVal" />
+                    <input type="hidden" class="col-12" value="" name="dateRange" id="hdn-dateRange" />
                 </div>
             </div>
         </div>
     </div>
 </form>
-
 <script type="module" defer>
     import { initComponents as init } from '/js/components/caseSearch.js';
-
     init(
         '@categories.Id',
         'btn-search',
         '@textValue.Id',
         '@selectValue.Id',
         'hdn-searchVal',
+        'dateRange',
+        'hdn-dateRange',
     @Html.Raw(Json.Serialize(stats)),
     @Html.Raw(Json.Serialize(ages))
-          );
+                  );
 </script>
-
 <script>
     if (document.querySelector('.datepicker')) {
         flatpickr('.datepicker', {
-            mode: "range"
+            mode: "range",
+            dateFormat: "Y-m-d",
+            onChange: function (selectedDates, dateStr, instance) {
+                // Update hidden field when date changes
+                document.getElementById('hdn-dateRange').value = dateStr;
+            }
         });
     }
 </script>

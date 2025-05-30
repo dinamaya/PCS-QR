@@ -20,17 +20,27 @@ namespace CCIMS.Web.Repositories.Implementations
         {
             IEnumerable<CaseRowViewModel> allCases;
 
+            // Parse date range if provided
+            DateTime? startDate = null;
+            DateTime? endDate = null;
+            if (!request.DateRange.IsNullOrEmpty())
+            {
+                var dates = ParseDateRange(request.DateRange);
+                startDate = dates.StartDate;
+                endDate = dates.EndDate;
+            }
+
             // Apply the same filtering logic as the Cases action
             if (!request.Category.IsNullOrEmpty() && !request.CategoryValue.IsNullOrEmpty())
             {
                 if (request.ServicePartner.IsNullOrEmpty())
-                    allCases = await _caseRepo.GetByCategory(request.Category, request.CategoryValue);
+                    allCases = await _caseRepo.GetByCategory(request.Category, request.CategoryValue, startDate, endDate);
                 else
                     allCases = Enumerable.Empty<CaseRowViewModel>(); // Handle this case as needed
             }
             else
             {
-                allCases = await _caseRepo.GetDataAged5DaysByServicePartner(request.ServicePartner);
+                allCases = await _caseRepo.GetDataAged5DaysByServicePartner(request.ServicePartner, startDate, endDate);
             }
 
             // Apply search term filtering if provided
@@ -40,6 +50,38 @@ namespace CCIMS.Web.Repositories.Implementations
             }
 
             return allCases;
+        }
+
+        private (DateTime? StartDate, DateTime? EndDate) ParseDateRange(string dateRange)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(dateRange))
+                    return (null, null);
+
+                // Handle flatpickr range format: "2023-01-01 to 2023-01-31"
+                var parts = dateRange.Split(" to ");
+                if (parts.Length == 2)
+                {
+                    if (DateTime.TryParse(parts[0].Trim(), out DateTime start) &&
+                        DateTime.TryParse(parts[1].Trim(), out DateTime end))
+                    {
+                        return (start.Date, end.Date.AddDays(1).AddSeconds(-1)); // Include end of day
+                    }
+                }
+
+                // Handle single date
+                if (DateTime.TryParse(dateRange.Trim(), out DateTime singleDate))
+                {
+                    return (singleDate.Date, singleDate.Date.AddDays(1).AddSeconds(-1));
+                }
+
+                return (null, null);
+            }
+            catch
+            {
+                return (null, null);
+            }
         }
 
         public IEnumerable<CaseRowViewModel> FilterCasesBySearchTerm(IEnumerable<CaseRowViewModel> cases, string searchTerm)

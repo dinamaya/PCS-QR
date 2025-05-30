@@ -74,22 +74,32 @@ namespace CCIMS.Web.Controllers
         }
 
         [Authorize(Roles = "SPA")]
-        public async Task<IActionResult> Cases(string? c = null, string? v = null, string? d = null)
+        public async Task<IActionResult> Cases(string? c = null, string? v = null, string? d = null, string? dateRange = null)
         {
             try
             {
                 await InitializeValues();
                 IEnumerable<CaseRowViewModel>? results = null;
 
+                // Parse date range if provided
+                DateTime? startDate = null;
+                DateTime? endDate = null;
+                if (!dateRange.IsNullOrEmpty())
+                {
+                    var dates = ParseDateRange(dateRange);
+                    startDate = dates.StartDate;
+                    endDate = dates.EndDate;
+                }
+
                 if (!c.IsNullOrEmpty() && !v.IsNullOrEmpty())
                 {
                     if (d.IsNullOrEmpty())
-                        results = await _caseRepo.GetByCategory(c, v);
+                        results = await _caseRepo.GetByCategory(c, v, startDate, endDate);
                     else
                         results = null;
                 }
                 else
-                    results = await _caseRepo.GetDataAged5DaysByServicePartner(d);
+                    results = await _caseRepo.GetDataAged5DaysByServicePartner(d, startDate, endDate);
 
                 return View(results);
             }
@@ -106,7 +116,39 @@ namespace CCIMS.Web.Controllers
             ViewData[Keys.ViewData.Types.AGED] = _configRepo.GetAgedSearcOptions();
         }
 
-        // NEW METHOD: Export all data based on current filters
+        private (DateTime? StartDate, DateTime? EndDate) ParseDateRange(string dateRange)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(dateRange))
+                    return (null, null);
+
+                // Handle flatpickr range format: "2023-01-01 to 2023-01-31"
+                var parts = dateRange.Split(" to ");
+                if (parts.Length == 2)
+                {
+                    if (DateTime.TryParse(parts[0].Trim(), out DateTime start) &&
+                        DateTime.TryParse(parts[1].Trim(), out DateTime end))
+                    {
+                        return (start.Date, end.Date.AddDays(1).AddSeconds(-1)); // Include end of day
+                    }
+                }
+
+                // Handle single date
+                if (DateTime.TryParse(dateRange.Trim(), out DateTime singleDate))
+                {
+                    return (singleDate.Date, singleDate.Date.AddDays(1).AddSeconds(-1));
+                }
+
+                return (null, null);
+            }
+            catch
+            {
+                return (null, null);
+            }
+        }
+
+        // Updated Export method with date range support
         [Authorize(Roles = "SPA")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -131,13 +173,14 @@ namespace CCIMS.Web.Controllers
         }
     }
 
-    // DTO for filter properties from the View
+    // Updated DTO for filter properties from the View
     public class ExportAllRequestDto
     {
         public string? Category { get; set; }
         public string? CategoryValue { get; set; }
         public string? ServicePartner { get; set; }
         public string? SearchTerm { get; set; }
+        public string? DateRange { get; set; }
         // Add any other filter properties you need
     }
 }
