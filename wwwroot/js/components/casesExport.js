@@ -16,12 +16,13 @@
                 Category: urlParams.get('c') || null,
                 CategoryValue: urlParams.get('v') || null,
                 ServicePartner: urlParams.get('d') || null,
-                SearchTerm: getDataTableSearchTerm()
+                SearchTerm: getDataTableSearchTerm(),
+                DateRange: urlParams.get('dateRange') || null  // Added missing date range
             };
 
             console.log('Export request data:', requestData); // Debug log
 
-            // Call the new ExportAll endpoint
+            // Call the ExportAll endpoint
             fetch('/CMS/Export', {
                 method: 'POST',
                 headers: {
@@ -63,27 +64,29 @@
 
     // Enhanced function to get DataTable search term
     function getDataTableSearchTerm() {
-        // Method 1: Try to get from Simple DataTables API
-        const dataTable = window.simpleDatatables && window.simpleDatatables[table.id];
-        if (dataTable && dataTable.input) {
-            const searchValue = dataTable.input.value;
+        // Method 1: Check for Simple DataTables instance
+        if (window.dataTable && window.dataTable.input) {
+            const searchValue = window.dataTable.input.value;
             if (searchValue && searchValue.trim()) {
                 console.log('Search term from DataTable API:', searchValue);
                 return searchValue.trim();
             }
         }
 
-        // Method 2: Try to get from DataTable search input by various selectors
+        // Method 2: Try to get from various search input selectors
         const searchSelectors = [
             'input[type="search"]',                    // Standard search input
             '.dataTables_filter input',                // DataTables wrapper
             '.dataTable-search',                       // Simple DataTables
             '.dataTable-input',                        // Simple DataTables input
+            '.simple-datatables-search',               // Simple DataTables search
             '[data-search]',                           // Custom search attribute
             '#dataTable_filter input',                 // Specific ID
             '.search-input',                           // Generic class
             'input[placeholder*="Search"]',            // Input with Search in placeholder
-            'input[placeholder*="search"]'             // Input with search in placeholder
+            'input[placeholder*="search"]',            // Input with search in placeholder
+            'input[aria-label*="Search"]',             // ARIA label with Search
+            'input[aria-label*="search"]'              // ARIA label with search
         ];
 
         for (const selector of searchSelectors) {
@@ -94,36 +97,29 @@
             }
         }
 
-        // Method 3: Try to get search term from DataTable instance properties
-        if (dataTable) {
-            // Check various property paths where search term might be stored
-            const searchPaths = [
-                'searchTerm',
-                'search',
-                'currentSearch',
-                'filter',
-                'query',
-                'options.search',
-                'config.search'
-            ];
+        // Method 3: Try to find the search input within the table's parent container
+        const tableContainer = table.closest('.dataTables_wrapper, .dataTable-wrapper, .table-container');
+        if (tableContainer) {
+            const searchInput = tableContainer.querySelector('input[type="search"], input.search, .search-input');
+            if (searchInput && searchInput.value && searchInput.value.trim()) {
+                console.log('Search term from table container:', searchInput.value);
+                return searchInput.value.trim();
+            }
+        }
 
-            for (const path of searchPaths) {
-                const value = getNestedProperty(dataTable, path);
-                if (value && typeof value === 'string' && value.trim()) {
-                    console.log(`Search term from DataTable.${path}:`, value);
-                    return value.trim();
+        // Method 4: Check if there's a global DataTable variable
+        if (typeof $ !== 'undefined' && $.fn.DataTable) {
+            const dtInstance = $(table).DataTable();
+            if (dtInstance && dtInstance.search) {
+                const searchTerm = dtInstance.search();
+                if (searchTerm && searchTerm.trim()) {
+                    console.log('Search term from jQuery DataTable:', searchTerm);
+                    return searchTerm.trim();
                 }
             }
         }
 
         console.log('No search term found');
         return null;
-    }
-
-    // Helper function to get nested object properties
-    function getNestedProperty(obj, path) {
-        return path.split('.').reduce((current, key) => {
-            return (current && current[key] !== undefined) ? current[key] : null;
-        }, obj);
     }
 });

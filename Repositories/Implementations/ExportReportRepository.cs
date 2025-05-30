@@ -33,13 +33,12 @@ namespace CCIMS.Web.Repositories.Implementations
             // Apply the same filtering logic as the Cases action
             if (!request.Category.IsNullOrEmpty() && !request.CategoryValue.IsNullOrEmpty())
             {
-                if (request.ServicePartner.IsNullOrEmpty())
-                    allCases = await _caseRepo.GetByCategory(request.Category, request.CategoryValue, startDate, endDate);
-                else
-                    allCases = Enumerable.Empty<CaseRowViewModel>(); // Handle this case as needed
+                // When filtering by category, we don't filter by service partner
+                allCases = await _caseRepo.GetByCategory(request.Category, request.CategoryValue, startDate, endDate);
             }
             else
             {
+                // When not filtering by category, we can filter by service partner
                 allCases = await _caseRepo.GetDataAged5DaysByServicePartner(request.ServicePartner, startDate, endDate);
             }
 

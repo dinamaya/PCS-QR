@@ -5,6 +5,7 @@ let $selectValue = null;
 let $hiddenValue = null;
 let $dateRange = null;
 let $hiddenDateRange = null;
+let $dateRangeContainer = null;
 let choicesCategory = null;
 let choicesValue = null;
 let statusList = [];
@@ -20,6 +21,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
     $hiddenValue = $(`#${hiddenValueId}`);
     $dateRange = $(`#${dateRangeId}`);
     $hiddenDateRange = $(`#${hiddenDateRangeId}`);
+    $dateRangeContainer = $('#dateRangeContainer');
     statusList = statuses;
     agedList = agedCounts;
 
@@ -53,14 +55,37 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         $selectWrapper.addClass("d-none");
         $textWrapper.addClass("d-none");
 
+        // Hide datepicker by default
+        $dateRangeContainer.addClass("d-none");
+
         if (label === "Days Aged" || label === "Status") {
             $selectWrapper.removeClass("d-none");
             const newChoices = label === "Days Aged" ? agedList : statusList;
             choicesValue.setChoices(newChoices, 'value', 'label', false);
             choicesValue.setChoiceByValue("");
+
+            // Show datepicker for Service Partner and Status
+            if (label === "Status") {
+                $dateRangeContainer.removeClass("d-none");
+            }
         }
-        else if (label && label !== "Select Categories")
+        else if (label && label !== "Select Categories") {
             $textWrapper.removeClass("d-none");
+
+            // Show datepicker for Service Partner
+            if (label === "Service Partner Name") {
+                $dateRangeContainer.removeClass("d-none");
+            }
+        }
+
+        // Reset date range when category changes (except for allowed categories)
+        if (label !== "Status" && label !== "Service Partner Name") {
+            $hiddenDateRange.val("");
+            $dateRange.val("");
+            if (flatpickrInstance) {
+                flatpickrInstance.clear();
+            }
+        }
     });
 
     $selectValue.on('change', function () {
@@ -92,8 +117,9 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
             params.set('v', $hiddenValue.val());
         }
 
-        // Add date range parameter if it exists
-        if ($hiddenDateRange.val() != "") {
+        // Add date range parameter if it exists and is allowed for the selected category
+        const selectedLabel = $selectCategory.find("option:selected").text().trim();
+        if ($hiddenDateRange.val() != "" && (selectedLabel === "Status" || selectedLabel === "Service Partner Name")) {
             params.set('dateRange', $hiddenDateRange.val());
         }
 
@@ -117,12 +143,15 @@ function reset() {
 
 // Function to handle export with current filters
 function exportWithCurrentFilters() {
+    const selectedLabel = $selectCategory.find("option:selected").text().trim();
+    const dateRangeValue = (selectedLabel === "Status" || selectedLabel === "Service Partner Name") ? $hiddenDateRange.val() || null : null;
+
     const exportData = {
         Category: $selectCategory.val() || null,
         CategoryValue: $hiddenValue.val() || null,
-        ServicePartner: null, // Add logic if needed
-        SearchTerm: null, // Add logic if needed
-        DateRange: $hiddenDateRange.val() || null
+        ServicePartner: getServicePartnerFromUrl(),
+        SearchTerm: getDataTableSearchTerm(),
+        DateRange: dateRangeValue
     };
 
     // Send AJAX request to export endpoint
@@ -158,6 +187,30 @@ function exportWithCurrentFilters() {
         });
 }
 
+// Helper functions
+function getServicePartnerFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('d') || null;
+}
+
+function getDataTableSearchTerm() {
+    const searchSelectors = [
+        'input[type="search"]',
+        '.dataTables_filter input',
+        '.dataTable-search',
+        '.dataTable-input',
+        '.simple-datatables-search'
+    ];
+
+    for (const selector of searchSelectors) {
+        const searchInput = document.querySelector(selector);
+        if (searchInput && searchInput.value && searchInput.value.trim()) {
+            return searchInput.value.trim();
+        }
+    }
+    return null;
+}
+
 // Make export function available globally
 window.exportWithCurrentFilters = exportWithCurrentFilters;
 
@@ -184,19 +237,22 @@ $(document).ready(function () {
         }, 100);
     }
 
-    // Restore date range selection
-    if (dateRangeValue) {
-        $hiddenDateRange.val(dateRangeValue);
-        if (flatpickrInstance) {
-            // Parse the date range and set it in flatpickr
-            const dates = dateRangeValue.split(' to ');
-            if (dates.length === 2) {
-                flatpickrInstance.setDate([dates[0].trim(), dates[1].trim()]);
+    // Restore date range selection only if allowed for the selected category
+    if (dateRangeValue && searchCategory) {
+        const label = $($selectCategory).find("option:selected").text().trim();
+        if (label === "Status" || label === "Service Partner Name") {
+            $hiddenDateRange.val(dateRangeValue);
+            if (flatpickrInstance) {
+                // Parse the date range and set it in flatpickr
+                const dates = dateRangeValue.split(' to ');
+                if (dates.length === 2) {
+                    flatpickrInstance.setDate([dates[0].trim(), dates[1].trim()]);
+                } else {
+                    flatpickrInstance.setDate(dateRangeValue);
+                }
             } else {
-                flatpickrInstance.setDate(dateRangeValue);
+                $dateRange.val(dateRangeValue);
             }
-        } else {
-            $dateRange.val(dateRangeValue);
         }
     }
 });

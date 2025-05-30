@@ -44,7 +44,8 @@
                     <div class="col">
                         @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, textValue)
                     </div>
-                    <div class="col mx-2 mb-2">
+                    <!-- Hide datepicker by default -->
+                    <div class="col mx-2 mb-2 d-none" id="dateRangeContainer">
                         <input class="form-control datepicker" placeholder="Select date range" type="text"
                                onfocus="focused(this)" onfocusout="defocused(this)" id="dateRange" name="dateRange">
                     </div>
@@ -76,7 +77,7 @@
         'hdn-dateRange',
     @Html.Raw(Json.Serialize(stats)),
     @Html.Raw(Json.Serialize(ages))
-                  );
+                      );
 </script>
 <script>
     if (document.querySelector('.datepicker')) {
