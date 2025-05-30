@@ -33,13 +33,13 @@ namespace CCIMS.Web.Services.Implementations
         BaseUrl = _configRepo.GetBaseUrl(),
         Cases = result
       };
-      _logger.LogInformation("Aged Cases Emailed");
+      _logger.LogTrace("Aged Cases Emailed");
       await _emailService.SendAgedCasesEmailAsync(agedCases);
     }
 
     public async Task TestExecuteAsync()
     {
-      _logger.LogInformation("Test Execute");
+      _logger.LogTrace("Test Execute");
     }
   }
 }

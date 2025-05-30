@@ -12,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 #region Extension Configurations
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddAuthConfiguration();
-builder.Services.AddHangfireConfigExtension();
 builder.Services.AddSQLConfiguration(builder.Configuration);
 builder.Services.AddRepositories();
+builder.Services.AddHangfireConfigExtension();
 builder.Services.AddComplexConfiguration(builder.Configuration);
 builder.Services.AddFluentValidationConfiguration();
 
@@ -69,6 +69,12 @@ using (var scope = app.Services.CreateScope())
 }
 #endregion
 
-BackgroundJobsInitializer.Run();
+#region Hangfire Job Initialization
+using (var scope = app.Services.CreateScope())
+{
+  var backgroundJobs = scope.ServiceProvider.GetRequiredService<IBackgroundJobsService>();
+  BackgroundJobsInitializer.Run();
+}
+#endregion
 
 app.Run();
