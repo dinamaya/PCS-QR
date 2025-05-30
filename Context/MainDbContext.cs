@@ -32,6 +32,7 @@ namespace CCIMS.Web.Context
     public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
     public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
     public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
+    public virtual DbSet<TopAgingCasesAllV> TopAgingCasesAllVs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -176,6 +177,13 @@ namespace CCIMS.Web.Context
         entity.Property(e => e.Id).HasMaxLength(450);
       });
 
+      modelBuilder.Entity<TopAgingCasesAllV>(entity =>
+      {
+        entity
+            .HasNoKey()
+            .ToView("TopAgingCasesAll_v");
+      });
+      
       modelBuilder.Entity<TransactionsV>(entity =>
       {
         entity

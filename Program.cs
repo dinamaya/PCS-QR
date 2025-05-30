@@ -1,5 +1,9 @@
+using CCIMS.Web.App_Code._Globals;
+using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.App_Code._Globals.Extensions;
 using CCIMS.Web.Context.Seeder;
+using CCIMS.Web.Services.Implementations;
+using CCIMS.Web.Services.Interfaces;
 using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,5 +68,7 @@ using (var scope = app.Services.CreateScope())
   }
 }
 #endregion
+
+BackgroundJobsInitializer.Run();
 
 app.Run();

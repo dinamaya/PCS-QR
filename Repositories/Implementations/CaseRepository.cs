@@ -178,5 +178,19 @@ namespace CCIMS.Web.Repositories
           })
         .ToListAsync();
     }
+
+    public async Task<IEnumerable<AgedCaseViewModel>> GetAgedCases()
+    {
+      var baseUrl = new Uri(_configRepo.GetBaseUrl());
+
+      return await _context.TopAgingCasesAllVs.Select(c => new AgedCaseViewModel()
+      {
+        CaseTrackingLink = new Uri(baseUrl, $"Cases/Tracking?refNo={c.CaseNumber}").AbsoluteUri,
+        CaseNumber = c.CaseNumber,
+        DateLastUpdated = c.DateLastUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+        CustomerName = c.LastName + ", " + c.FirstName,
+        ServicePartner = c.ServicePartnerName
+      }).ToListAsync();
+    }
   }
 }

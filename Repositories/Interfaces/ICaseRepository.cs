@@ -11,6 +11,7 @@ namespace CCIMS.Web.Repositories.Interfaces
 	{
 		Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value);
 		Task<IEnumerable<CaseRowViewModel>> GetDataAged5DaysByServicePartner(string spName);
+		Task<IEnumerable<AgedCaseViewModel>> GetAgedCases();
 		Task<string> GetCurrentStatus(long caseId);
 		Task<CaseDetailsViewModel> GetByCaseNumber(string caseNumber);
 		string GenerateCaseNumber();

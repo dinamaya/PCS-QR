@@ -4,15 +4,13 @@
 
 @inject IConfigurationRepository configuration
 @{      
-  var model = new CustomerEmailAssetsViewModel(
-    configuration,
-    new CustomerEmailDetailsViewModel()
-      {
-        Email = "Sample@gmail.com",
-        CaseNumber = "CC123456789",
-        ServicePartner = "Sample SP",
-        Fullname = "First Name M. Last Name",
-    });
+  var model = new SpaCaseCreationEmailDetailsViewModel(configuration, "CC12345678")
+  {
+      CustomerName = "Jane Smith",
+      ServicePartner = "Auto Parts Inc.",
+      SerialNumber = "SN12345678"
+  };
+
 }
 
 @await Html.PartialAsync(Routes.Partials.EMAIL.TEST, model)

@@ -1,4 +1,5 @@
 ﻿using CCIMS.Web.App_Code._Globals;
+using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Models.Complex;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.ViewModels;
@@ -6,7 +7,9 @@ using CCIMS.Web.Repositories.Interfaces;
 using CCIMS.Web.Services.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using Scriban;
 using Scriban.Syntax;
@@ -15,12 +18,17 @@ namespace CCIMS.Web.Services.Implementations
 {
   public class EmailService : IEmailService
   {
+    private readonly string _agedTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseAgedSpaEmail.sbn");
+    private readonly string _custTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationCustomerEmail.sbn");
+    private readonly string _spaTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationSPAEmail.sbn");
+
     private readonly EmailCredential _dev;
     private readonly EmailCredential _prod;
     private readonly IEnumerable<string> _testEmails;
     private readonly ILogger<EmailService> _logger;
     private readonly IConfigurationRepository _configRepo;
     private readonly Server _server;
+
 
     public EmailService(IOptions<EmailServiceConfig> config, ILogger<EmailService> logger, IConfigurationRepository configRepo, Server server)
     {
@@ -66,13 +74,9 @@ namespace CCIMS.Web.Services.Implementations
         }).ToList()
       };
 
-      string custTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationCustomerEmail.sbn");
-      //string spaTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationSPAEmail.sbn");
-      string agedTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseAgedSpaEmail.sbn");
-
-      var customerHtmlBody = await RenderEmailAsync(custTemplatePath, custModel);
+      var customerHtmlBody = await RenderEmailAsync(_custTemplatePath, custModel);
       //var spaHtmlBody = await RenderEmailAsync(spaTemplatePath, spaModel);
-      var agedHtmlBody = await RenderEmailAsync(agedTemplatePath, agedModel);
+      var agedHtmlBody = await RenderEmailAsync(_agedTemplatePath, agedModel);
 
       await CreateEmailAsync(
         custModel.Email,
@@ -117,6 +121,19 @@ namespace CCIMS.Web.Services.Implementations
       }
     }
 
+    public async Task SendAgedCasesEmailAsync(CaseAgedEmailDetailsViewModel agedCases)
+    {
+      var agedHtmlBody = await RenderEmailAsync(_agedTemplatePath, agedCases);
+
+      await CreateEmailAsync(
+        null,
+        $"Test CCIMS - Aged Cases {DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)}",
+        agedHtmlBody,
+        _dev
+      );
+    }
+
+
     private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment>? attachments = null)
     {
       var message = new MimeMessage();
@@ -125,7 +142,8 @@ namespace CCIMS.Web.Services.Implementations
       foreach (var recipient in _testEmails)
         message.Cc.Add(new MailboxAddress("", recipient));
 
-      message.To.Add(new MailboxAddress("", to));
+      if(!to.IsNullOrEmpty())
+        message.To.Add(new MailboxAddress("", to));
 
       message.ReplyTo.Add(new MailboxAddress("", credential.ReplyAddress));
 
