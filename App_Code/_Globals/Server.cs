@@ -4,7 +4,7 @@ namespace CCIMS.Web.App_Code._Globals
 {
   public class Server(IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
 	{
-    public Uri? BaseUrl {
+    public Uri? BaseUri {
       get {
         var request = httpContextAccessor.HttpContext?.Request;
         return request == null ? null : new Uri($"{request.Scheme}://{request.Host}");

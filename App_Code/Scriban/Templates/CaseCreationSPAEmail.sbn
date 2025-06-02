@@ -1,0 +1,119 @@
+﻿<div style = "margin: 0; padding: 0; background-color: #f8f9fa;" >
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8f9fa;">
+		<tr>
+			<td align="center">
+				<!-- Main Container -->
+				<table width="1000" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; padding: 30px; position: relative;">
+
+					<!-- Header -->
+					<tr>
+						<td align="left" style="padding-bottom: 20px;">
+							<a href="{{ BaseUrl }}" target="_blank">
+								<img src="{{ BaseUrl }}img/icons/icon_ccims_lg.svg" alt="Main Logo" height="60" style="display: inline-block;" />
+							</a>
+							<img src="{{ BaseUrl }}img/icons/VST-ECS.png" alt="Secondary Logo" height="60" style="float: right; display: inline-block;" />
+						</td>
+					</tr>
+
+					<!-- Divider -->
+					<tr>
+						<td style="border-top: 4px solid #cb0c9f; padding-top: 20px;"></td>
+					</tr>
+
+					<!-- Thank You Message -->
+					<tr>
+						<td align="center" background="{{ BaseUrl }}img/curved-images/banner-1.png" style="background-size: cover; background-repeat: no-repeat; padding: 60px 20px;">
+							<img src="{{ BaseUrl }}img/icons/diamond.png" alt="Icon" width="48" height="48" style="display: block; border-radius: 50%; background-color: #fff; box-shadow: 0 5px 10px rgba(0,0,0,0.12);" />
+							<h3 style="color: white; font-family: Arial, sans-serif; margin-top: 20px;">Customer Case Created</h3>
+						</td>
+					</tr>
+
+					<!-- Message Content -->
+					<tr>
+						<td align="left" style="padding: 30px 20px 0px 20px; position: relative; width: 100%; display: flex; justify-content: center; height: 500px;padding-top: 0px;">
+							<table style="background: white; justify-content: start; display:flex; padding: 3rem; width: 900px; box-shadow: 0px 1px 1px 0.4px black;border-radius: 0 0 0.5rem 0.5rem;padding-top: 0px;">
+								<tbody>
+									<tr>
+										<td>
+											<h4 style="color: #344767; font-family: Arial, sans-serif; margin: 0;">
+												Hello {{ ServicePartner }}{{ ServicePartner.ends_with "s" ? "'" : "'s" }} Team
+											</h4>
+											<br/>
+									</td>
+									</tr>
+									<tr>
+										<td>
+											<p>
+												This is to inform you that a new case has been successfully submitted to our system by our valued customer, <b style="margin-left: 5px">{{ CustomerName }}</b>.
+											</p>
+											<p>
+												This case is now assigned to your team for review and appropriate action.
+											</p>
+											<p>
+												Below are the details for your reference:
+											</p>
+										</td>
+									</tr>
+									<tr>
+										<td style="padding-left: 20px;">
+											<div>
+												<p>
+													Case Number:<strong style="margin-left: 0.6em;">{{ CaseNumber }}</strong>
+												</p>
+												<p>
+													Serial Number:<strong style="margin-left: 0.6em;">{{ SerialNumber }}</strong>
+												</p>
+											</div>
+
+											<div>
+												<a href="{{ CaseTrackingLink }}" target="_blank" style="
+                        display: inline-block;
+                        background-color: #cb0c9f;
+                        color: #ffffff;
+                        font-family: Arial, sans-serif;
+                        font-size: 14px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        padding: 10px 40px;
+                        border-radius: 5px;
+												box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
+											">
+													View Case
+												</a>
+											</div>
+										</td>
+									</tr>
+
+									<tr>
+										<td>
+											<div>
+												<p style="margin-top: 40px;">
+													If any additional information is required, we will reach out to you.
+												</p>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					
+					<!--Footer-->
+					<tr >
+						<td align = "center" style = "font-size: 16px; color: #999999; font-family: Arial, sans-serif; padding-top: 30px;" >
+							This is an automated message – please do not reply.
+						</td >
+					</tr >
+					<tr >
+						<td >
+							<br />
+							<br />
+							<br />
+						</td >
+					</tr >
+
+				</table >
+			</td >
+		</tr >
+	</table >
+</div >

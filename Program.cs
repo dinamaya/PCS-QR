@@ -2,9 +2,11 @@ using CCIMS.Web.App_Code._Globals;
 using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.App_Code._Globals.Extensions;
 using CCIMS.Web.Context.Seeder;
+using CCIMS.Web.Repositories.Interfaces;
 using CCIMS.Web.Services.Implementations;
 using CCIMS.Web.Services.Interfaces;
 using Hangfire;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +16,13 @@ builder.Services.AddIdentityConfiguration();
 builder.Services.AddAuthConfiguration();
 builder.Services.AddSQLConfiguration(builder.Configuration);
 builder.Services.AddRepositories();
-builder.Services.AddHangfireConfigExtension();
 builder.Services.AddComplexConfiguration(builder.Configuration);
 builder.Services.AddFluentValidationConfiguration();
-
-#endregion
-
-
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
+builder.Services.AddHangfireConfigExtension();
+#endregion
+
 
 var app = builder.Build();
 
@@ -70,10 +69,13 @@ using (var scope = app.Services.CreateScope())
 #endregion
 
 #region Hangfire Job Initialization
-using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope()) 
 {
-  var backgroundJobs = scope.ServiceProvider.GetRequiredService<IBackgroundJobsService>();
-  BackgroundJobsInitializer.Run();
+  RecurringJob.AddOrUpdate<BackgroundJobsService>(
+    "test-minutely-job",
+    (service) => service.SendAgedCasesEmail(),
+    Cron.Minutely
+  );
 }
 #endregion
 

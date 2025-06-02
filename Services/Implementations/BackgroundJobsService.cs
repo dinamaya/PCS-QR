@@ -1,21 +1,15 @@
 ﻿using CCIMS.Web.Models.ViewModels;
-using CCIMS.Web.Repositories.Implementations;
 using CCIMS.Web.Repositories.Interfaces;
 using CCIMS.Web.Services.Interfaces;
-using System.Text.Json;
-
-using Hangfire;
-using NuGet.Protocol.Core.Types;
-using CCIMS.Web.App_Code._Globals;
 
 namespace CCIMS.Web.Services.Implementations
 {
-	public class BackgroundJobsService : IBackgroundJobsService
+	public class BackgroundJobsService //: IBackgroundJobsService
   {
 		private readonly ILogger<BackgroundJobsService> _logger;
-    private readonly IEmailService _emailService;
-    private readonly ICaseRepository _caseRepo;
-    private readonly IConfigurationRepository _configRepo;
+		private readonly IEmailService _emailService;
+		private readonly IConfigurationRepository _configRepo;
+		private readonly ICaseRepository _caseRepo;
 
     public BackgroundJobsService(ILogger<BackgroundJobsService> logger, IEmailService emailService, ICaseRepository caseRepo, IConfigurationRepository configRepo)
     {
@@ -25,21 +19,38 @@ namespace CCIMS.Web.Services.Implementations
       _configRepo = configRepo;
     }
 
-    public async Task ExecuteAsync()
-		{
+    public async Task SendAgedCasesEmail()
+    {
+      var cases = await _caseRepo.GetAgedCases();
+      var agedCases = new CaseAgedEmailDetailsViewModel()
+      {
+        BaseUrl = _configRepo.GetBaseUrl(),
+        Cases = cases
+      };
+
+      var result = await _emailService.SendAgedCasesEmailAsync(agedCases);
+
+      if (result.IsOk())
+        _logger.LogInformation(result.Message);
+      else
+        _logger.LogError(result.Message);
+    }
+
+    public async Task TestEmailAsync()
+    {
       var result = await _caseRepo.GetAgedCases();
       var agedCases = new CaseAgedEmailDetailsViewModel()
       {
         BaseUrl = _configRepo.GetBaseUrl(),
         Cases = result
       };
-      _logger.LogTrace("Aged Cases Emailed");
-      await _emailService.SendAgedCasesEmailAsync(agedCases);
-    }
+      
+      _logger.LogInformation("Aged Cases");
 
-    public async Task TestExecuteAsync()
-    {
-      _logger.LogTrace("Test Execute");
+      foreach (var _case in result)
+        _logger.LogInformation(_case.CaseNumber);
+
+      _logger.LogInformation("===============");
     }
   }
 }

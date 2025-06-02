@@ -26,9 +26,9 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddScoped<IDashboardRepository, DashboardRepository>();
      
 			services.AddScoped<IEmailService, EmailService>();
-      services.AddScoped<IBackgroundJobsService, BackgroundJobsService>();
+			services.AddTransient<BackgroundJobsService>();
 
-      services.AddSingleton<ITokenProvider, TokenProvider>();
+			services.AddSingleton<ITokenProvider, TokenProvider>();
 
       services.AddSingleton<FileManager>();
       services.AddSingleton<Server>();

@@ -121,16 +121,28 @@ namespace CCIMS.Web.Services.Implementations
       }
     }
 
-    public async Task SendAgedCasesEmailAsync(CaseAgedEmailDetailsViewModel agedCases)
+    public async Task<TaskResultDto> SendAgedCasesEmailAsync(CaseAgedEmailDetailsViewModel agedCases)
     {
-      var agedHtmlBody = await RenderEmailAsync(_agedTemplatePath, agedCases);
+      var task = new TaskResultDto();
+      try
+      {
+        var template = Path.Combine("App_Code", "Scriban", "Templates", "CaseAgedSpaEmail.sbn");
 
-      await CreateEmailAsync(
-        null,
-        $"Test CCIMS - Aged Cases {DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)}",
-        agedHtmlBody,
-        _dev
-      );
+        var agedHtmlBody = await RenderEmailAsync(template, agedCases);
+
+        await CreateEmailAsync(
+          _dev.SenderEmailAddress,
+          $"Test CCIMS - Aged Cases {DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)}",
+          agedHtmlBody,
+          _dev
+        );
+
+        return TaskResultDto.Success("Email Sent Successfully");
+      }
+      catch (Exception ex)
+      {
+        return TaskResultDto.Fail(Exceptions.GetMessage(ex));
+      }
     }
 
 
@@ -198,6 +210,13 @@ namespace CCIMS.Web.Services.Implementations
         Console.WriteLine("Scriban error: " + ex.Message);
         return "";
       }
+    }
+
+    public async Task TestAsync()
+    {
+      string url = _configRepo.GetBaseUrl();
+      _logger.LogInformation("Test Email Service");
+      _logger.LogInformation("Base URL EmailService Call: " + url);
     }
   }
 }

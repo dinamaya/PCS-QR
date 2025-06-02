@@ -7,6 +7,7 @@ namespace CCIMS.Web.Services.Interfaces
   {
     Task TestSendCaseCreationEmailAsync(string email, string caseNumber, string sp, string sn, string customerName);
     Task SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber);
-    Task SendAgedCasesEmailAsync(CaseAgedEmailDetailsViewModel agedCases);
+    Task<TaskResultDto> SendAgedCasesEmailAsync(CaseAgedEmailDetailsViewModel agedCases);
+    Task TestAsync();
   }
 }
