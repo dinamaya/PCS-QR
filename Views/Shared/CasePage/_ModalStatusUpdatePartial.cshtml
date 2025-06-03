@@ -81,7 +81,7 @@
 </div>
 
 <script type="module">
-	import { initModal as init, onEdit } from '/js/components/caseStatusModalUpdate.js';
+	import { initModal as init, initModalNotifs as initNotifs, onEdit } from '/js/components/caseStatusModalUpdate.js';
 
 	window.showEdit = onEdit
 	
@@ -90,6 +90,6 @@
 	});
 
 	init('@currStatus.Id', statusChoice, '@status.Id', '@comments.Id', 'hdn-update-caseId');
-
+	initNotifs('@status.NotifId', '@comments.NotifId')
 
 </script>

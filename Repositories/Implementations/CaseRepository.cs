@@ -90,9 +90,7 @@ namespace CCIMS.Web.Repositories
         "Serial Number" => _context.LatestCasesVs.Where(c => c.SerialNumber.Contains(value)),
         "Case Number / ID" => _context.LatestCasesVs.Where(c => c.CaseNumber.Contains(value)),
         "Service Partner Name" => _context.LatestCasesVs.Where(c => c.ServicePartnerName.Contains(value)),
-        "Days Aged" => _context.LatestCasesVs.Where(c => 
-          c.DateStatusUpdated != null && 
-          EF.Functions.DateDiffDay(c.DateStatusUpdated, DateTime.UtcNow.ToLocalTime()) >= int.Parse(value)),
+        "Days Aged" => GetByDaysAged(value),
         _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
       };
     }
@@ -191,6 +189,15 @@ namespace CCIMS.Web.Repositories
         CustomerName = c.LastName + ", " + c.FirstName,
         ServicePartner = c.ServicePartnerName
       }).ToListAsync();
+    }
+
+    private IQueryable<LatestCasesV> GetByDaysAged(string value)
+    {
+      int days = _configRepo.GetAgedKeyByValue(value);
+      DateTime today = DateTime.Now.ToLocalTime();
+      
+      return _context.LatestCasesVs.Where(c => c.DateStatusUpdated != null &&
+          EF.Functions.DateDiffDay(c.DateStatusUpdated, today) >= days);
     }
   }
 }

@@ -5,6 +5,8 @@ using CCIMS.Web.Models.Interfaces;
 using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography.Xml;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -54,7 +56,18 @@ namespace CCIMS.Web.Repositories.Implementations
 
       return dict.ToList();
     }
-		
+
+    public int GetAgedKeyByValue(string value)
+    {
+      var section = _config.GetSection("SearchConfig:Aged").Get<List<Dictionary<string, string>>>();
+
+      var key = section
+        .SelectMany(dict => dict)
+        .FirstOrDefault(kvp => kvp.Value == value).Key;
+
+      return key.IsNullOrEmpty() ? 0 : int.Parse(key);
+    }
+
     public IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions()
     {
       var section = _config.GetSection("SearchConfig:Categories").Get<List<Dictionary<string, string>>>();

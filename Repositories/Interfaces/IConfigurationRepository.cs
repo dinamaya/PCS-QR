@@ -12,7 +12,9 @@ namespace CCIMS.Web.Repositories.Interfaces
 		string GetPSGCProvinces();
 
 		IEnumerable<DropdownOptionViewModel> GetAgedSearcOptions();
-		IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
+		int GetAgedKeyByValue(string value);
+
+    IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
 
 		IEnumerable<string> GetAllowedEmailDomains();
 
