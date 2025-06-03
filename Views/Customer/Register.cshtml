@@ -42,7 +42,7 @@
 								</div>
 							}
 
-							<form method="post" action="@Url.Action("Register", "Customer", new { token = Model.Token })" id="customerForm">
+							<form method="post" action="@Url.Action("Register", "Customer", new { token = Model.Token })" id="customerForm" onsubmit="return showSpinner()">
 								@Html.AntiForgeryToken()
 								<input type="hidden" name="Token" value="@Context.Request.Query["token"]" />
 								<div class="row mt-3">
@@ -56,6 +56,13 @@
 										<input class="form-control" type="text" asp-for="LastName" required pattern="@RegEx.NON_EMPTY_WHITESPACE" />
 										<span asp-validation-for="LastName" class="text-danger"></span>
 									</div>
+								</div>
+								<!-- Spinner -->
+								<div id="form-spinner" class="d-none position-fixed top-50 start-50 translate-middle text-center" style="z-index: 1060;">
+									<div class="spinner-border text-primary" role="status">
+										<span class="visually-hidden">Loading...</span>
+									</div>
+									<p class="mt-2 text-white">Please wait while we submit your case...</p>
 								</div>
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
@@ -106,6 +113,10 @@
 									<button class="col-12 col-sm-12 col-lg-3 col-xl-2 btn bg-gradient-dark" type="submit" title="Send">Submit</button>
 								</div>
 							</form>
+							<div id="form-overlay"
+								 class="d-none position-fixed top-0 start-0 w-100 h-100"
+								 style="z-index: 1050; background-color: rgba(0, 0, 0, 0.5);">
+							</div>
 						</div>
 					</div>
 				</div>
@@ -113,7 +124,6 @@
 		</div>
 	</div>
 </div>
-
 
 @(await Html.PartialAsync(Routes.Partials.Customer.MODAL_SCAN))
 @(await Html.PartialAsync(Routes.Partials.Customer.MODAL_POLICY))
@@ -171,3 +181,24 @@
 	}
 
 </script>
+
+<script>
+	function showSpinner() {
+		// Show spinner
+		document.getElementById('form-spinner').classList.remove('d-none');
+
+		// Show background overlay
+		document.getElementById('form-overlay').classList.remove('d-none');
+
+		// Disable submit button
+		document.querySelector("#customerForm button[type='submit']").disabled = true;
+
+		// Prevent user interaction with form
+		document.getElementById('customerForm').classList.add('pointer-events-none');
+
+		// Continue with form submission
+		return true;
+	}
+</script>
+
+
