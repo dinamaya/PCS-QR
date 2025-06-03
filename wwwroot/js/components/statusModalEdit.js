@@ -1,8 +1,13 @@
-﻿
+﻿import { resetNotifs, httpGet, httpPut, httpDelete, confirmAction, confirmAction2 } from "../utils.js"
+
 let inputs = {
   name: null,
   isCommentable: null,
   hdnId: null,
+};
+
+const notifs = {
+	Name: null,
 };
 
 export function initModal(
@@ -15,47 +20,48 @@ export function initModal(
   inputs.hdnId = $(`#${hdnElemId}`);
 }
 
-function edit() {
-	try {
-		const dto = {
-			Id: inputs.hdnId.val(),
-			Name: inputs.name.val(),
-			IsCommentable: inputs.isCommentable.is(":checked"),
-		};
+export function initModalNotifs(
+	nameId,
+) {
+	notifs.Name = $(`#${nameId}`);
 
-		console.log("Dto Sent:", dto);
+	console.log(notifs);
+}
 
-		fetch(window.baseUrl, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(dto)
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.isSuccess) {
-					console.log("Edit successful:", data);
-					$("#modal-edit").modal("hide");
+function edit(e, errorTitle, errorDescription, notifList)
+{
+	if (!e.isConfirmed) return;
 
-					setTimeout(() => {
-						location.reload();
-					}, 500);
-				}
-				else {
-					console.error("Edit failed:", data.message);
-					alert("Edit failed: " + data.message);
-				}
-				console.log("Edit successful:", data);
-			})
-			.catch(ex => {
-				console.error("Error during PUT request:", ex);
-				alert("Something went wrong.");
-			});
-	}
-	catch (ex) {
-		console.error("Exception in submitEdit:", ex);
-	}
+	resetNotifs(notifList);
+
+	const dto = {
+		Id: inputs.hdnId.val(),
+		Name: inputs.name.val(),
+		IsCommentable: inputs.isCommentable.is(":checked"),
+	};
+
+	httpPut(
+		window.baseUrl,
+		dto,
+		'modal-edit',
+		errorTitle,
+		errorDescription,
+		notifList
+	);
+}
+
+function deactivate(e, errorTitle, errorDescription) {
+	if (!e.isConfirmed) return;
+
+	const deleteUrl = new URL(window.baseUrl, window.location.origin);
+	deleteUrl.searchParams.set('id', inputs.hdnId.val());
+
+	httpDelete(
+		deleteUrl,
+		'modal-edit',
+		errorTitle,
+		errorDescription
+	);
 }
 
 export function onEdit(button) {
@@ -65,29 +71,43 @@ export function onEdit(button) {
   inputs.hdnId.val(id);
   const _url = `${window.baseUrl}?id=${id}`
 
-  try {
-    fetch(_url)
-      .then(response => response.json())
-      .then(data => {
-        const result = data.result;
-        if (data && result) {
-          inputs.name.val(result.name);
-          inputs.isCommentable.prop("checked", result.isCommentable);
-        }
-        else {
-          console.error("No valid data received from server.");
-        }
-      })
-      .catch(ex => console.error("Fetch error:", ex));
-  }
-  catch (ex) {
-    console.error(ex);
-  }
+	httpGet(
+		_url,
+		"Status Details Not Found",
+		"There was a problem while fetching the status details.",
+		(response) => {
+			var result = response.result;
+
+			inputs.name.val(result.name);
+			inputs.isCommentable.prop("checked", result.isCommentable);
+		}
+	);
 }
 
 $(document).ready(function () {
 	$('#form-edit').submit(function (event) {
 		event.preventDefault();
-		edit();
+		confirmAction(
+			'Edit',
+			'Edit Status?',
+			'This will edit the current status with the provided details!',
+			"Status Edit Failed",
+			"There was a problem while editing the status details.",
+			notifs,
+			edit
+		);
+	});
+
+
+	$('#btn-delete').click(function (event) {
+		event.preventDefault();
+		confirmAction2(
+			'Delete',
+			'Delete Status?',
+			'This will delete the current status with the provided details!',
+			"Status Delete Failed",
+			"There was a problem while deleting the status details.",
+			deactivate
+		);
 	});
 });

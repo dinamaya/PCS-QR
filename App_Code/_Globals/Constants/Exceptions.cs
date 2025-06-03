@@ -27,6 +27,9 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_ACCOUNT_DELETE = "Account Deletion Failed. Please contact the administrator";
 			public const string INVALID_TRANSACTION = "Transaction does not exist. Please contact the administrator";
 			public const string INVALID_TRANSACTION_UNCOMMENTABLE = "Transaction is not commentable. Please contact the administrator";
+			
+			public const string INVALID_STATUS_EDIT_1= "Status is not editable";
+			public const string INVALID_STATUS_DELETE_1= "Status is not deletable";
 
 			public const string UNRECOGNIZED_SERIALNUMBER = $"Serial number not recognize";
 			public const string INVALID_SERIALNUMBER_EXIST = "Serial number already exists. Please provide a unique serial number.";

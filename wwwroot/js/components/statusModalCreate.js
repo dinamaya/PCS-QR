@@ -1,8 +1,14 @@
 ﻿import { statusCreationRequestDto } from '../dtos/statusCreationRequestDto.js';
+import { httpPost, confirmAction } from '../utils.js';
 
 let inputs = {
   name: null,
   isCommentable: null,
+};
+
+const notifs = {
+  Name: null,
+  IsCommentable: null
 };
 
 export function initModal(
@@ -13,35 +19,46 @@ export function initModal(
   inputs.isCommentable = $(`#${isCommentableId}`);
 }
 
-function post() {
+export function initModalNotifs(
+  nameId,
+  isCommentableId,
+) {
+  notifs.Name = $(`#${nameId}`);
+  notifs.IsCommentable = $(`#${isCommentableId}`);
+
+  console.log(notifs);
+}
+
+
+function submit(e) {
+  if (!e.isConfirmed) return;
+
   const dto = new statusCreationRequestDto(
     inputs.name.val(),
     inputs.isCommentable.is(":checked"),
   );
 
-  $.post({
-    url: window.baseUrl,
-    contentType: 'application/json',
-    data: JSON.stringify(dto),
-    success: function (response) {
-      const modalEl = $('#modal-create');
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      modalInstance.hide();
-
-      setTimeout(() => {
-        location.reload();
-      }, 300);
-    },
-    error: function (error) {
-      console.error("Submission failed:", error);
-      alert("Submission failed!");
-    }
-  });
+  httpPost(
+    window.baseUrl,
+    dto,
+    "modal-create",
+    "Status Creation Failed",
+    "There was a problem while creating the status details.",
+    notifs
+  );
 }
 
 $(document).ready(function () {
   $('#form-create').submit(function (event) {
     event.preventDefault();
-    post();
+    confirmAction(
+      'Create',
+      'Create Status?',
+      'This will create a new status with the provided details!',
+      'Status Creation Failed',
+      'There was a problem while creating the status details.',
+      notifs,
+      submit
+    );
   });
 });

@@ -1,8 +1,10 @@
-﻿namespace CCIMS.Web.Models.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CCIMS.Web.Models.DTOs
 {
   public class StatusDto
   {
-    public string Name { get; set; }
+    [Required(ErrorMessage = "Status name is required")]public string Name { get; set; }
     public bool IsCommentable { get; set; }
   }
 }
