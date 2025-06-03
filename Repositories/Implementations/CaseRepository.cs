@@ -163,9 +163,33 @@ namespace CCIMS.Web.Repositories
                 .FirstOrDefaultAsync() ?? throw new Exception(Exceptions.Message.INVALID_CASE);
         }
 
-        public string GenerateCaseNumber() => "CC" + Guid.NewGuid().ToString("N")[..4].ToUpper() + DateTime.Now.ToLocalTime().ToString(Database.DateFormat.CASEID);
+		public string GenerateCaseNumber()
+		{
+			DateTime now = DateTime.Now;
 
-        public async Task EditAsync(CaseEditRequestDto editRequestDto, string modifiedBy)
+			// Convert month to a letter (A = January, B = February, ..., L = December)
+			char monthChar = (char)('A' + now.Month - 1);
+
+			// Get last two digits of the year
+			string yearPart = now.Year.ToString().Substring(2, 2);
+
+			// Get day, ensuring two digits (e.g., "05" for the 5th)
+			string dayPart = now.Day.ToString("D2");
+
+			// Convert hour to a letter (A = 0, B = 1, ..., X = 23)
+			char hourChar = (char)('A' + now.Hour);
+
+			// Get last digit of the minutes
+			string minutePart = now.Minute.ToString().Last().ToString();
+
+			// Get last digit of milliseconds
+			string millisPart = (now.Millisecond % 10).ToString();
+
+			// Combine all parts into a six-character code
+			return $"{monthChar}{yearPart}{dayPart}{hourChar}{minutePart}{millisPart}";
+		}
+
+		public async Task EditAsync(CaseEditRequestDto editRequestDto, string modifiedBy)
         {
             var date = DateTime.Now.ToLocalTime();
             long _caseId = long.Parse(editRequestDto.Id);
