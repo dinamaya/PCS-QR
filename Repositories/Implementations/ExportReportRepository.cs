@@ -34,12 +34,12 @@ namespace CCIMS.Web.Repositories.Implementations
             if (!request.Category.IsNullOrEmpty() && !request.CategoryValue.IsNullOrEmpty())
             {
                 // When filtering by category, we don't filter by service partner
-                allCases = await _caseRepo.GetByCategory(request.Category, request.CategoryValue, startDate, endDate);
+                allCases = await _caseRepo.GetFilteredCasesByCategory(request.Category, request.CategoryValue, startDate, endDate);
             }
             else
             {
                 // When not filtering by category, we can filter by service partner
-                allCases = await _caseRepo.GetDataAged5DaysByServicePartner(request.ServicePartner, startDate, endDate);
+                allCases = await _caseRepo.GetFilteredCasesByServicePartner(request.ServicePartner, startDate, endDate);
             }
 
             // Apply search term filtering if provided

@@ -56,48 +56,26 @@ namespace CCIMS.Web.Repositories
                 }).ToListAsync();
         }
 
-        // Updated method with date range support
-        public async Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value, DateTime? startDate = null, DateTime? endDate = null)
-        {
-            var query = FilterCasesByCategory(categoryId, value);
+		public async Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value)
+		{
+			return await FilterCasesByCategory(categoryId, value)
+			  .Select(
+				c => new CaseRowViewModel()
+				{
+					Id = c.CaseId.ToString(),
+					CaseNumber = c.CaseNumber,
+					Description = c.Description,
+					Status = c.Status,
+					Comments = c.Comments,
+					CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
+					ServicePartnerName = c.ServicePartnerName,
+					SerialNumber = c.SerialNumber,
+					DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+				}
+			  ).ToListAsync();
+		}
 
-            // Apply date range filter if provided
-            if (startDate.HasValue && endDate.HasValue)
-            {
-                query = query.Where(c => c.DateStatusUpdated >= startDate.Value && c.DateStatusUpdated <= endDate.Value);
-            }
-            else if (startDate.HasValue)
-            {
-                query = query.Where(c => c.DateStatusUpdated >= startDate.Value);
-            }
-            else if (endDate.HasValue)
-            {
-                query = query.Where(c => c.DateStatusUpdated <= endDate.Value);
-            }
-
-            return await query.Select(
-                c => new CaseRowViewModel()
-                {
-                    Id = c.CaseId.ToString(),
-                    CaseNumber = c.CaseNumber,
-                    Description = c.Description,
-                    Status = c.Status,
-                    Comments = c.Comments,
-                    CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
-                    ServicePartnerName = c.ServicePartnerName,
-                    SerialNumber = c.SerialNumber,
-                    DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
-                }
-            ).ToListAsync();
-        }
-
-        // Overload for backward compatibility
-        public async Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value)
-        {
-            return await GetByCategory(categoryId, value, null, null);
-        }
-
-        private IQueryable<LatestCasesV> FilterCasesByCategory(string categoryId, string value)
+		private IQueryable<LatestCasesV> FilterCasesByCategory(string categoryId, string value)
         {
             var categories = _configRepo.GetCategoriesSearcOptions().ToList();
             var selectedCategory = categories.FirstOrDefault(c => c.Value == categoryId);
@@ -204,25 +182,10 @@ namespace CCIMS.Web.Repositories
             await _context.SaveChangesAsync();
         }
 
-        // Updated method with date range support
-        public async Task<IEnumerable<CaseRowViewModel>> GetDataAged5DaysByServicePartner(string spName, DateTime? startDate = null, DateTime? endDate = null)
+        public async Task<IEnumerable<CaseRowViewModel>> GetDataAged5DaysByServicePartner(string spName)
         {
             var query = _context.ServicePartnersWithAgingCasesVs
                 .Where(s => s.ServicePartnerName == spName);
-
-            // Apply date range filter if provided
-            if (startDate.HasValue && endDate.HasValue)
-            {
-                query = query.Where(c => c.DateStatusUpdated >= startDate.Value && c.DateStatusUpdated <= endDate.Value);
-            }
-            else if (startDate.HasValue)
-            {
-                query = query.Where(c => c.DateStatusUpdated >= startDate.Value);
-            }
-            else if (endDate.HasValue)
-            {
-                query = query.Where(c => c.DateStatusUpdated <= endDate.Value);
-            }
 
             return await query.Select(
                 c => new CaseRowViewModel()
@@ -240,10 +203,65 @@ namespace CCIMS.Web.Repositories
                 .ToListAsync();
         }
 
-        // Overload for backward compatibility
-        public async Task<IEnumerable<CaseRowViewModel>> GetDataAged5DaysByServicePartner(string spName)
-        {
-            return await GetDataAged5DaysByServicePartner(spName, null, null);
-        }
-    }
+
+		public async Task<IEnumerable<CaseRowViewModel>> GetFilteredCasesByServicePartner(string spName, DateTime? startDate = null, DateTime? endDate = null)
+		{
+			var query = _context.LatestCasesVs
+				.Where(c => c.ServicePartnerName == spName);
+
+			if (startDate.HasValue && endDate.HasValue)
+				query = query.Where(c => c.DateStatusUpdated >= startDate.Value && c.DateStatusUpdated <= endDate.Value);
+			else if (startDate.HasValue)
+				query = query.Where(c => c.DateStatusUpdated >= startDate.Value);
+			else if (endDate.HasValue)
+				query = query.Where(c => c.DateStatusUpdated <= endDate.Value);
+
+			return await query.Select(c => new CaseRowViewModel
+			{
+				Id = c.CaseId.ToString(),
+				CaseNumber = c.CaseNumber,
+				Description = c.Description,
+				Status = c.Status,
+				Comments = c.Comments,
+				CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
+				ServicePartnerName = c.ServicePartnerName,
+				SerialNumber = c.SerialNumber,
+				DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+			}).ToListAsync();
+		}
+
+		public async Task<IEnumerable<CaseRowViewModel>> GetFilteredCasesByCategory(string categoryId, string value, DateTime? startDate = null, DateTime? endDate = null)
+		{
+			var query = FilterCasesByCategory(categoryId, value);
+
+			if (startDate.HasValue && endDate.HasValue)
+			{
+				query = query.Where(c => c.DateStatusUpdated >= startDate.Value && c.DateStatusUpdated <= endDate.Value);
+			}
+			else if (startDate.HasValue)
+			{
+				query = query.Where(c => c.DateStatusUpdated >= startDate.Value);
+			}
+			else if (endDate.HasValue)
+			{
+				query = query.Where(c => c.DateStatusUpdated <= endDate.Value);
+			}
+
+			return await query.Select(
+				c => new CaseRowViewModel()
+				{
+					Id = c.CaseId.ToString(),
+					CaseNumber = c.CaseNumber,
+					Description = c.Description,
+					Status = c.Status,
+					Comments = c.Comments,
+					CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
+					ServicePartnerName = c.ServicePartnerName,
+					SerialNumber = c.SerialNumber,
+					DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+				}
+			).ToListAsync();
+		}
+
+	}
 }

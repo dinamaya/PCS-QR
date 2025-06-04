@@ -79,10 +79,10 @@ namespace CCIMS.Web.Controllers
             try
             {
                 await InitializeValues();
-                IEnumerable<CaseRowViewModel>? results = null;
+				IEnumerable<CaseRowViewModel> results = Enumerable.Empty<CaseRowViewModel>();
 
-                // Parse date range if provided
-                DateTime? startDate = null;
+				// Parse date range if provided
+				DateTime? startDate = null;
                 DateTime? endDate = null;
                 if (!dateRange.IsNullOrEmpty())
                 {
@@ -93,13 +93,22 @@ namespace CCIMS.Web.Controllers
 
                 if (!c.IsNullOrEmpty() && !v.IsNullOrEmpty())
                 {
-                    if (d.IsNullOrEmpty())
-                        results = await _caseRepo.GetByCategory(c, v, startDate, endDate);
+                    if (d.IsNullOrEmpty() && dateRange.IsNullOrEmpty())
+                        results = await _caseRepo.GetByCategory(c, v);
+                    else if (d.IsNullOrEmpty() && !dateRange.IsNullOrEmpty())
+                        results = await _caseRepo.GetFilteredCasesByCategory(c, v, startDate, endDate);
                     else
-                        results = null;
-                }
+						results = Enumerable.Empty<CaseRowViewModel>();
+				}
                 else
-                    results = await _caseRepo.GetDataAged5DaysByServicePartner(d, startDate, endDate);
+                {
+                    if (!d.IsNullOrEmpty() && dateRange.IsNullOrEmpty())
+                        results = await _caseRepo.GetDataAged5DaysByServicePartner(d);
+                    else if (!d.IsNullOrEmpty() && !dateRange.IsNullOrEmpty())
+						results = await _caseRepo.GetFilteredCasesByServicePartner(d, startDate, endDate);
+                    else
+						results = Enumerable.Empty<CaseRowViewModel>();
+				}
 
                 return View(results);
             }
