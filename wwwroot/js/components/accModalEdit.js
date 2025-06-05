@@ -122,7 +122,9 @@ function edit(e, errorTitle, errorDescription, notifList) {
 		'modal-edit',
 		errorTitle,
 		errorDescription,
-		notifList
+		notifList,
+		() => displaySpinner(),
+		() => hideSpinner(),
 	);
 }
 

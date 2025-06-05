@@ -1,5 +1,5 @@
 ﻿import { accountCreationRequestDto } from "../dtos/accountCreationRequestDto.js";
-import { handleError, confirmAction } from "../utils.js";
+import { handleError, confirmAction, httpPost } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -70,24 +70,17 @@ function submit(e, errorTitle, errorDescription, notifList)
     inputs.pass2.val(),
   );
 
-  $.post({
-    url: window.baseUrl,
-    contentType: 'application/json',
-    data: JSON.stringify(dto),
-    success: function (response) {
-      const modalEl = $('#modal-create');
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      modalInstance.hide();
 
-      setTimeout(() => {
-        const url = new URL(window.location.href);
-
-        url.searchParams.set('q', window.okCreateParam);
-        window.location.href = url.toString();
-      }, 300);
-    },
-    error: (error) => handleError(error, errorTitle, errorDescription, notifList)
-  });
+  httpPost(
+    window.baseUrl,
+    dto,
+    'modal-create',
+    errorTitle,
+    errorDescription,
+    notifList,
+    () => displaySpinner(),
+    () => hideSpinner(),
+  );
 }
 
 
