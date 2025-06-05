@@ -9,7 +9,7 @@ namespace CCIMS.Web.Repositories.Interfaces
 		ICreateRepository<Case>, 
 		IEditRepository<CaseEditRequestDto>
 	{
-		Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value);
+		Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value, DateTime? startDate, DateTime? endDate);
 		Task<IEnumerable<AgedCaseViewModel>> GetAgedCases();
 		Task<string> GetCurrentStatus(long caseId);
 		Task<CaseDetailsViewModel> GetByCaseNumber(string caseNumber);

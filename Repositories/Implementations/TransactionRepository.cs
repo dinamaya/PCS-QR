@@ -18,18 +18,20 @@ namespace CCIMS.Web.Repositories.Implementations
 	{
 		private readonly MainDbContext _mainDb;
 		private readonly IOperationsRepository _opsRepo;
+		private readonly IConfigurationRepository _configRepo;
 		private readonly IEmailService _emailService;
 		private readonly ILogger<TransactionRepository> _logger;
 
-		public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo, IEmailService emailService, ILogger<TransactionRepository> logger)
-		{
-			_mainDb = mainDb;
-			_opsRepo = opsRepo;
-			_emailService = emailService;
-			_logger = logger;
-		}
+    public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo, IEmailService emailService, ILogger<TransactionRepository> logger, IConfigurationRepository configRepo)
+    {
+      _mainDb = mainDb;
+      _opsRepo = opsRepo;
+      _emailService = emailService;
+      _logger = logger;
+      _configRepo = configRepo;
+    }
 
-		public string InsertedId { get; set; }
+    public string InsertedId { get; set; }
 
 		public async Task CreateAsync(TransactionCreationDto data, string createdBy)
 		{
@@ -72,11 +74,10 @@ namespace CCIMS.Web.Repositories.Implementations
 
 				if (status != null && status.Name.Equals("Closed", StringComparison.OrdinalIgnoreCase))
 				{
-					var emailDetails = new CustomerEmailDetailsViewModel
+					var emailDetails = new CustomerEmailDetailsViewModel(_configRepo, caseDetails.CaseNumber)
 					{
 						Email = caseDetails.Email,
 						Fullname = $"{caseDetails.FirstName} {caseDetails.LastName}",
-						CaseNumber = caseDetails.CaseNumber,
 						ServicePartner = caseDetails.SpName,
 					};
 

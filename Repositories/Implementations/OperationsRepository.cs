@@ -87,6 +87,7 @@ namespace CCIMS.Web.Repositories.Implementations
     {
       return await _mainDb.Statuses
         .AsNoTracking()
+        .Where(s => s.IsActive)
         .OrderBy(s => s.Name)
         .Select(s => new DropdownOptionViewModel()
         {

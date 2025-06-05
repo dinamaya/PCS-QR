@@ -75,7 +75,6 @@ namespace CCIMS.Web.Services.Implementations
       };
 
       var customerHtmlBody = await RenderEmailAsync(_custTemplatePath, custModel);
-      //var spaHtmlBody = await RenderEmailAsync(spaTemplatePath, spaModel);
       var agedHtmlBody = await RenderEmailAsync(_agedTemplatePath, agedModel);
 
       await CreateEmailAsync(
@@ -84,13 +83,6 @@ namespace CCIMS.Web.Services.Implementations
         customerHtmlBody,
         _dev
       );
-
-      //await CreateEmailAsync(
-      //  custModel.Email,
-      //  $"Test CCIMS - SPA Copy {custModel.Fullname}",
-      //  spaHtmlBody,
-      //  _dev
-      //);
 
       await CreateEmailAsync(
         custModel.Email,
@@ -105,29 +97,27 @@ namespace CCIMS.Web.Services.Implementations
 			var icons = Path.Combine(_server.RootDirectory, "img", "icons");
 			var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
 			var resources = new List<EmailAttachment>()
-		{
-		  new(){
-			Path = Path.Combine(icons, "icon_ccims_lg.svg"),
-			ContentId = "web_icon"
-		  },
-		  new(){
-			Path = Path.Combine(icons, "VST-ECS.png"),
-			ContentId = "vst_icon"
-		  },
-		  new(){
-			Path = Path.Combine(icons, "circle-check-solid.png"),
-			ContentId = "check_icon.png"
-		  },
-		  new(){
-			Path = Path.Combine(illus,"thank-you1.png"),
-			ContentId = "character_image"
-		  },
-		};
-
-			var emailAssets = new CustomerEmailAssetsViewModel(_configRepo, emailDetails);
+		  {
+		    new(){
+			  Path = Path.Combine(icons, "icon_ccims_lg.svg"),
+			  ContentId = "web_icon"
+		    },
+		    new(){
+			  Path = Path.Combine(icons, "VST-ECS.png"),
+			  ContentId = "vst_icon"
+		    },
+		    new(){
+			  Path = Path.Combine(icons, "circle-check-solid.png"),
+			  ContentId = "check_icon.png"
+		    },
+		    new(){
+			  Path = Path.Combine(illus,"thank-you1.png"),
+			  ContentId = "character_image"
+		    },
+		  };
 
 			string templatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseClosedCustomerEmail.sbn");
-			var htmlBody = await RenderEmailAsync(templatePath, emailAssets);
+			var htmlBody = await RenderEmailAsync(templatePath, emailDetails);
 
 			await CreateEmailAsync(
 			  emailDetails.Email,
@@ -142,15 +132,9 @@ namespace CCIMS.Web.Services.Implementations
 		{
 			try
 			{
-				var emailDetails = new CustomerEmailDetailsViewModel
-				{
-					Email = customerDto.Email,
-					Fullname = $"{customerDto.FirstName} {customerDto.LastName}",
-					CaseNumber = caseNumber,
-					ServicePartner = customerDto.ServicePartner
-				};
+        string customer = customerDto.LastName + ", " +customerDto.FirstName;
 
-				await TestSendCaseCreationEmailAsync(emailDetails).ConfigureAwait(false);
+        await TestSendCaseCreationEmailAsync(customerDto.Email, caseNumber, customerDto.ServicePartner, customerDto.SerialNumber, customer).ConfigureAwait(false);
 				_logger.LogInformation($"Email notification sent successfully for case: {caseNumber}");
 			}
 			catch (Exception ex)
@@ -197,7 +181,7 @@ namespace CCIMS.Web.Services.Implementations
 			}
 		}
 
-		private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment> attachments)
+		private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment>? attachments = null)
 		{
 			var message = new MimeMessage();
 			message.From.Add(new MailboxAddress("Customer Carry-In Monitoring System", credential.SenderEmailAddress));
