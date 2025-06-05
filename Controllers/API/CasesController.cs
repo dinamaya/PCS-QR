@@ -28,7 +28,7 @@ namespace CCIMS.Web.Controllers.API
       try
       {
         var currStat = await _caseRepo.GetCurrentStatus(caseId);
-        var availStats = await _transactionRepo.GetAvailableStatusByCaseId(caseId);
+        var availStats = currStat.Equals("Closed") ? Enumerable.Empty<DropdownOptionViewModel>() : await _transactionRepo.GetAvailableStatusByCaseId(caseId);
 
         response.Message = "Status fetched";
         response.Result = new()

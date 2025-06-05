@@ -7,6 +7,7 @@ using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -56,18 +57,9 @@ namespace CCIMS.Web.Repositories
           }).ToListAsync();
     }
 
-    // Updated method with date range support
-    public async Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value, DateTime? startDate = null, DateTime? endDate = null)
+    public async Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value)
     {
       var query = FilterCasesByCategory(categoryId, value);
-
-      // Apply date range filter if provided
-      if (startDate.HasValue && endDate.HasValue)
-        query = query.Where(c => c.DateStatusUpdated >= startDate.Value && c.DateStatusUpdated <= endDate.Value);
-      else if (startDate.HasValue)
-        query = query.Where(c => c.DateStatusUpdated >= startDate.Value);
-      else if (endDate.HasValue)
-        query = query.Where(c => c.DateStatusUpdated <= endDate.Value);
 
       return await query.Select(
         c => new CaseRowViewModel()
@@ -174,7 +166,7 @@ namespace CCIMS.Web.Repositories
       // Combine all parts into a six-character code
       return $"{monthChar}{yearPart}{dayPart}{hourChar}{minutePart}{millisPart}";
     }
-
+    
     public async Task EditAsync(CaseEditRequestDto editRequestDto, string modifiedBy)
     {
       var date = DateTime.Now.ToLocalTime();
@@ -193,7 +185,7 @@ namespace CCIMS.Web.Repositories
     public async Task<IEnumerable<AgedCaseViewModel>> GetAgedCases()
     {
       var baseUrl = new Uri(_configRepo.GetBaseUrl());
-
+     
       return await _context.TopAgingCasesAllVs.Select(c => new AgedCaseViewModel()
       {
         CaseTrackingLink = new Uri(baseUrl, $"Cases/Tracking?refNo={c.CaseNumber}").AbsoluteUri,
@@ -212,5 +204,53 @@ namespace CCIMS.Web.Repositories
       return _context.LatestCasesVs.Where(c => c.DateStatusUpdated != null &&
           EF.Functions.DateDiffDay(c.DateStatusUpdated, today) >= days);
     }
+
+    public async Task<IEnumerable<CaseRowViewModel>> GetDateRangeFilteredCasesByCategory(string categoryId, string value, DateTime? startDate = null, DateTime? endDate = null)
+    {
+      var query = FilterCasesByCategory(categoryId, value);
+
+      if (startDate.HasValue && endDate.HasValue)
+        query = query.Where(c => c.DateStatusUpdated >= startDate.Value && c.DateStatusUpdated <= endDate.Value);
+      else if (startDate.HasValue)
+        query = query.Where(c => c.DateStatusUpdated >= startDate.Value);
+      else if (endDate.HasValue)
+        query = query.Where(c => c.DateStatusUpdated <= endDate.Value);
+
+      return await query.Select(
+        c => new CaseRowViewModel()
+        {
+          Id = c.CaseId.ToString(),
+          CaseNumber = c.CaseNumber,
+          Description = c.Description,
+          Status = c.Status,
+          Comments = c.Comments,
+          CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
+          ServicePartnerName = c.ServicePartnerName,
+          SerialNumber = c.SerialNumber,
+          DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+        }
+      ).ToListAsync();
+    }
+
+    public async Task<IEnumerable<CaseRowViewModel>> GetDataAged3DaysByServicePartner(string spName)
+    {
+      var query = _context.ServicePartnersWithAgingCasesVs.Where(s => s.ServicePartnerName == spName);
+
+      return await query.Select(
+          c => new CaseRowViewModel()
+          {
+            Id = c.Id.ToString(),
+            CaseNumber = c.CaseNumber,
+            Description = c.Description,
+            Status = c.Status,
+            Comments = c.Comments,
+            CustomerName = c.CustomerName,
+            ServicePartnerName = c.ServicePartnerName,
+            SerialNumber = c.SerialNumber,
+            DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          })
+          .ToListAsync();
+    }
+
   }
 }

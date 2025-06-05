@@ -31,25 +31,18 @@ namespace CCIMS.Web.Repositories.Implementations
             }
 
             // Apply the same filtering logic as the Cases action
-            //if (!request.Category.IsNullOrEmpty() && !request.CategoryValue.IsNullOrEmpty())
-            //{
-            //    // When filtering by category, we don't filter by service partner
-            //    allCases = await _caseRepo.GetByCategory(request.Category, request.CategoryValue, startDate, endDate);
-            //}
-            //else
-            //{
-            //    // When not filtering by category, we can filter by service partner
-            //    allCases = await _caseRepo.GetDataAged5DaysByServicePartner(request.ServicePartner, startDate, endDate);
-            //}
+            if(!request.ServicePartner.IsNullOrEmpty())
+              allCases = await _caseRepo.GetDataAged3DaysByServicePartner(request.ServicePartner);
+            else
+              allCases = await _caseRepo.GetDateRangeFilteredCasesByCategory(request.Category, request.CategoryValue, startDate, endDate);
 
             // Apply search term filtering if provided
-            //if (!request.SearchTerm.IsNullOrEmpty())
-            //{
-            //    allCases = FilterCasesBySearchTerm(allCases, request.SearchTerm);
-            //}
+            if (!request.SearchTerm.IsNullOrEmpty())
+            {
+                allCases = FilterCasesBySearchTerm(allCases, request.SearchTerm);
+            }
 
-            //return allCases;
-            return null;
+            return allCases;
         }
 
         private (DateTime? StartDate, DateTime? EndDate) ParseDateRange(string dateRange)

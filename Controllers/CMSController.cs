@@ -79,11 +79,11 @@ namespace CCIMS.Web.Controllers
       try
       {
         await InitializeValues();
-        IEnumerable<CaseRowViewModel>? results = Enumerable.Empty<CaseRowViewModel>();
+        IEnumerable<CaseRowViewModel> results = Enumerable.Empty<CaseRowViewModel>();
 
         // Parse date range if provided
-        DateTime? startDate = DateTime.MinValue;
-        DateTime? endDate = DateTime.MaxValue;
+        DateTime? startDate = null;
+        DateTime? endDate = null;
         if (!dateRange.IsNullOrEmpty())
         {
           var dates = ParseDateRange(dateRange);
@@ -92,7 +92,21 @@ namespace CCIMS.Web.Controllers
         }
 
         if (!c.IsNullOrEmpty() && !v.IsNullOrEmpty())
-          results = await _caseRepo.GetByCategory(c, v, startDate, endDate);
+        {
+          if (d.IsNullOrEmpty() && dateRange.IsNullOrEmpty())
+            results = await _caseRepo.GetByCategory(c, v);
+          else if (d.IsNullOrEmpty() && !dateRange.IsNullOrEmpty())
+            results = await _caseRepo.GetDateRangeFilteredCasesByCategory(c, v, startDate, endDate);
+          else
+            results = Enumerable.Empty<CaseRowViewModel>();
+        }
+        else
+        {
+          if (!d.IsNullOrEmpty() && dateRange.IsNullOrEmpty())
+            results = await _caseRepo.GetDataAged3DaysByServicePartner(d);
+          else
+            results = Enumerable.Empty<CaseRowViewModel>();
+        }
 
         return View(results);
       }
