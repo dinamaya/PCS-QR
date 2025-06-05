@@ -100,23 +100,62 @@ namespace CCIMS.Web.Services.Implementations
       );
     }
 
-    public async Task SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber)
-    {
-      try
-      {
-        var emailDetails = new CustomerEmailDetailsViewModel(_configRepo, caseNumber)
-        {
-          Email = customerDto.Email,
-          Fullname = $"{customerDto.FirstName} {customerDto.LastName}",
-          ServicePartner = customerDto.ServicePartner
-        };
+		public async Task TestSendCaseClosedEmailAsync(CustomerEmailDetailsViewModel emailDetails)
+		{
+			var icons = Path.Combine(_server.RootDirectory, "img", "icons");
+			var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
+			var resources = new List<EmailAttachment>()
+		{
+		  new(){
+			Path = Path.Combine(icons, "icon_ccims_lg.svg"),
+			ContentId = "web_icon"
+		  },
+		  new(){
+			Path = Path.Combine(icons, "VST-ECS.png"),
+			ContentId = "vst_icon"
+		  },
+		  new(){
+			Path = Path.Combine(icons, "circle-check-solid.png"),
+			ContentId = "check_icon.png"
+		  },
+		  new(){
+			Path = Path.Combine(illus,"thank-you1.png"),
+			ContentId = "character_image"
+		  },
+		};
 
-        //await TestSendCaseCreationEmailAsync(emailDetails).ConfigureAwait(false);
-        _logger.LogInformation($"Email notification sent successfully for case: {caseNumber}");
-      }
-      catch (Exception ex)
-      {
-        _logger.LogError($"Failed to send email notification for case {caseNumber}: {ex.Message}");
+			var emailAssets = new CustomerEmailAssetsViewModel(_configRepo, emailDetails);
+
+			string templatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseClosedCustomerEmail.sbn");
+			var htmlBody = await RenderEmailAsync(templatePath, emailAssets);
+
+			await CreateEmailAsync(
+			  emailDetails.Email,
+			  $"Test CCIMS - Case Filed by {emailDetails.Fullname}",
+			  htmlBody,
+			  _dev,
+			  resources
+			);
+		}
+
+		public async Task SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber)
+		{
+			try
+			{
+				var emailDetails = new CustomerEmailDetailsViewModel
+				{
+					Email = customerDto.Email,
+					Fullname = $"{customerDto.FirstName} {customerDto.LastName}",
+					CaseNumber = caseNumber,
+					ServicePartner = customerDto.ServicePartner
+				};
+
+				await TestSendCaseCreationEmailAsync(emailDetails).ConfigureAwait(false);
+				_logger.LogInformation($"Email notification sent successfully for case: {caseNumber}");
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Failed to send email notification for case {caseNumber}: {ex.Message}");
 
       }
     }
@@ -145,26 +184,38 @@ namespace CCIMS.Web.Services.Implementations
       }
     }
 
+		public async Task SendCaseClosedNotificationAsync(CustomerEmailDetailsViewModel emailDetails)
+		{
+			try
+			{
+				await TestSendCaseClosedEmailAsync(emailDetails).ConfigureAwait(false);
+			}
 
-    private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment>? attachments = null)
-    {
-      var message = new MimeMessage();
-      message.From.Add(new MailboxAddress("Customer Carry-In Monitoring System", credential.SenderEmailAddress));
+			catch (Exception ex)
+			{
+				_logger.LogError($"Failed to send case closed email notification for case {emailDetails.CaseNumber}: {ex.Message}");
+			}
+		}
 
-      foreach (var recipient in _testEmails)
-        message.Cc.Add(new MailboxAddress("", recipient));
+		private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment> attachments)
+		{
+			var message = new MimeMessage();
+			message.From.Add(new MailboxAddress("Customer Carry-In Monitoring System", credential.SenderEmailAddress));
+
+			foreach (var recipient in _testEmails)
+				message.Cc.Add(new MailboxAddress("", recipient));
 
       if(!to.IsNullOrEmpty())
         message.To.Add(new MailboxAddress("", to));
 
-      message.ReplyTo.Add(new MailboxAddress("", credential.ReplyAddress));
+			message.ReplyTo.Add(new MailboxAddress("", credential.ReplyAddress));
 
-      message.Subject = subject;
+			message.Subject = subject;
 
-      var bodyBuilder = new BodyBuilder
-      {
-        HtmlBody = htmlBody
-      };
+			var bodyBuilder = new BodyBuilder
+			{
+				HtmlBody = htmlBody
+			};
 
       if(attachments != null)
       {
@@ -177,27 +228,27 @@ namespace CCIMS.Web.Services.Implementations
         }
       }
 
-      message.Body = bodyBuilder.ToMessageBody();
-      message.Priority = MessagePriority.Urgent;
+			message.Body = bodyBuilder.ToMessageBody();
+			message.Priority = MessagePriority.Urgent;
 
-      await SendEmailAsync(message, credential);
-    }
+			await SendEmailAsync(message, credential);
+		}
 
-    private async Task SendEmailAsync(MimeMessage message, EmailCredential credential)
-    {
-      using var client = new SmtpClient();
-      await client.ConnectAsync(credential.Host, credential.Port, SecureSocketOptions.StartTls);
-      await client.AuthenticateAsync(credential.Username, credential.Password);
-      await client.SendAsync(message);
-      await client.DisconnectAsync(true);
-    }
+		private async Task SendEmailAsync(MimeMessage message, EmailCredential credential)
+		{
+			using var client = new SmtpClient();
+			await client.ConnectAsync(credential.Host, credential.Port, SecureSocketOptions.StartTls);
+			await client.AuthenticateAsync(credential.Username, credential.Password);
+			await client.SendAsync(message);
+			await client.DisconnectAsync(true);
+		}
 
-    private async Task<string> RenderEmailAsync<T>(string templatePath, T model)
-    {
-      try
-      {
-        var templateText = await File.ReadAllTextAsync(templatePath);
-        var template = Template.Parse(templateText);
+		private async Task<string> RenderEmailAsync<T>(string templatePath, T model)
+		{
+			try
+			{
+				var templateText = await File.ReadAllTextAsync(templatePath);
+				var template = Template.Parse(templateText);
 
         if (template.HasErrors)
           throw new InvalidOperationException($"Scriban template parse error: {string.Join(", ", template.Messages.Select(m => m.Message))}");

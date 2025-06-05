@@ -2,82 +2,92 @@
 @using CCIMS.Web.App_Code._Globals.Extensions
 @using CCIMS.Web.Models.ViewModels
 @using CCIMS.Web.Models.ViewModels.Partials
-
+<script src="~/js/plugins/flatpickr.min.js"></script>
 @{
-  var categs = DropdownOptionViewModel.InitOptions("Select Categories", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.CATEGORIES]);
-
-  var stats = DropdownOptionViewModel.InitOptions("Select Status", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.STATUS]);
-
-  var ages = DropdownOptionViewModel.InitOptions("Select Aged Count", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.AGED]);
-
-  var categories = new SelectViewModel()
-      {
-        IdName = "category",
-        Title = "Categories",
-        InputContainerClassName = "col mx-2 mb-2",
-        IsLabelVisible = false,
-        ClassName = " h-100",
-        Options = categs
-      };
-
-  var selectValue = new SelectViewModel()
-      {
-        IdName = "selectValue",
-        Title = "Value",
-        InputContainerClassName = "col mx-2 mb-2",
-        IsLabelVisible = false,
-        InputClassName = "border-0"
-      };
-
-  var textValue = new InputFieldViewModel()
-      {
-        IdName = "textVal",
-        Title = "Value",
-        ClassName = "col mx-2 mb-2 ",
-        InputClassName = "border-1",
-        IsLabelVisible = false,
-        IsCompact = true
-      };
+    var categs = DropdownOptionViewModel.InitOptions("Select Categories", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.CATEGORIES]);
+    var stats = DropdownOptionViewModel.InitOptions("Select Status", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.STATUS]);
+    var ages = DropdownOptionViewModel.InitOptions("Select Aged Count", (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.AGED]);
+    var categories = new SelectViewModel()
+            {
+                IdName = "category",
+                Title = "Categories",
+                InputContainerClassName = "col mx-2 mb-2",
+                IsLabelVisible = false,
+                ClassName = " h-100",
+                Options = categs
+            };
+    var selectValue = new SelectViewModel()
+            {
+                IdName = "selectValue",
+                Title = "Value",
+                InputContainerClassName = "col mx-2 mb-2",
+                IsLabelVisible = false,
+                InputClassName = "border-0"
+            };
+    var textValue = new InputFieldViewModel()
+            {
+                IdName = "textVal",
+                Title = "Value",
+                ClassName = "col mx-2 mb-2 ",
+                InputClassName = "border-1",
+                IsLabelVisible = false,
+                IsCompact = true
+            };
 }
 <form id="form-search">
-  <div class="col">
-    <div class="card">
-      <div class="card-body">
-        <div class="container-fluid d-sm-block d-lg-flex px-0">
-          @await Html.RenderAsync(categories)
-          @await Html.RenderAsync(selectValue)
-
-          <div class="col">
-            @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, textValue)
-          </div>
-
-          <div class="col-12 col-lg-2 h-auto">
-            <div class="px-2 d-flex mx-2 pb-2 h-100 justify-content-center align-content-center">
-              <button type="submit" class="w-100 h-auto btn bg-gradient-primary btn-sm mb-0" id="btn-search">
-                Search
-              </button>
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="container-fluid d-sm-block d-lg-flex px-0">
+                    @await Html.RenderAsync(categories)
+                    @await Html.RenderAsync(selectValue)
+                    <div class="col">
+                        @await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, textValue)
+                    </div>
+                    <!-- Hide datepicker by default -->
+                    <div class="col mx-2 mb-2 d-none" id="dateRangeContainer">
+                        <input class="form-control datepicker" placeholder="Select date range" type="text"
+                               onfocus="focused(this)" onfocusout="defocused(this)" id="dateRange" name="dateRange">
+                    </div>
+                    <div class="col-12 col-lg-2 h-auto">
+                        <div class="px-2 d-flex mx-2 pb-2 h-100 justify-content-center align-content-center">
+                            <button type="submit" class="w-100 h-auto btn bg-gradient-primary btn-sm mb-0" id="btn-search">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <input type="hidden" class="col-12" value="" name="v" placeholder="mainValue" id="hdn-searchVal" />
+                    <input type="hidden" class="col-12" value="" name="dateRange" id="hdn-dateRange" />
+                </div>
             </div>
-          </div>
-
         </div>
-        <div class="container">
-          <input type="hidden" class="col-12" value="" name="v" placeholder="mainValue" id="hdn-searchVal"/>
-        </div>
-      </div>
     </div>
-  </div>
 </form>
-
 <script type="module" defer>
-  import { initComponents as init} from '/js/components/caseSearch.js';
-
-  init(
-    '@categories.Id', 
-    'btn-search', 
-    '@textValue.Id', 
-    '@selectValue.Id', 
-    'hdn-searchVal',
+    import { initComponents as init } from '/js/components/caseSearch.js';
+    init(
+        '@categories.Id',
+        'btn-search',
+        '@textValue.Id',
+        '@selectValue.Id',
+        'hdn-searchVal',
+        'dateRange',
+        'hdn-dateRange',
     @Html.Raw(Json.Serialize(stats)),
     @Html.Raw(Json.Serialize(ages))
-  );
+                      );
+</script>
+<script>
+    if (document.querySelector('.datepicker')) {
+        flatpickr('.datepicker', {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            onChange: function (selectedDates, dateStr, instance) {
+                // Update hidden field when date changes
+                document.getElementById('hdn-dateRange').value = dateStr;
+            }
+        });
+    }
 </script>

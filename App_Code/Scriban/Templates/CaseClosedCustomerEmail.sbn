@@ -1,0 +1,123 @@
+﻿<div style="margin: 0; padding: 0; background-color: #f8f9fa;">
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8f9fa;">
+		<tr>
+			<td align="center">
+				<!-- Main Container -->
+				<table width="1000" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; padding: 30px;">
+
+					<!-- Header -->
+					<tr>
+						<td align="left" style="padding-bottom: 20px;">
+							<a href="{{ BaseUrl  }}" target="_blank">
+								<img src="cid:web_icon" alt="Main Logo" height="60" style="display: inline-block;"/>
+							</a>
+							<img src="cid:vst_icon" alt="Secondary Logo" height="60" style="float: right; display: inline-block;"/>
+						</td>
+					</tr>
+
+					<!-- Divider -->
+					<tr>
+						<td style="border-top: 4px solid #cb0c9f; padding-top: 20px;"></td>
+					</tr>
+
+					<!-- Thank You Message -->
+					<tr style="padding: 0px 3rem;">
+						<td align="center" style="background-color: #3A416F; border-radius: 20px; padding: 40px 20px;">
+							<div style="padding: 0px 2rem;">
+								<div style="text-align: center!important; vertical-align: -.1875em; width: 50px!important">
+									<img src="cid:check_icon" height="50" />
+								</div>
+								<h1 style="color: #ffffff; font-family: Arial, sans-serif; font-size: 2rem; margin: 0; padding-top: 1.3rem">
+									Your case is closed!
+								</h1>
+							</div>
+						</td>
+					</tr>
+
+					<!-- Message Content -->
+					<tr>
+						<td align="center" style="padding: 30px 20px 10px 20px;">
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 0;">
+								Thank you for your patience.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td align="center" style="padding: 10px 20px 30px 20px;">
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 0;">
+								If any additional information is required, we will reach out to you.
+							</p>
+						</td>
+					</tr>
+
+					<!-- Case Summary -->
+					<tr>
+						<td style="padding: 30px 0;">
+							<table width="100%" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td width="50%" style="padding-right: 10px;">
+										<img src="cid:character_image" alt="Character Image" width="100%" style="border-radius: 10px;"/>
+									</td>
+									<td width="50%" style="padding-left: 10px; vertical-align: top;">
+										<h2 style="font-family: Arial, sans-serif; font-size: 20px; color: #cb0c9f; border-left: 5px solid #cb0c9f; padding-left: 10px;">
+											Case Summary
+										</h2>
+										<p style="font-size: 14px; font-family: Arial, sans-serif;">
+											<span>
+												Case Number:<strong style="margin-left: 0.6em;">{{ CaseNumber }}</strong>
+											</span>
+											<br/>
+											<span>
+												Full Name:<strong style="margin-left: 0.6em;">{{ Fullname }}</strong>
+											</span>
+											<br/>
+											<span>
+												Service Partner:<strong style="margin-left: 0.6em;">{{ ServicePartner }}</strong>
+											</span>
+											<br/>
+										</p>
+										<a href="{{ CaseTrackingLink }}" target="_blank" style="
+                        display: inline-block;
+                        background-color: #cb0c9f;
+                        color: #ffffff;
+                        font-family: Arial, sans-serif;
+                        font-size: 14px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        padding: 10px 40px;
+                        margin-top: 15px;
+                        border-radius: 5px;
+												box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
+											">
+											View My Case
+										</a>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+
+					<!-- Footer -->
+					<tr>
+						<td>
+							<br />
+						</td>
+					</tr>
+					<tr>
+						<td align="center" style="font-size: 16px; color: #999999; font-family: Arial, sans-serif; padding-top: 30px;">
+							This is an automated message – please do not reply.
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<br/>
+							<br/>
+							<br/>
+						</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
