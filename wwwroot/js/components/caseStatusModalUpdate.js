@@ -98,10 +98,12 @@ function edit(e, errorTitle, errorDescription, notifList) {
 	httpPut(
 		_url,
 		dto,
-		'modal-edit',
+		'modal-update-stat',
 		errorTitle,
 		errorDescription,
-		notifList
+		notifList,
+		() => displaySpinner(),
+		() => hideSpinner(),
 	);
 }
 

@@ -182,23 +182,31 @@ export function httpGet(url, errorTitle, errorDescription, successCallBack, erro
   });
 }
 
-export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifList) {
+export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifList, onBeforeSendCallback = null, onCompleteCallback = null) {
   console.log(url);
   $.ajax({
     url: url,
     method: 'PUT',
     contentType: 'application/json',
     data: JSON.stringify(dto),
+    beforeSend: () => {
+      if (onBeforeSendCallback)
+        onBeforeSendCallback();
+    },
     success: function (response) {
       hideModal(modalId);
       refreshPage(window.okEditParam);
     },
     error: (error) =>
-      handleError(error, errorTitle, errorDescription, notifList)
+      handleError(error, errorTitle, errorDescription, notifList),
+    complete: () => {
+      if (onCompleteCallback)
+        onCompleteCallback();
+    }
   });
 }
 
-export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList) {
+export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList, onBeforeSendCallback = null, onCompleteCallback = null) {
 
   console.log(url);
   $.ajax({
@@ -206,12 +214,20 @@ export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifL
     method: 'POST',
     contentType: 'application/json',
     data: JSON.stringify(dto),
+    beforeSend: () => {
+      if (onBeforeSendCallback)
+        onBeforeSendCallback();
+    },
     success: function (response) {
       hideModal(modalId);
       refreshPage(window.okCreateParam);
     },
     error: (error) =>
-      handleError(error, errorTitle, errorDescription, notifList)
+      handleError(error, errorTitle, errorDescription, notifList),
+    complete: () => {
+      if (onCompleteCallback)
+        onCompleteCallback();
+    }
   });
 }
 

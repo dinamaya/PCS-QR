@@ -44,7 +44,9 @@ function submit(e) {
     "modal-create",
     "Status Creation Failed",
     "There was a problem while creating the status details.",
-    notifs
+    notifs,
+    () => displaySpinner(),
+    () => hideSpinner(),
   );
 }
 
