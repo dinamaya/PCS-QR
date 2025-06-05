@@ -1,5 +1,5 @@
 ﻿import { spCreationRequestDto } from '../dtos/spCreationRequestDto.js';
-import { handleError, confirmAction } from "../utils.js";
+import { httpPost, confirmAction } from "../utils.js";
 
 let inputs = {
   spName: null,
@@ -51,7 +51,7 @@ export function initModalNotifs(
   console.log(notifs);
 }
 
-function submit(e) {
+function submit(e, errorTitle, errorDescription, notifList) {
   if (!e.isConfirmed) return;
 
   const dto = new spCreationRequestDto(
@@ -62,24 +62,16 @@ function submit(e) {
     inputs.email.val()
   );
 
-  $.post({
-    url: window.baseUrl,
-    contentType: 'application/json',
-    data: JSON.stringify(dto),
-    success: function (response) {
-      const modalEl = $('#modal-create');
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      modalInstance.hide();
-
-      setTimeout(() => {
-        const url = new URL(window.location.href);
-
-        url.searchParams.set('q', window.okCreateParam);
-        window.location.href = url.toString();
-      }, 300);
-    },
-    error: (error) => handleError(error, "Service Partner Creation Failed", "There was a problem while creating the service partner.", notifs)
-  });
+  httpPost(
+    window.baseUrl,
+    dto,
+    'modal-create',
+    errorTitle,
+    errorDescription,
+    notifList,
+    () => displaySpinner(),
+    () => hideSpinner(),
+  );
 }
 
 $(document).ready(function () {
