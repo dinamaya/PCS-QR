@@ -85,8 +85,28 @@ namespace CCIMS.Web.Controllers.API
 			}
 		}
 
+    [HttpDelete("status"), Authorize]
+    public async Task<ActionResult<ResponseDto>> StatusDelete([FromQuery] string id)
+    {
+      var response = new ResponseDto();
+      try
+      {
+				await _opsRepo.DeactivateAsync(id);
+				response.Message = "Status (" + id + ") Deleted";
 
-		[HttpGet("status/commentable")]
+        return Ok(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+    }
+
+
+    [HttpGet("status/commentable")]
 		public async Task<ActionResult<ResponseDto>> IsCommentable([FromQuery] string id)
 		{
 			var response = new ResponseDto();

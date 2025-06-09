@@ -5,13 +5,16 @@ namespace CCIMS.Web.Repositories.Interfaces
 {
 	public interface IConfigurationRepository
 	{
-		string GetDocumentationUrl();
+		string GetBaseUrl();
+    string GetDocumentationUrl();
 		string GetQrScanUrl();
 		string GetPSGCBaseUrl();
 		string GetPSGCProvinces();
 
 		IEnumerable<DropdownOptionViewModel> GetAgedSearcOptions();
-		IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
+		int GetAgedKeyByValue(string value);
+
+    IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
 
 		IEnumerable<string> GetAllowedEmailDomains();
 

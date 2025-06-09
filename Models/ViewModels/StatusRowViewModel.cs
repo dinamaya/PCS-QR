@@ -7,6 +7,6 @@
     public string IsCommentable { get; set; }
     public string CreatedBy { get; set; }
     public string DateCreated { get; set; }
-    public string IsActive { get; set; }
+    public bool IsEditable { get; set; }
   }
 }

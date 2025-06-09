@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-    public interface ICustomerRepository
-    {
-        Task<string> CreateCustomerCaseAsync(CreateCustomerDto createCustomerDto);
-        Task<bool> CustomerExistsAsync(string email);
-        Task<CustomerDetailsViewModel> GetById(string id);
-    }
+  public interface ICustomerRepository : IEditRepository<CustomerEditRequestDto>
+  {
+    Task<string> CreateCustomerCaseAsync(CreateCustomerDto createCustomerDto);
+    Task<bool> CustomerExistsAsync(string email);
+    Task<CustomerDetailsViewModel> GetById(string id);
+  }
 }

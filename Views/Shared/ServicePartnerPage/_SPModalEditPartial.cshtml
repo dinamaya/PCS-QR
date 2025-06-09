@@ -75,8 +75,15 @@
 				<input type="hidden" id="hdn-edit-spId"/>
 
 				<div class="modal-footer">
-					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal" onclick="resetEditModal()">Close</button>
-					<button type="submit" class="mx-2 col btn border-1 btn-primary">Edit</button>
+					<div class="d-flex container">
+						<div class="flex-grow-0 flex-sm-grow-1">
+							<button type="button" class="mx-2 col btn border-1 bg-gradient-danger" id="btn-delete">Delete</button>
+						</div>
+						<div class="justify-content-end">
+							<button type="button" class="mx-2 col btn border-1 btn-outline-secondary px-5" data-bs-dismiss="modal">Close</button>
+							<button type="submit" class="mx-2 col btn border-1 bg-gradient-primary px-5">Edit</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -84,8 +91,9 @@
 </div>
 
 <script type="module">
-	import { initModal as initEditModal, onEdit as editSp, resetModal as resetEditModal } from '/js/components/spModalEdit.js';
+	import { initModal as initEditModal, onEdit as editSp, resetModal as resetEditModal, initModalNotifs as initEditNotifs } from '/js/components/spModalEdit.js';
 	initEditModal('@spName.Id', '@compName.Id', '@contPerson.Id', '@contNo.Id', '@email.Id', 'hdn-edit-spId');
+	initEditNotifs('@spName.NotifId', '@compName.NotifId', '@contPerson.NotifId', '@contNo.NotifId', '@email.NotifId');
 	window.editSp = editSp;
 	window.resetEditModal = resetEditModal;
 </script>

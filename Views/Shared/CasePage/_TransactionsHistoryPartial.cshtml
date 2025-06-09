@@ -2,6 +2,8 @@
 
 @model IEnumerable<CaseTransactionsViewModel>
 
+<link rel="stylesheet" href="~/scss/transaction.min.css" asp-append-version="true" />
+
 <div class="card blur shadow-blur overflow-auto overflow-x-hidden mb-5 mb-lg-0">
   <div class="card-header pb-0">
     <h6>Transactions Timeline</h6>
@@ -26,10 +28,24 @@
             <div class="timeline-content">
               <h6 class="text-dark text-sm font-weight-bold mb-0">@transaction.StatusName</h6>
               <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">@transaction.TransactionDate</p>
-              <p class="text-sm mt-3 mb-2">
-                @transaction.Comments
-              </p>
-              <span class="badge badge-sm bg-gradient-success"  data-bs-toggle="tooltip" data-bs-placement="top" title="Transaction ID">#@transaction.TransactionId</span>
+              
+              @if(transaction.IsCommentable)
+              {
+                <p 
+                  class="text-sm my-3 py-2 px-2 transaction-comment"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modal-edit-transaction"
+                  onclick="window.onTransactionEdit('@transaction.TransactionId')">
+                  @transaction.Comments
+                  
+                  <span class="btn-edit ps-2 ">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                    Edit
+                  </span>
+                </p>
+              }
+
+              <span class="badge badge-sm bg-gradient-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Transaction ID">#@transaction.TransactionId</span>
             </div>
           </div>
 

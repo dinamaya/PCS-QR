@@ -12,7 +12,8 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 		public static void AddHangfireConfigExtension(this IServiceCollection services)
 		{
 			services.AddHangfire((provider, option) => {
-				var connString = provider.GetRequiredService<IConfiguration>().GetConnectionString("HangfireDbContext");
+				option.UseSimpleAssemblyNameTypeSerializer().UseRecommendedSerializerSettings();
+        var connString = provider.GetRequiredService<IConfiguration>().GetConnectionString("HangfireDbContext");
 				option.UseSqlServerStorage(connString);
 			});
 

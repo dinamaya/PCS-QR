@@ -7,6 +7,6 @@ namespace CCIMS.Web.Models.Abstracts
 	{
     [Required, Key] public string Id { get; set; }
 
-    public HashedEntity(string prefix) => Id = Utils.Security.GenerateExtendedGuid(prefix);
+    public HashedEntity(string prefix, int iteration = 4) => Id = Utils.Security.GenerateExtendedGuid(prefix, iteration);
   }
 }

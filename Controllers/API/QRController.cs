@@ -19,18 +19,20 @@ namespace CCIMS.Web.Controllers.API
 		private readonly ITokenProvider _tokenProvider;
 		private readonly ISecurityRepository _securityRepo;
 		private readonly IQRRepository _qrRepo;
+		private readonly IServicePartnerRepository _spRepo;
 
 		private readonly MainDbContext _mainDb;
 
-		public QRController(ITokenProvider tokenProvider, MainDbContext mainDb, ISecurityRepository securityRepo, IQRRepository qrRepo)
-		{
-			_tokenProvider = tokenProvider;
-			_mainDb = mainDb;
-			_securityRepo = securityRepo;
-			_qrRepo = qrRepo;
-		}
+    public QRController(ITokenProvider tokenProvider, MainDbContext mainDb, ISecurityRepository securityRepo, IQRRepository qrRepo, IServicePartnerRepository spRepo)
+    {
+      _tokenProvider = tokenProvider;
+      _mainDb = mainDb;
+      _securityRepo = securityRepo;
+      _qrRepo = qrRepo;
+      _spRepo = spRepo;
+    }
 
-		[HttpPost("token")]
+    [HttpPost("token")]
 		public async Task<IActionResult> GetToken([FromBody] string data)
 		{
 			if (string.IsNullOrWhiteSpace(data))
@@ -56,16 +58,25 @@ namespace CCIMS.Web.Controllers.API
 					var placeholderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/qr_placeholder.png");
 					var placeholderBytes = await System.IO.File.ReadAllBytesAsync(placeholderPath);
 
-					_response.Result = placeholderBytes;
+          _response.Result = placeholderBytes;
 					_response.Message = "No QR found, returning placeholder.";
 					return Ok(_response);
 				}
 
 				var qrResult = await _qrRepo.GetById(id);
-				_response.Result = qrResult;
-				_response.Message = "QR generated successfully";
+        string sp = await _spRepo.GetNameByQrId(id);
+
+        _response.Result = qrResult;
+				_response.Message = sp;
 
 				return Ok(_response);
+			}
+			catch (InvalidOperationException ex)
+			{
+				_response.Message = ex.Message;
+				_response.IsSuccess = false;
+
+				return BadRequest(_response);
 			}
 			catch (Exception ex)
 			{
