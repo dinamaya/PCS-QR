@@ -91,7 +91,9 @@ function edit(e, errorTitle, errorDescription, notifList) {
 		'modal-edit-customer',
 		errorTitle,
 		errorDescription,
-		notifList
+		notifList,
+		() => displaySpinner(),
+		() => hideSpinner(),
 	);
 }
 

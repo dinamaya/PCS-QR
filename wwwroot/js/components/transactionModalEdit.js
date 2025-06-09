@@ -61,7 +61,9 @@ function edit(e, errorTitle, errorDescription, notifList) {
 		'modal-edit-transaction',
 		errorTitle,
 		errorDescription,
-		notifList
+		notifList,
+		() => displaySpinner(),
+		() => hideSpinner(),
 	);
 }
 

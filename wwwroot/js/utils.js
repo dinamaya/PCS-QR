@@ -206,8 +206,8 @@ export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifLi
   });
 }
 
-export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList, onBeforeSendCallback = null, onCompleteCallback = null) {
-
+export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList, onBeforeSendCallback = null, onCompleteCallback = null)
+{
   console.log(url);
   $.ajax({
     url: url,
@@ -236,12 +236,18 @@ export function httpDelete(url, modalId, errorTitle, errorDescription, notifList
   $.ajax({
     url: url,
     method: 'DELETE',
+    beforeSend: () => {
+      displaySpinner();
+    },
     success: function (response) {
       hideModal(modalId);
       refreshPage(window.okDeleteParam);
     },
     error: (error) =>
-      handleSimpleError(error, errorTitle, errorDescription)
+      handleSimpleError(error, errorTitle, errorDescription),
+    complete: () => {
+      hideSpinner();
+    }
   });
 }
 
