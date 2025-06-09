@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using CCIMS.Web.Services.Implementations;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Hangfire;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -19,14 +20,12 @@ namespace CCIMS.Web.Repositories.Implementations
 		private readonly MainDbContext _mainDb;
 		private readonly IOperationsRepository _opsRepo;
 		private readonly IConfigurationRepository _configRepo;
-		private readonly IEmailService _emailService;
 		private readonly ILogger<TransactionRepository> _logger;
 
-    public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo, IEmailService emailService, ILogger<TransactionRepository> logger, IConfigurationRepository configRepo)
+    public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo, ILogger<TransactionRepository> logger, IConfigurationRepository configRepo)
     {
       _mainDb = mainDb;
       _opsRepo = opsRepo;
-      _emailService = emailService;
       _logger = logger;
       _configRepo = configRepo;
     }
@@ -64,38 +63,17 @@ namespace CCIMS.Web.Repositories.Implementations
 			await _mainDb.SaveChangesAsync();
 
 			// Send email notification if case is closed
-			try
+			var status = await _opsRepo.GetStatusById(data.StatusId);
+			var caseDetails = await _mainDb.CaseDetailsVs
+				.AsNoTracking()
+				.FirstOrDefaultAsync(cd => cd.Id == data.CaseId);
+
+			if (status != null && status.Name.Equals("Closed", StringComparison.OrdinalIgnoreCase))
 			{
-				var status = await _opsRepo.GetStatusById(data.StatusId);
-				var caseDetails = await _mainDb.CaseDetailsVs
-					.AsNoTracking()
-					.FirstOrDefaultAsync(cd => cd.Id == data.CaseId);
+        BackgroundJob.Enqueue<BackgroundJobsService>(
+					(service) => service.SendCaseClosedEmail(caseDetails));
 
-
-				if (status != null && status.Name.Equals("Closed", StringComparison.OrdinalIgnoreCase))
-				{
-					var emailDetails = new CustomerEmailDetailsViewModel(_configRepo, caseDetails.CaseNumber)
-					{
-						Email = caseDetails.Email,
-						Fullname = $"{caseDetails.FirstName} {caseDetails.LastName}",
-						ServicePartner = caseDetails.SpName,
-					};
-
-					try
-					{
-						await _emailService.SendCaseClosedNotificationAsync(emailDetails);
-						_logger.LogInformation($"Successfully sent case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}");
-					}
-					catch (Exception emailEx)
-					{
-						_logger.LogError(emailEx, $"Failed to send case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}. Error: {emailEx.Message}");
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				// Log the error but do not let it break the main transaction flow.
-				_logger.LogError(ex, $"Error during email sending logic for case closure, Case ID: {data.CaseId}. Error: {ex.Message}");
+        _logger.LogInformation($"Successfully sent case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}");
 			}
 
 			InsertedId = transaction.Id.ToString();

@@ -6,6 +6,7 @@ using CCIMS.Web.Repositories.Implementations;
 using CCIMS.Web.Repositories.Interfaces;
 using CCIMS.Web.Services.Implementations;
 using CCIMS.Web.Services.Interfaces;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -86,7 +87,8 @@ namespace CCIMS.Web.Controllers
 
 				string caseNumber = await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
 
-				await _emailService.SendCustomerRegistrationNotificationAsync(createCustomerDto, caseNumber);
+        BackgroundJob.Enqueue<BackgroundJobsService>(
+          (service) => service.SendCaseCreateEmail(createCustomerDto, caseNumber));
 
 				_tokenProvider.Remove(createCustomerDto.Token);
 
