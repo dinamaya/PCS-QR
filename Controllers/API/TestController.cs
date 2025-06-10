@@ -50,7 +50,6 @@ namespace CCIMS.Web.Controllers.API
       var response = new ResponseDto();
       try
       {
-        await _emailService.TestSendCaseCreationEmailAsync(email, caseNumber, sp, sn, customerName);
         response.Message = "Email Send Successfully";
         return response;
       }

@@ -7,6 +7,7 @@ using CCIMS.Web.Services.Implementations;
 using CCIMS.Web.Services.Interfaces;
 using Hangfire;
 using System.Diagnostics;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +36,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseHangfireDashboard(builder.Configuration.GetSection("Hangfire").Get<string>(), new DashboardOptions()
+app.UseHangfireDashboard(builder.Configuration.GetSection("Hangfire:dashboard").Get<string>(), new DashboardOptions()
 {
   DashboardTitle = "CCI Jobs Monitoring"
 });
@@ -69,13 +70,31 @@ using (var scope = app.Services.CreateScope())
 #endregion
 
 #region Hangfire Job Initialization
-using (var scope = app.Services.CreateScope()) 
+using (var scope = app.Services.CreateScope())
 {
-  RecurringJob.AddOrUpdate<BackgroundJobsService>(
-    "test-minutely-job",
-    (service) => service.SendAgedCasesEmail(),
-    Cron.Minutely
-  );
+  var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+  var timeList = configuration.GetSection("Hangfire:time").Get<IEnumerable<string>>();
+  var timezone = configuration.GetSection("Hangfire:timezone").Get<string>();
+  
+  foreach (var timeString in timeList)
+  {
+    if (TimeSpan.TryParseExact(timeString, new[] { @"h\:mm", @"hh\:mm" }, CultureInfo.InvariantCulture, out var time))
+    {
+      string cron = Cron.Daily(time.Hours, time.Minutes);
+      string jobId = $"send-aged-cases-at-{time:hh\\:mm}";
+
+      RecurringJob.AddOrUpdate<BackgroundJobsService>(
+          jobId,
+          service => service.SendCasesAgedEmail(),
+          cron,
+          TimeZoneInfo.FindSystemTimeZoneById(timezone)
+      );
+    }
+    else
+    {
+      Console.WriteLine($"Invalid time format in Hangfire:time config: {timeString}");
+    }
+  }
 }
 #endregion
 

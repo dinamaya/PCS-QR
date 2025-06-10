@@ -19,8 +19,9 @@ namespace CCIMS.Web.Controllers.API
       _secureRepo = secureRepo;
     }
 
+    // https://localhost:8585/api/secure/hash/password?username=kenjie_sama&plainPassword=Kenjie4Ever!
     // Provide password to hash
-    [HttpGet("/hash/password")]
+    [HttpGet("hash/password")]
 		public async Task<IActionResult> HashPassword(string username, string plainPassword)
 		{
 			try

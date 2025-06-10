@@ -7,7 +7,6 @@ using CCIMS.Web.Repositories.Interfaces;
 using CCIMS.Web.Services.Interfaces;
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
@@ -20,7 +19,7 @@ namespace CCIMS.Web.Services.Implementations
   {
     private readonly string _agedTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseAgedSpaEmail.sbn");
     private readonly string _custTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationCustomerEmail.sbn");
-    private readonly string _spaTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationSPAEmail.sbn");
+    private readonly string _closedtemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseClosedCustomerEmail.sbn");
 
     private readonly EmailCredential _dev;
     private readonly EmailCredential _prod;
@@ -40,107 +39,37 @@ namespace CCIMS.Web.Services.Implementations
       _configRepo = configRepo;
     }
 
-
-    public async Task TestSendCaseCreationEmailAsync(string email, string caseNumber, string sp, string sn, string customerName)
-    {
-      string baseUrl = _configRepo.GetBaseUrl();
-      var icons = Path.Combine(_server.RootDirectory, "img", "icons");
-      var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
-
-      var custModel = new CustomerEmailDetailsViewModel(_configRepo, caseNumber)
-      {
-        Email = email,
-        ServicePartner = sp,
-        Fullname = customerName,
-      };
-
-      var spaModel = new SpaCaseCreationEmailDetailsViewModel(_configRepo, caseNumber)
-      {
-        ServicePartner = sp,
-        CustomerName = customerName,
-        SerialNumber = sn,
-      };
-
-      var agedModel = new CaseAgedEmailDetailsViewModel
-      {
-        BaseUrl = baseUrl,
-        Cases = Enumerable.Range(1, 50).Select(i => new AgedCaseViewModel
-        {
-          CaseTrackingLink = $"{baseUrl}Cases/Tracking?refNo=CC1000{i:D3}",
-          CaseNumber = $"CC1000{i:D3}",
-          DateLastUpdated = DateTime.UtcNow.AddDays(-i).ToString("yyyy-MM-dd"),
-          CustomerName = $"Customer {i}",
-          ServicePartner = $"SP Name{i}"
-        }).ToList()
-      };
-
-      var customerHtmlBody = await RenderEmailAsync(_custTemplatePath, custModel);
-      var agedHtmlBody = await RenderEmailAsync(_agedTemplatePath, agedModel);
-
-      await CreateEmailAsync(
-        custModel.Email,
-        $"Test CCIMS - Customer Case Submitted by {custModel.Fullname}",
-        customerHtmlBody,
-        _dev
-      );
-
-      await CreateEmailAsync(
-        custModel.Email,
-        $"Test CCIMS - Aged Copy {custModel.Fullname}",
-        agedHtmlBody,
-        _dev
-      );
-    }
-
-		public async Task TestSendCaseClosedEmailAsync(CustomerEmailDetailsViewModel emailDetails)
-		{
-			var icons = Path.Combine(_server.RootDirectory, "img", "icons");
-			var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
-			var resources = new List<EmailAttachment>()
-		  {
-		    new(){
-			  Path = Path.Combine(icons, "icon_ccims_lg.svg"),
-			  ContentId = "web_icon"
-		    },
-		    new(){
-			  Path = Path.Combine(icons, "VST-ECS.png"),
-			  ContentId = "vst_icon"
-		    },
-		    new(){
-			  Path = Path.Combine(icons, "circle-check-solid.png"),
-			  ContentId = "check_icon.png"
-		    },
-		    new(){
-			  Path = Path.Combine(illus,"thank-you1.png"),
-			  ContentId = "character_image"
-		    },
-		  };
-
-			string templatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseClosedCustomerEmail.sbn");
-			var htmlBody = await RenderEmailAsync(templatePath, emailDetails);
-
-			await CreateEmailAsync(
-			  emailDetails.Email,
-			  $"Test CCIMS - Case Filed by {emailDetails.Fullname}",
-			  htmlBody,
-			  _dev,
-			  resources
-			);
-		}
-
-		public async Task SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber)
+		public async Task<TaskResultDto> SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber)
 		{
 			try
 			{
         string customer = customerDto.LastName + ", " +customerDto.FirstName;
+        var icons = Path.Combine(_server.RootDirectory, "img", "icons");
+        var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
 
-        await TestSendCaseCreationEmailAsync(customerDto.Email, caseNumber, customerDto.ServicePartner, customerDto.SerialNumber, customer).ConfigureAwait(false);
-				_logger.LogInformation($"Email notification sent successfully for case: {caseNumber}");
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Failed to send email notification for case {caseNumber}: {ex.Message}");
+        var custModel = new CustomerEmailDetailsViewModel(_configRepo, caseNumber)
+        {
+          Email = customerDto.Email,
+          ServicePartner = customerDto.ServicePartner,
+          Fullname = customer,
+        };
 
+        var htmlBody = await RenderEmailAsync(_custTemplatePath, custModel);
+
+        await CreateEmailAsync(
+          customerDto.Email,
+          $"Test CCIMS - Case Registered",
+          htmlBody,
+          _dev,
+          null
+        );
+
+        return TaskResultDto.Success("Email Sent Successfully");
+      }
+
+      catch (Exception ex)
+      {
+        return TaskResultDto.Fail(Exceptions.GetMessage(ex));
       }
     }
 
@@ -149,9 +78,7 @@ namespace CCIMS.Web.Services.Implementations
       var task = new TaskResultDto();
       try
       {
-        var template = Path.Combine("App_Code", "Scriban", "Templates", "CaseAgedSpaEmail.sbn");
-
-        var agedHtmlBody = await RenderEmailAsync(template, agedCases);
+        var agedHtmlBody = await RenderEmailAsync(_agedTemplatePath, agedCases);
 
         await CreateEmailAsync(
           _dev.SenderEmailAddress,
@@ -168,18 +95,31 @@ namespace CCIMS.Web.Services.Implementations
       }
     }
 
-		public async Task SendCaseClosedNotificationAsync(CustomerEmailDetailsViewModel emailDetails)
+		public async Task<TaskResultDto> SendCaseClosedNotificationAsync(CustomerEmailDetailsViewModel emailDetails)
 		{
 			try
 			{
-				await TestSendCaseClosedEmailAsync(emailDetails).ConfigureAwait(false);
-			}
+        var icons = Path.Combine(_server.RootDirectory, "img", "icons");
+        var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
 
-			catch (Exception ex)
+        var htmlBody = await RenderEmailAsync(_closedtemplatePath, emailDetails);
+
+        await CreateEmailAsync(
+          emailDetails.Email,
+          $"Test CCIMS - Case Closed",
+          htmlBody,
+          _dev,
+          null
+        );
+
+        return TaskResultDto.Success("Email Sent Successfully");
+      }
+
+      catch (Exception ex)
 			{
-				_logger.LogError($"Failed to send case closed email notification for case {emailDetails.CaseNumber}: {ex.Message}");
-			}
-		}
+        return TaskResultDto.Fail(Exceptions.GetMessage(ex));
+      }
+    }
 
 		private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment>? attachments = null)
 		{

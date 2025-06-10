@@ -91,7 +91,9 @@ function edit(e, errorTitle, errorDescription, notifList)
 		'modal-edit-case',
 		errorTitle,
 		errorDescription,
-		notifList
+		notifList,
+		() => displaySpinner(),
+		() => hideSpinner(),
 	);
 }
 
