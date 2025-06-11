@@ -61,14 +61,10 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
-	
-	<Target Name="CopyScribanTemplates" AfterTargets="Build">
-		<ItemGroup>
-			<ScribanFiles Include="App_Code\Scriban\**\*.*" />
-		</ItemGroup>
-		<Copy SourceFiles="@(ScribanFiles)"
-					DestinationFiles="@(ScribanFiles->'$(OutDir)App_Code\Scriban\%(RecursiveDir)%(Filename)%(Extension)')" />
-	</Target>
+
+	<ItemGroup>
+		<None Include="App_Code\Scriban\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <None Update="C:\Users\ken_napura\.nuget\packages\tesseract\5.2.0\build\\..\x64\tesseract50.dll">
