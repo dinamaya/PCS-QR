@@ -74,7 +74,7 @@ namespace CCIMS.Web.Controllers
     }
 
     [Authorize(Roles = "SPA")]
-    public async Task<IActionResult> Cases(string? c = null, string? v = null, string? d = null, string? dateRange = null)
+    public async Task<IActionResult> Cases(string? c = null, string? v = null, string? d = null, string? dateRange = null, string? q = null)
     {
       try
       {
@@ -84,6 +84,16 @@ namespace CCIMS.Web.Controllers
         // Parse date range if provided
         DateTime? startDate = null;
         DateTime? endDate = null;
+
+        if (!q.IsNullOrEmpty())
+        {
+          if (q.Equals(Queries.SUCCESS_EDIT))
+            ViewData[Keys.ViewData.SUCCESS] = "Case Status Updated Successfully!";
+        }
+
+        if (!c.IsNullOrEmpty() && v.IsNullOrEmpty())
+          throw new InvalidOperationException(Exceptions.Message.INVALID_SEARCH_QUERY);
+
         if (!dateRange.IsNullOrEmpty())
         {
           var dates = ParseDateRange(dateRange);
@@ -93,6 +103,7 @@ namespace CCIMS.Web.Controllers
 
         if (!c.IsNullOrEmpty() && !v.IsNullOrEmpty())
         {
+          v = v.Trim();
           if (d.IsNullOrEmpty() && dateRange.IsNullOrEmpty())
             results = await _caseRepo.GetByCategory(c, v);
           else if (d.IsNullOrEmpty() && !dateRange.IsNullOrEmpty())
@@ -112,6 +123,7 @@ namespace CCIMS.Web.Controllers
       }
       catch (Exception ex)
       {
+        ViewData[Keys.ViewData.ERROR] = ex.Message;
         return View(Enumerable.Empty<CaseRowViewModel>());
       }
     }

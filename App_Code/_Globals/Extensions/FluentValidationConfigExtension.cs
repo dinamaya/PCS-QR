@@ -23,6 +23,8 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
       services.AddValidatorsFromAssemblyContaining<CaseUpdateRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<StatusCreationRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<StatusEditRequestValidator>();
+      services.AddValidatorsFromAssemblyContaining<CustomerEditRequestValidator>();
+      services.AddValidatorsFromAssemblyContaining<CaseDetailsEditRequestValidator>();
     }
   }
 }

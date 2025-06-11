@@ -87,7 +87,7 @@ namespace CCIMS.Web.Repositories
 
       return selectedCategory.Label switch
       {
-        "Description" => _context.LatestCasesVs.Where(c => c.Description.Contains(value)),
+        "Remarks / Comment" => _context.LatestCasesVs.Where(c => c.Comments.Contains(value)),
         "Status" => _context.LatestCasesVs.Where(c => c.StatusId == value),
         "Serial Number" => _context.LatestCasesVs.Where(c => c.SerialNumber.Contains(value)),
         "Case Number / ID" => _context.LatestCasesVs.Where(c => c.CaseNumber.Contains(value)),
