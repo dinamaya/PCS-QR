@@ -81,7 +81,7 @@ namespace CCIMS.Web.Services.Implementations
         var agedHtmlBody = await RenderEmailAsync(_agedTemplatePath, agedCases);
 
         await CreateEmailAsync(
-          _dev.SenderEmailAddress,
+          null,
           $"Test CCIMS - Aged Cases {DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)}",
           agedHtmlBody,
           _dev
