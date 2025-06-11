@@ -201,7 +201,7 @@ namespace CCIMS.Web.Repositories
       int days = _configRepo.GetAgedKeyByValue(value);
       DateTime today = DateTime.Now.ToLocalTime();
 
-      return _context.LatestCasesVs.Where(c => c.DateStatusUpdated != null &&
+      return _context.LatestCasesVs.Where(c => c.DateStatusUpdated != null && c.Status != "Closed" &&
           EF.Functions.DateDiffDay(c.DateStatusUpdated, today) >= days);
     }
 
