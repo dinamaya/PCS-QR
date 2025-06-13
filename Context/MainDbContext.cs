@@ -28,7 +28,6 @@ namespace CCIMS.Web.Context
 		public virtual DbSet<ClosedCasesV> ClosedCasesVs { get; set; }
 		public virtual DbSet<CasesCreatedTodayV> CasesCreatedTodayVs { get; set; }
 		public virtual DbSet<WeeklyCasesChartV> WeeklyCasesChartVs { get; set; }
-		public virtual DbSet<WeeklyAgingCasesChartV> WeeklyAgingCasesChartVs { get; set; }
 		public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
 		public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
 		public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
@@ -67,15 +66,6 @@ namespace CCIMS.Web.Context
 					.ToView("LatestCasesSubmission_v");
 
 				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-			});
-
-			modelBuilder.Entity<WeeklyAgingCasesChartV>(entity =>
-			{
-				entity
-					.HasNoKey()
-					.ToView("WeeklyAgingCasesChart_v");
-
-				entity.Property(e => e.DayOfWeek).HasMaxLength(30);
 			});
 
 			modelBuilder.Entity<WeeklyCasesChartV>(entity =>
