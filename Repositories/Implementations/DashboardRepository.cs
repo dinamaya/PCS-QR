@@ -32,8 +32,8 @@ namespace CCIMS.Web.Repositories
 		public async Task<List<WeeklyCasesChartV>> GetWeeklyCasesChartAsync() =>
 			await _context.WeeklyCasesChartVs.ToListAsync();
 
-		public async Task<List<WeeklyAgingCasesChartV>> GetWeeklyAgingCasesChartAsync() =>
-			await _context.WeeklyAgingCasesChartVs.ToListAsync();
+		public async Task<List<WeeklyClosedCasesChartV>> GetWeeklyClosedCasesChartAsync() =>
+			await _context.WeeklyClosedCasesChartVs.ToListAsync();
 
 		public async Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync() =>
 			await _context.LatestCasesSubmissionVs.ToListAsync();

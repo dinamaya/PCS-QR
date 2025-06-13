@@ -246,11 +246,11 @@
 			<div class="col-lg-12 col-md-12 mt-4">
 				<div class="card z-index-2">
 					<div class="card-header p-3 pb-0">
-						<h6>Daily Active Aging Cases Over the Week</h6>
+						<h6>Daily Closed Cases Over the Week</h6>
 					</div>
 					<div class="card-body p-3">
 						<div class="chart">
-							<canvas id="daily-aging" class="chart-canvas" height="300"></canvas>
+							<canvas id="daily-closed" class="chart-canvas" height="300"></canvas>
 						</div>
 					</div>
 				</div>
@@ -279,28 +279,27 @@
 	var caseCounts = weeklyCasesData.map(function (item) {
 			return item.totalCases;
 	});
-	console.log("caseCounts", caseCounts);
-	//For Weekly Aging Cases Chart
-	var weeklyAgingData = @Html.Raw(Json.Serialize(ViewBag.WeeklyAgingCasesChart));
-	console.log("weeklyAgingData:", weeklyAgingData);
-	var agingLabels = weeklyAgingData.map(function (item) {
+
+	//For Weekly Closed Cases Chart
+	var weeklyClosedData = @Html.Raw(Json.Serialize(ViewBag.WeeklyClosedCasesChart));
+
+	var closedLabels = weeklyClosedData.map(function (item) {
 			// Format: "DayOfWeek (MM-DD)"
 			var caseDate = new Date(item.caseDate);
 			var month = String(caseDate.getMonth() + 1).padStart(2, '0');
 			var day = String(caseDate.getDate()).padStart(2, '0');
 			return item.dayOfWeek + " (" + month + "-" + day + ")";
 	});
-	var agingCounts = weeklyAgingData.map(function (item) {
-			return item.totalAgingCases;
+	var closedCounts = weeklyClosedData.map(function (item) {
+		return item.totalClosedCases;
 	});;
-	console.log("agingCounts", agingCounts);
 
 	// Line chart setup
 
 	var dailyCasesChart = document.getElementById("daily-cases").getContext("2d");
 	var ctx2 = document.getElementById("daily-cases").getContext("2d");
 
-	var dailyAgingChart = document.getElementById("daily-aging").getContext("2d");
+	var weeklyClosedChart = document.getElementById("daily-closed").getContext("2d");
 
 	var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
 
@@ -394,9 +393,9 @@
 			},
 	});
 
-	// Weekly Aging
+	// Weekly Closed
 
-	new Chart(dailyAgingChart, {
+	new Chart(weeklyClosedChart, {
 			type: "line",
 			data: {
 					labels: labels,
@@ -409,7 +408,7 @@
 							borderColor: "#cb0c9f",
 							borderWidth: 3,
 							backgroundColor: gradientStroke1,
-							data: agingCounts,
+				data: closedCounts,
 							maxBarThickness: 6
 					}],
 			},
@@ -446,7 +445,7 @@
 											},
 											min: 0,
 											// Calculate max based on data for better visualization
-											max: Math.max(...agingCounts) + 10 - (Math.max(...agingCounts) % 10),
+											max: Math.max(...closedCounts) + 10 - (Math.max(...closedCounts) % 10),
 											stepSize: 10,
 									}
 							},

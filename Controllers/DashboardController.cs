@@ -27,7 +27,7 @@ namespace CCIMS.Web.Controllers
 			ViewBag.CasesCreatedToday = await _dashboardRepo.GetCasesCreatedTodayCountAsync();
 			ViewBag.TotalCasesCount = await _dashboardRepo.GetTotalCasesCountAsync();
 			ViewBag.WeeklyCasesChart = await _dashboardRepo.GetWeeklyCasesChartAsync();
-			ViewBag.WeeklyAgingCasesChart = await _dashboardRepo.GetWeeklyAgingCasesChartAsync();
+			ViewBag.WeeklyClosedCasesChart = await _dashboardRepo.GetWeeklyClosedCasesChartAsync();
 			ViewBag.LatestCaseSubmission = await _dashboardRepo.GetLatestCaseSubmissionsAsync();
 			ViewBag.Top3ServicePartnersAgingCases = await _dashboardRepo.GetTop3ServicePartnersAgingCases();
             ViewBag.TopAgingCases = await _dashboardRepo.GetTopAgingCases();
