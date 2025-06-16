@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using CCIMS.Web.App_Code._Globals.Enums;
+﻿using Microsoft.EntityFrameworkCore;
 using CCIMS.Web.Models.Entities.Main;
-using System.Reflection.Emit;
 using CCIMS.Web.Models.SQLViews.Main;
-using CCIMS.Web.Models.Entities.HangFire;
 
 namespace CCIMS.Web.Context
 {
@@ -142,13 +137,13 @@ namespace CCIMS.Web.Context
 
       modelBuilder.Entity<LatestCasesV>(entity =>
       {
-        entity
-      .HasNoKey()
-      .ToView("LatestCases_v");
+          entity
+              .HasNoKey()
+              .ToView("LatestCases_v");
 
-        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-        entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
-        entity.Property(e => e.StatusId).HasMaxLength(450);
+          entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+          entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
+          entity.Property(e => e.StatusId).HasMaxLength(450);
       });
 
       modelBuilder.Entity<ServicePartnersV>(entity =>
