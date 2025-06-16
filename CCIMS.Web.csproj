@@ -63,6 +63,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="App_Code\Scriban\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="C:\Users\ken_napura\.nuget\packages\tesseract\5.2.0\build\\..\x64\tesseract50.dll">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

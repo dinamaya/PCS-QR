@@ -1,12 +1,7 @@
-﻿using CCIMS.Web.App_Code._Globals.Factory;
-using CCIMS.Web.App_Code._Globals.Validtors.Objects;
-using CCIMS.Web.App_Code._Globals.Validtors.Properties;
-using CCIMS.Web.Models.DTOs;
+﻿using CCIMS.Web.App_Code._Globals.Validtors.Objects;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
+
 
 namespace CCIMS.Web.App_Code._Globals.Extensions
 {
@@ -19,10 +14,11 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
       services.AddValidatorsFromAssemblyContaining<AccountEditRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<ServicePartnerCreationRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<ServicePartnerEditRequestValidator>();
-      services.AddValidatorsFromAssemblyContaining<TransactionEditRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<CaseUpdateRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<StatusCreationRequestValidator>();
       services.AddValidatorsFromAssemblyContaining<StatusEditRequestValidator>();
+      services.AddValidatorsFromAssemblyContaining<CustomerEditRequestValidator>();
+      services.AddValidatorsFromAssemblyContaining<CaseDetailsEditRequestValidator>();
     }
   }
 }
