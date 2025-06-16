@@ -13,8 +13,9 @@ namespace CCIMS.Web.Repositories.Interfaces
 		IEditRepository<CaseEditRequestDto>
 	{
 		Task<IEnumerable<CaseRowViewModel>> GetByCategory(string categoryId, string value);
-		Task<IEnumerable<AgedCaseViewModel>> GetAgedCases();
-		Task<string> GetCurrentStatus(long caseId);
+		Task<IEnumerable<AgedCaseViewModel>> GetAgedCases(string caseNumberCategoryId);
+
+    Task<string> GetCurrentStatus(long caseId);
 		Task<CaseDetailsViewModel> GetByCaseNumber(string caseNumber);
 		string GenerateCaseNumber();
     Task<IEnumerable<CaseRowViewModel>> GetDateRangeFilteredCasesByCategory(string categoryId, string value, DateTime? startDate = null, DateTime? endDate = null);
