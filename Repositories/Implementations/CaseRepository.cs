@@ -239,7 +239,8 @@ namespace CCIMS.Web.Repositories
 
     public async Task<IEnumerable<CaseRowViewModel>> GetDataAged3DaysByServicePartner(string spName)
     {
-      var query = _context.LatestCasesVs.Where(s => s.ServicePartnerName == spName);
+      var query = _context.LatestCasesVs
+        .Where(s => s.ServicePartnerName == spName && s.AgedDays >= 3 && s.Status != "Closed");
 
       return await query.Select(
           c => new CaseRowViewModel()
