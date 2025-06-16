@@ -53,7 +53,9 @@ namespace CCIMS.Web.Repositories
             CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
             ServicePartnerName = c.ServicePartnerName,
             SerialNumber = c.SerialNumber,
-            DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY),
+            DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+            DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+            DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
           }).ToListAsync();
     }
 
@@ -72,7 +74,9 @@ namespace CCIMS.Web.Repositories
           CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
           ServicePartnerName = c.ServicePartnerName,
           SerialNumber = c.SerialNumber,
-          DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
         }
       ).ToListAsync();
     }
@@ -201,8 +205,7 @@ namespace CCIMS.Web.Repositories
       int days = _configRepo.GetAgedKeyByValue(value);
       DateTime today = DateTime.Now.ToLocalTime();
 
-      return _context.LatestCasesVs.Where(c => c.DateStatusUpdated != null && c.Status != "Closed" &&
-          EF.Functions.DateDiffDay(c.DateStatusUpdated, today) >= days);
+      return _context.LatestCasesVs.Where(c => c.AgedDays >= days && c.Status != "Closed");
     }
 
     public async Task<IEnumerable<CaseRowViewModel>> GetDateRangeFilteredCasesByCategory(string categoryId, string value, DateTime? startDate = null, DateTime? endDate = null)
@@ -227,27 +230,31 @@ namespace CCIMS.Web.Repositories
           CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
           ServicePartnerName = c.ServicePartnerName,
           SerialNumber = c.SerialNumber,
-          DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
         }
       ).ToListAsync();
     }
 
     public async Task<IEnumerable<CaseRowViewModel>> GetDataAged3DaysByServicePartner(string spName)
     {
-      var query = _context.ServicePartnersWithAgingCasesVs.Where(s => s.ServicePartnerName == spName);
+      var query = _context.LatestCasesVs.Where(s => s.ServicePartnerName == spName);
 
       return await query.Select(
           c => new CaseRowViewModel()
           {
-            Id = c.Id.ToString(),
+            Id = c.CaseId.ToString(),
             CaseNumber = c.CaseNumber,
             Description = c.Description,
             Status = c.Status,
             Comments = c.Comments,
-            CustomerName = c.CustomerName,
+            CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
             ServicePartnerName = c.ServicePartnerName,
             SerialNumber = c.SerialNumber,
-            DateCreated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+            DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+            DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+            DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
           })
           .ToListAsync();
     }
