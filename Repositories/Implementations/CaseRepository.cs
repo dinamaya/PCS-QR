@@ -186,16 +186,16 @@ namespace CCIMS.Web.Repositories
       await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<AgedCaseViewModel>> GetAgedCases()
+    public async Task<IEnumerable<AgedCaseViewModel>> GetAgedCases(string caseNumberCategoryId)
     {
       var baseUrl = new Uri(_configRepo.GetBaseUrl());
      
-      return await _context.TopAgingCasesAllVs.Select(c => new AgedCaseViewModel()
+      return await _context.AgingCasesVs.Select(c => new AgedCaseViewModel()
       {
-        CaseTrackingLink = new Uri(baseUrl, $"Cases/Tracking?refNo={c.CaseNumber}").AbsoluteUri,
+        CaseTrackingLink = new Uri(baseUrl, $"CMS/Cases?c={caseNumberCategoryId}&v={c.CaseNumber}").AbsoluteUri,
         CaseNumber = c.CaseNumber,
-        DateLastUpdated = c.DateLastUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
-        CustomerName = c.LastName + ", " + c.FirstName,
+        DateLastUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+        CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
         ServicePartner = c.ServicePartnerName
       }).ToListAsync();
     }
@@ -239,7 +239,8 @@ namespace CCIMS.Web.Repositories
 
     public async Task<IEnumerable<CaseRowViewModel>> GetDataAged3DaysByServicePartner(string spName)
     {
-      var query = _context.LatestCasesVs.Where(s => s.ServicePartnerName == spName);
+      var query = _context.LatestCasesVs
+        .Where(s => s.ServicePartnerName == spName && s.AgedDays >= 3 && s.Status != "Closed");
 
       return await query.Select(
           c => new CaseRowViewModel()

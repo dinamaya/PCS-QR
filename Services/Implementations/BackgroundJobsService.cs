@@ -21,29 +21,14 @@ namespace CCIMS.Web.Services.Implementations
       _configRepo = configRepo;
     }
 
-    public async Task TestEmailAsync()
-    {
-      var result = await _caseRepo.GetAgedCases();
-      var agedCases = new CaseAgedEmailDetailsViewModel()
-      {
-        BaseUrl = _configRepo.GetBaseUrl(),
-        Cases = result
-      };
-      
-      _logger.LogInformation("Aged Cases");
-
-      foreach (var _case in result)
-        _logger.LogInformation(_case.CaseNumber);
-
-      _logger.LogInformation("===============");
-    }
-
     public async Task SendCasesAgedEmail()
     {
-      var cases = await _caseRepo.GetAgedCases();
+      var byCaseNumber = _configRepo.GetCategoriesSearcOptions().Where(c => c.Label.Equals("Case Number / ID")).Select(c => c.Value).FirstOrDefault();
+
+      var cases = await _caseRepo.GetAgedCases(byCaseNumber);
       var agedCases = new CaseAgedEmailDetailsViewModel()
       {
-        BaseUrl = _configRepo.GetBaseUrl(),
+        BaseUrl = _configRepo.GetBaseUrl() + byCaseNumber,
         Cases = cases
       };
 
