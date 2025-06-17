@@ -28,7 +28,7 @@ namespace CCIMS.Web.Services.Implementations
       var cases = await _caseRepo.GetAgedCases(byCaseNumber);
       var agedCases = new CaseAgedEmailDetailsViewModel()
       {
-        BaseUrl = _configRepo.GetBaseUrl() + byCaseNumber,
+        BaseUrl = _configRepo.GetBaseUrl(),
         Cases = cases
       };
 

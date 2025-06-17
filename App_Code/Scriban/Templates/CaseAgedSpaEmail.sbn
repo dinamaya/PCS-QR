@@ -24,7 +24,7 @@
 					<tr>
 						<td background="{{ BaseUrl }}img/curved-images/banner-1.png" style="background-size: cover; background-repeat: no-repeat; padding: 60px 20px;padding-bottom: 0px;" align="center">
 							<img src="{{ BaseUrl }}img/icons/diamond.png" alt="Icon" width="48" height="48" style="display: block; border-radius: 50%; background-color: #fff; box-shadow: 0 5px 10px rgba(0,0,0,0.12);" />
-							<h3 style="color: white; font-family: Arial, sans-serif; margin-top: 20px;">Customer Case Aged</h3>
+							<h3 style="color: white; font-family: Arial, sans-serif; margin-top: 20px;">Customer Aged Cases</h3>
 							<table style="background: white; justify-content: start; display:flex; padding: 3rem; width: 1400px; box-shadow: 0px 1px 1px 0.4px black;border-radius: 0.5rem 0.5rem 0 0;padding-top: 48px;padding-bottom: 0px;margin-top: 25px;">							</table>
 						</td>
 					</tr>
