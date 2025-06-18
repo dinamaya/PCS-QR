@@ -34,4 +34,8 @@ public partial class LatestCasesV
   public string CustomerFirstName { get; set; } = null!;
 
   public string CustomerLastName { get; set; } = null!;
+
+  public int? AgedDays { get; set; }
+
+  public DateTime DateCreated { get; set; }
 }

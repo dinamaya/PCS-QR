@@ -78,11 +78,12 @@ function edit(e, errorTitle, errorDescription, notifList)
 	if (!e.isConfirmed) return;
 
 	resetNotifs(notifs);
+	const _sp = sp.choices.getValue();
 
 	const dto = {
 		Id: inputs.hdnCaseId.val(),
 		SerialNumber: inputs.sn.val(),
-		ServicePartner: sp.choices.getValue().value
+		ServicePartner: _sp == null ? null : _sp.value
 	};
 
 	httpPut(

@@ -5,6 +5,7 @@ using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CCIMS.Web.Controllers.API
 {
@@ -105,6 +106,9 @@ namespace CCIMS.Web.Controllers.API
       try
       {
         string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
+        if (requestDto.ServicePartner.IsNullOrEmpty())
+          throw new InvalidOperationException(Exceptions.Message.NULL_SPNAME);
+
         await _caseRepo.EditAsync(requestDto, accountId);
 
         response.Message = "Case (" + requestDto.Id + ") Updated";

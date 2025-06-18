@@ -111,8 +111,14 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         event.preventDefault();
         const params = new URLSearchParams();
 
+        
+        if ($selectCategory.val() != "" && $hiddenValue.val() == "") {
+            params.set('c', $selectCategory.val());
+            params.set('v', "");
+        }
+
         // Add category and value parameters if they exist
-        if ($selectCategory.val() != "" && $hiddenValue.val() != "") {
+        else if ($selectCategory.val() != "" && $hiddenValue.val() != "") {
             params.set('c', $selectCategory.val());
             params.set('v', $hiddenValue.val());
         }

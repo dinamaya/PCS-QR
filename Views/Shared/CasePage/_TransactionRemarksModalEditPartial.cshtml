@@ -48,5 +48,6 @@
 
 	initTransactionModal('@comments.Id', 'hdn-edit-transId');
 	initTransactionModalNotifs('@comments.NotifId');
-
+	var _remarks = document.getElementById('@comments.Id');
+	_remarks.placeholder = `${_remarks.placeholder} (Optional)`;
 </script>

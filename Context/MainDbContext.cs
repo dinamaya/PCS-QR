@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using CCIMS.Web.App_Code._Globals.Enums;
+﻿using Microsoft.EntityFrameworkCore;
 using CCIMS.Web.Models.Entities.Main;
-using System.Reflection.Emit;
 using CCIMS.Web.Models.SQLViews.Main;
-using CCIMS.Web.Models.Entities.HangFire;
 
 namespace CCIMS.Web.Context
 {
@@ -28,51 +23,51 @@ namespace CCIMS.Web.Context
     public virtual DbSet<ClosedCasesV> ClosedCasesVs { get; set; }
     public virtual DbSet<CasesCreatedTodayV> CasesCreatedTodayVs { get; set; }
     public virtual DbSet<WeeklyCasesChartV> WeeklyCasesChartVs { get; set; }
-    public virtual DbSet<WeeklyAgingCasesChartV> WeeklyAgingCasesChartVs { get; set; }
     public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
     public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
     public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
     public virtual DbSet<TopAgingCasesAllV> TopAgingCasesAllVs { get; set; }
+    public virtual DbSet<WeeklyClosedCasesChartV> WeeklyClosedCasesChartVs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+      modelBuilder.Entity<WeeklyClosedCasesChartV>(entity =>
+      {
+        entity
+          .HasNoKey()
+          .ToView("WeeklyClosedCasesChart_v");
+
+        entity.Property(e => e.DayOfWeek).HasMaxLength(30);
+      });
       modelBuilder.Entity<TopAgingCasesV>(entity =>
       {
         entity
-                  .HasNoKey()
-                  .ToView("TopAgingCases_v");
+            .HasNoKey()
+            .ToView("TopAgingCases_v");
       });
 
       modelBuilder.Entity<Top3ServicePartnersAgingCasesV>(entity =>
-{
-  entity
-    .HasNoKey()
-    .ToView("Top3ServicePartnersAgingCases_v");
-});
+      {
+        entity
+      .HasNoKey()
+      .ToView("Top3ServicePartnersAgingCases_v");
+      });
 
       modelBuilder.Entity<LatestCasesSubmissionV>(entity =>
       {
         entity
-                  .HasNoKey()
-                  .ToView("LatestCasesSubmission_v");
+          .HasNoKey()
+          .ToView("LatestCasesSubmission_v");
 
         entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-      });
-
-      modelBuilder.Entity<WeeklyAgingCasesChartV>(entity =>
-      {
-        entity
-                  .HasNoKey()
-                  .ToView("WeeklyAgingCasesChart_v");
-
-        entity.Property(e => e.DayOfWeek).HasMaxLength(30);
       });
 
       modelBuilder.Entity<WeeklyCasesChartV>(entity =>
       {
         entity
-                  .HasNoKey()
-                  .ToView("WeeklyCasesChart_v");
+          .HasNoKey()
+          .ToView("WeeklyCasesChart_v");
 
         entity.Property(e => e.DayOfWeek).HasMaxLength(30);
       });
@@ -80,33 +75,33 @@ namespace CCIMS.Web.Context
       modelBuilder.Entity<CasesCreatedTodayV>(entity =>
       {
         entity
-          .HasNoKey()
-          .ToView("CasesCreatedToday_v");
+      .HasNoKey()
+      .ToView("CasesCreatedToday_v");
 
         entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
         entity.Property(e => e.Id).ValueGeneratedOnAdd();
         entity.Property(e => e.QrcodeId)
-          .HasMaxLength(450)
-          .HasColumnName("QRCodeId");
+      .HasMaxLength(450)
+      .HasColumnName("QRCodeId");
       });
 
       modelBuilder.Entity<ClosedCasesV>(entity =>
-            {
-              entity
-                  .HasNoKey()
-                  .ToView("ClosedCases_v");
+      {
+        entity
+      .HasNoKey()
+      .ToView("ClosedCases_v");
 
-              entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-              entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
-              entity.Property(e => e.StatusId).HasMaxLength(450);
-            });
+        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+        entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
+        entity.Property(e => e.StatusId).HasMaxLength(450);
+      });
 
       modelBuilder.Entity<AgingCasesV>(entity =>
-{
-  entity
-    .HasNoKey()
-    .ToView("AgingCases_v");
-});
+      {
+        entity
+      .HasNoKey()
+      .ToView("AgingCases_v");
+      });
 
       modelBuilder.Entity<Case>()
         .HasOne(a => a.QRCode)
@@ -121,41 +116,41 @@ namespace CCIMS.Web.Context
       modelBuilder.Entity<Transaction>(entity =>
       {
         entity
-        .HasOne(a => a.Case)
-              .WithMany()
-              .HasForeignKey(a => a.CaseID);
+      .HasOne(a => a.Case)
+        .WithMany()
+        .HasForeignKey(a => a.CaseID);
 
         entity
-        .HasOne(a => a.Status)
-              .WithMany()
-              .HasForeignKey(a => a.StatusId);
+      .HasOne(a => a.Status)
+        .WithMany()
+        .HasForeignKey(a => a.StatusId);
       });
 
       modelBuilder.Entity<CaseDetailsV>(entity =>
       {
         entity
-            .HasNoKey()
-            .ToView("CaseDetails_v");
+        .HasNoKey()
+        .ToView("CaseDetails_v");
 
         entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
       });
 
       modelBuilder.Entity<LatestCasesV>(entity =>
-    {
-      entity
-        .HasNoKey()
-        .ToView("LatestCases_v");
+      {
+          entity
+              .HasNoKey()
+              .ToView("LatestCases_v");
 
-      entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-      entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
-      entity.Property(e => e.StatusId).HasMaxLength(450);
-    });
+          entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+          entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
+          entity.Property(e => e.StatusId).HasMaxLength(450);
+      });
 
       modelBuilder.Entity<ServicePartnersV>(entity =>
       {
         entity
-            .HasNoKey()
-            .ToView("ServicePartners_v");
+        .HasNoKey()
+        .ToView("ServicePartners_v");
 
         entity.Property(e => e.QrId).HasMaxLength(450);
         entity.Property(e => e.SpId).HasMaxLength(450);
@@ -164,15 +159,15 @@ namespace CCIMS.Web.Context
       modelBuilder.Entity<ServicePartnersWithAgingCasesV>(entity =>
       {
         entity
-            .HasNoKey()
-            .ToView("ServicePartnersWithAgingCases_v");
+        .HasNoKey()
+        .ToView("ServicePartnersWithAgingCases_v");
       });
 
       modelBuilder.Entity<StatusesV>(entity =>
       {
         entity
-            .HasNoKey()
-            .ToView("Statuses_v");
+        .HasNoKey()
+        .ToView("Statuses_v");
 
         entity.Property(e => e.Id).HasMaxLength(450);
       });
@@ -180,15 +175,15 @@ namespace CCIMS.Web.Context
       modelBuilder.Entity<TopAgingCasesAllV>(entity =>
       {
         entity
-            .HasNoKey()
-            .ToView("TopAgingCasesAll_v");
+        .HasNoKey()
+        .ToView("TopAgingCasesAll_v");
       });
-      
+
       modelBuilder.Entity<TransactionsV>(entity =>
       {
         entity
-        .HasNoKey()
-        .ToView("Transactions_v");
+      .HasNoKey()
+      .ToView("Transactions_v");
 
         entity.Property(e => e.CaseId).HasColumnName("CaseID");
         entity.Property(e => e.StatusId).HasMaxLength(450);
