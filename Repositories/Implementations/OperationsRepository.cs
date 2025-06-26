@@ -24,10 +24,15 @@ namespace CCIMS.Web.Repositories.Implementations
     public async Task CreateAsync(StatusDto data, string createdBy)
     {
       var date = DateTime.UtcNow.ToLocalTime();
+      string statName = data.Name.Trim();
+      var isExist = await _mainDb.Statuses.AnyAsync(s => EF.Functions.Like(s.Name, statName));
+
+      if (isExist)
+        throw new InvalidOperationException(Exceptions.Message.INVALID_STATUS_EXIST);
 
       var status = new Status()
       {
-        Name = data.Name,
+        Name = statName,
         IsCommentable = data.IsCommentable,
         CreatedBy = createdBy,
         DateCreated = date,
@@ -44,11 +49,17 @@ namespace CCIMS.Web.Repositories.Implementations
 		public async Task EditAsync(StatusEditRequestDto editRequestDto, string modifiedBy)
 		{
 			var status = await _mainDb.Statuses.FindAsync(editRequestDto.Id) ?? throw new Exception(Exceptions.Message.INVALID_STATUS);
-      
-      if (status.Name.Equals("Closed") || status.Name.Equals("On-Queue"))
-        throw new Exception(status.Name + " " + Exceptions.Message.INVALID_STATUS_EDIT_1);
 
-			status.Name = editRequestDto.Name;
+      string statName = editRequestDto.Name.Trim();
+      var isExist = await _mainDb.Statuses.AnyAsync(s => EF.Functions.Like(s.Name, statName) && s.Id != editRequestDto.Id);
+
+      if (isExist)
+        throw new InvalidOperationException(Exceptions.Message.INVALID_STATUS_EXIST);
+
+      if (statName.Equals("Closed", StringComparison.OrdinalIgnoreCase) || statName.Equals("On-Queue", StringComparison.OrdinalIgnoreCase))
+        throw new Exception(statName + " " + Exceptions.Message.INVALID_STATUS_EDIT_1);
+
+			status.Name = statName;
       status.IsCommentable = editRequestDto.IsCommentable;
       status.ModifiedBy = modifiedBy;
       status.DateModified = DateTime.UtcNow.ToLocalTime();
