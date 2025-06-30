@@ -25,7 +25,7 @@ namespace CCIMS.Web.Repositories.Implementations
     {
       var date = DateTime.UtcNow.ToLocalTime();
       string statName = data.Name.Trim();
-      var isExist = await _mainDb.Statuses.AnyAsync(s => EF.Functions.Like(s.Name, statName));
+      var isExist = await _mainDb.Statuses.AnyAsync(s => EF.Functions.Like(s.Name, statName) && s.IsActive);
 
       if (isExist)
         throw new InvalidOperationException(Exceptions.Message.INVALID_STATUS_EXIST);
@@ -51,7 +51,7 @@ namespace CCIMS.Web.Repositories.Implementations
 			var status = await _mainDb.Statuses.FindAsync(editRequestDto.Id) ?? throw new Exception(Exceptions.Message.INVALID_STATUS);
 
       string statName = editRequestDto.Name.Trim();
-      var isExist = await _mainDb.Statuses.AnyAsync(s => EF.Functions.Like(s.Name, statName) && s.Id != editRequestDto.Id);
+      var isExist = await _mainDb.Statuses.AnyAsync(s => EF.Functions.Like(s.Name, statName) && s.Id != editRequestDto.Id && s.IsActive);
 
       if (isExist)
         throw new InvalidOperationException(Exceptions.Message.INVALID_STATUS_EXIST);
