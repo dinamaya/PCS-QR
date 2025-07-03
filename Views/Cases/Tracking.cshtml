@@ -10,7 +10,6 @@
   ViewData[Keys.ViewData.TITLE] = "Case Tracking";
 
   var _user = User.Identities.FirstOrDefault();
-  bool isAuthenticated = _user.IsAuthenticated;
 
   var caseNumber = new InputFieldViewModel()
       {
@@ -38,49 +37,6 @@
       <img src="../img/icons/icon_vst_sm.svg" class="navbar-brand-img h-100" style="max-height: 2.2rem;" alt="main_logo">
       <span class="ms-1 font-weight-bolder fs-6">CCI Monitoring System</span>
     </a>
-    @if (!isAuthenticated)
-    {
-      <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon mt-2">
-          <span class="navbar-toggler-bar bar1"></span>
-          <span class="navbar-toggler-bar bar2"></span>
-          <span class="navbar-toggler-bar bar3"></span>
-        </span>
-      </button>
-    }
-    <div class="collapse navbar-collapse w-100 py-0" id="navigation">
-      <ul class="navbar-nav navbar-nav-hover mx-auto px-4">
-        <li class="nav-item">
-          @if (!isAuthenticated)
-          {
-            <div class="row d-lg-none py-3">
-              <div class="col-md-12">
-                <a asp-action="Login" asp-controller="Auth" class="py-2 border-radius-md">
-                  <div class="d-flex">
-                    <div class="icon h-10 me-3 d-flex mt-1">
-                      <i class="ni ni-single-02  text-gradient text-primary"></i>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between">
-                      <div>
-                        <p class="dropdown-header text-dark p-0">Sign in</p>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-          }
-        </li>
-      </ul>
-      <ul class="navbar-nav d-lg-block d-none">
-        <li class="nav-item">
-          @if (!isAuthenticated)
-          {
-            <a asp-action="Login" asp-controller="Auth" class="btn btn-sm  bg-white  btn-round mb-0 me-1">Sign in</a>
-          }
-        </li>
-      </ul>
-    </div>
   </div>
 </nav>
 
