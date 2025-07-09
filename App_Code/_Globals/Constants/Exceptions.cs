@@ -34,6 +34,7 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 
 			public const string UNRECOGNIZED_SERIALNUMBER = $"Serial number not recognize";
 			public const string INVALID_SERIALNUMBER_EXIST = "Serial number already exists. Please provide a unique serial number.";
+			public const string INVALID_STATUS_EXIST = "Status already exist. Please provide another status name.";
       public const string NULL_SPNAME = "Service Partner is Empty. Please select or provide correct service partner";
 
 

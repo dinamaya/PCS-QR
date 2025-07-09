@@ -190,20 +190,21 @@ namespace CCIMS.Web.Repositories
     {
       var baseUrl = new Uri(_configRepo.GetBaseUrl());
      
-      return await _context.AgingCasesVs.Select(c => new AgedCaseViewModel()
-      {
-        CaseTrackingLink = new Uri(baseUrl, $"CMS/Cases?c={caseNumberCategoryId}&v={c.CaseNumber}").AbsoluteUri,
-        CaseNumber = c.CaseNumber,
-        DateLastUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
-        CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
-        ServicePartner = c.ServicePartnerName
-      }).ToListAsync();
+      return await _context.LatestCasesVs
+        .Where(c => c.AgedDays >= 3 && c.Status != "Closed")
+        .Select(c => new AgedCaseViewModel()
+        {
+          CaseTrackingLink = new Uri(baseUrl, $"CMS/Cases?c={caseNumberCategoryId}&v={c.CaseNumber}").AbsoluteUri,
+          CaseNumber = c.CaseNumber,
+          DateLastUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
+          CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
+          ServicePartner = c.ServicePartnerName
+        }).ToListAsync();
     }
 
     private IQueryable<LatestCasesV> GetByDaysAged(string value)
     {
       int days = _configRepo.GetAgedKeyByValue(value);
-      DateTime today = DateTime.Now.ToLocalTime();
 
       return _context.LatestCasesVs.Where(c => c.AgedDays >= days && c.Status != "Closed");
     }
