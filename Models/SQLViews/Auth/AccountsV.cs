@@ -5,23 +5,25 @@ namespace CCIMS.Web.Models.SQLViews.Auth;
 
 public partial class AccountsV
 {
-	public string FirstName { get; set; } = null!;
+  public string FirstName { get; set; } = null!;
 
-	public string LastName { get; set; } = null!;
+  public string LastName { get; set; } = null!;
 
-	public string? Email { get; set; }
+  public string? Email { get; set; }
 
-	public string? UserName { get; set; }
+  public string? UserName { get; set; }
 
-	public DateTime DateModified { get; set; }
+  public DateTime DateModified { get; set; }
 
-	public DateTime DateCreated { get; set; }
+  public DateTime DateCreated { get; set; }
 
-	public string PersonId { get; set; }
+  public string PersonId { get; set; } = null!;
 
-	public string AccountId { get; set; } = null!;
+  public string AccountId { get; set; } = null!;
 
-	public string? RoleName { get; set; }
+  public string? RoleName { get; set; }
 
-	public string RoleId { get; set; } = null!;
+  public string RoleId { get; set; } = null!;
+
+  public string? Creator { get; set; }
 }

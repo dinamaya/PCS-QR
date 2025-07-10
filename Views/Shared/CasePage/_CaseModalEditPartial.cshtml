@@ -1,0 +1,67 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Models.ViewModels.Partials
+@using CCIMS.Web.App_Code._Globals.Extensions
+
+@model string
+
+@{
+	var sn = new InputFieldViewModel()
+		{
+			OperationName = "edit",
+			IdName = "sn",
+			Title = "Serial Number",
+			ClassName = "col-12"
+		};
+
+	var sp = new SelectViewModel()
+		{
+			OperationName = "edit",
+			IdName = "sp",
+			Title = "Service Partner",
+			InputContainerClassName = "col-12",
+		};
+}
+
+
+<!-- Edit Customer -->
+<div class="modal modal-lg fade" id="modal-edit-case" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-edit-case">
+		<div class="modal-dialog">
+			<div class="modal-content p-2">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Customer</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="p-4	">
+
+						<div class="row">
+							@await Html.RenderAsync(sn)
+						</div>
+
+						<div class="row">
+							@await Html.RenderAsync(sp)
+						</div>
+
+					</div>
+				</div>
+
+				<input type="hidden" id="hdn-edit-caseId" value="@Model" />
+
+				<div class="modal-footer">
+					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="mx-2 col btn border-1 bg-gradient-primary">Edit</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="module">
+	import { initModal as initCaseEditModal, initModalNotifs as initCaseEditNotifs } from '/js/components/caseModalEdit.js';
+
+	initCaseEditModal('@sn.Id', '@sp.Id', 'hdn-edit-caseId');
+	initCaseEditNotifs('@sn.NotifId', '@sp.NotifId');
+</script>

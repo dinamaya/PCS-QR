@@ -63,3 +63,58 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{CCIMS.Web_HostAddress}}/api/test/case/ref/generate
+
+###
+
+GET {{CCIMS.Web_HostAddress}}/api/test/case/ref/generate?x=3
+
+###
+
+@id=CSTb28badb18417489a8c7cd814d7860a4058ac78e5a0754c71ba98737031db21f6c75b9cf80d44449ab2a2b43fbbfb10833f168267f31f4a2aa1b67f66b65891c8
+GET {{CCIMS.Web_HostAddress}}/api/customer?id={{id}}
+
+###
+
+@id=19
+GET {{CCIMS.Web_HostAddress}}/api/cases?id={{id}}
+
+###
+
+@name=t
+GET {{CCIMS.Web_HostAddress}}/api/fetch/sp?name={{name}}
+
+###
+
+POST {{CCIMS.Web_HostAddress}}/api/test/case/email/test
+Content-Type: application/json
+
+{
+  "email": "ken_napura@msi-ecs.com.ph",
+  "caseNumber": "123456789",
+  "servicePartner": "Test Service Partner",
+  "fullName": "Kenneth Napura"
+}
+
+###
+
+POST {{CCIMS.Web_HostAddress}}/api/test/case/email/test
+Content-Type: application/json
+
+{
+  "email": "aldinamaya@gmail.com",
+  "caseNumber": "123456789",
+  "servicePartner": "Test Service Partner",
+  "fullName": "Aldin Amaya"
+}
+
+###
+POST {{CCIMS.Web_HostAddress}}/api/test/case/email/test
+Content-Type: application/json
+
+{
+  //CustomerEmailDetailsViewModel
+}
+
+###

@@ -1,4 +1,6 @@
-﻿let inputs = {
+﻿import { confirmAction, confirmAction2, handleError, resetNotifs, showErrorModal, showErrorSimpleModal, httpPut, httpDelete } from "../utils.js";
+
+let inputs = {
 	currStatus: null,
 	status: null,
 	statSelect: null,
@@ -6,6 +8,14 @@
 	commentContainer: null,
 	hdnCaseId: null
 };
+
+let notifs = {
+	StatusId: null,
+	Comments: null,
+};
+
+let $linkCase = $(`#link-case`);
+
 export function initModal(
 	currStatusId,
 	statusChoiceInstance,
@@ -24,38 +34,44 @@ export function initModal(
 	console.log(inputs);
 }
 
+export function initModalNotifs(
+	statusId,
+	commentsId
+) {
+	notifs.StatusId = $(`#${statusId}`);
+	notifs.Comments = $(`#${commentsId}`);
+
+	console.log(notifs);
+}
+
 export function onEdit(button) {
-	try {
 		const row = button.closest("tr");
-		const caseId = row.dataset.caseId;
+	const caseId = row.dataset.caseId;
 
-		inputs.hdnCaseId.val(caseId);
-		const _url = `${window.baseUrl}/status?caseId=${caseId}`
-		console.log(_url);
+	inputs.hdnCaseId.val(caseId);
+	const _url = `${window.baseUrl}/status?caseId=${caseId}`
 
-		fetch(_url)
-			.then(response => response.json())
-			.then(data => {
-				const result = data.result;
-				console.log("Result: ", result);
+	$.ajax({
+		url: _url,
+		method: 'GET',
+		dataType: 'json',
+		success: function (data) {
+			const result = data.result;
 
-				if (data && result) {
-					reset();
-					inputs.status.setChoices(result.availableStatus, 'value', 'label', true);
-					inputs.status.setChoiceByValue("", true);
-
-					inputs.currStatus.val(result.currentStatus); 
-				}
-				else
-				{
-					console.error("No valid data received from server.");
-				}
-			})
-			.catch(ex => console.error("Fetch error:", ex));
-	}
-	catch (ex) {
-		console.error(ex);
-	}
+			if (data && result)
+			{
+				reset();
+				inputs.status.setChoices(result.availableStatus, 'value', 'label', true);
+				inputs.status.setChoiceByValue("", true);
+				inputs.currStatus.val(result.currentStatus);
+				$linkCase.attr('href', `/Cases/Update/${caseId}`);
+			}
+			else {
+				showErrorModal("No Result", "Case Not Found", "There was a problem while fetching the case.", notifs);
+			}
+		},
+		error: (error) => handleError(error, "Case Fetching Failed", "There was a problem while fetching the case.", notifs)
+	});
 }
 
 const reset = () => {
@@ -66,49 +82,29 @@ const reset = () => {
 	inputs.status.removeActiveItems();
 }
 
-function edit() {
-	try {
-		const dto = {
-			CaseId: inputs.hdnCaseId.val(),
-			Comments: inputs.comments.val(),
-			StatusId: inputs.status.getValue().value,
-		};
+function edit(e, errorTitle, errorDescription, notifList) {
+	if (!e.isConfirmed) return;
 
-		const _url = window.baseUrl + "/status"
-		console.log("Url:", _url);
-		console.log("Dto Sent:", dto);
+	resetNotifs(notifs);
 
-		fetch(_url, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(dto)
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.isSuccess) {
-					console.log("Edit successful:", data);
-					$("#modal-edit").modal("hide");
+	const dto = {
+		CaseId: inputs.hdnCaseId.val(),
+		Comments: inputs.comments.val(),
+		StatusId: inputs.status.getValue().value,
+	};
 
-					setTimeout(() => {
-						location.reload();
-					}, 500);
-				}
-				else {
-					console.error("Edit failed:", data.message);
-					alert("Edit failed: " + data.message);
-				}
-				console.log("Edit successful:", data);
-			})
-			.catch(ex => {
-				console.error("Error during PUT request:", ex);
-				alert("Something went wrong.");
-			});
-	}
-	catch (ex) {
-		console.error("Exception in submitEdit:", ex);
-	}
+	const _url = window.baseUrl + "/status"
+
+	httpPut(
+		_url,
+		dto,
+		'modal-update-stat',
+		errorTitle,
+		errorDescription,
+		notifList,
+		() => displaySpinner(),
+		() => hideSpinner(),
+	);
 }
 
 function checkIsCommentable(selectedStatus) {
@@ -118,28 +114,33 @@ function checkIsCommentable(selectedStatus) {
 
 		fetch(_url)
 			.then(response => response.json())
-			.then(data => {
-				console.log("Result: ", data);
-
-				if (data.result) {
+			.then(data =>
+			{
+				if (data.result)
 					inputs.commentContainer.removeClass("d-none");
-				}
 				else
-				{
 					inputs.commentContainer.addClass("d-none");
-				}
 			})
-			.catch(ex => console.error("Fetch error:", ex));
+			.catch(ex => showErrorSimpleModal(ex.message, "Fetch error"));
 	}
-	catch (ex) {
-		console.error("Exception in checkIsCommentable:", ex);
+	catch (ex)
+	{
+		showErrorSimpleModal("Exception in checkIsCommentable:", ex);
 	}
 }
 
 $(document).ready(function () {
 	$('#form-update-stat').submit(function (event) {
 		event.preventDefault();
-		edit();
+		confirmAction(
+			'Update',
+			'Update Case Status?',
+			'This will update the current case status with the provided details!',
+			"Case Status Update Failed",
+			"There was a problem while updating the case status.",
+			notifs,
+			edit
+		);
 	});
 
 

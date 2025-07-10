@@ -2,6 +2,8 @@
 using CCIMS.Web.Repositories;
 using CCIMS.Web.Repositories.Implementations;
 using CCIMS.Web.Repositories.Interfaces;
+using CCIMS.Web.Services.Implementations;
+using CCIMS.Web.Services.Interfaces;
 
 namespace CCIMS.Web.App_Code._Globals.Extensions
 {
@@ -21,8 +23,13 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddScoped<ICaseRepository, CaseRepository>();
 			services.AddScoped<ITransactionRepository, TransactionRepository>();
 			services.AddScoped<ICameraRepository, CameraRepository>();
+			services.AddScoped<IDashboardRepository, DashboardRepository>();
+     
+      services.AddScoped<IExportReportRepository, ExportReportRepository>();
+			services.AddScoped<IEmailService, EmailService>();
+      services.AddTransient<BackgroundJobsService>();
 
-			services.AddSingleton<ITokenProvider, TokenProvider>();
+      services.AddSingleton<ITokenProvider, TokenProvider>();
 
       services.AddSingleton<FileManager>();
       services.AddSingleton<Server>();

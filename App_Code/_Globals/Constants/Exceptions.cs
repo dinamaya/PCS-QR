@@ -10,8 +10,10 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_AUTHENTICATION_CREDENTIALS = "Authentication Failed: Username or password is incorrect";
 			public const string INVALID_QRTOKEN = "Invalid Token: Token doesn't exist or is already expired";
 			public const string INVALID_QRREFERENCE = "Invalid QR Code: The scanned QR code is not recognized by the system. Please ensure you are using a valid QR code provided by VST ECS.";
+			public const string INVALID_QRREFERENCE2 = "Invalid QR Code: QR Code does not exist. Please contact the administrator";
 			public const string INVALID_SPREFERENCE = "Invalid SP Reference: SP does not exist. Please contact the administrator";
-			public const string INVALID_ACCOUNTREFERENCE = "Invalid Account Reference: Account does not exist.";
+			public const string INVALID_SPNAME = "Invalid SP Name: SP does not exist. Please contact the administrator";
+      public const string INVALID_ACCOUNTREFERENCE = "Invalid Account Reference: Account does not exist.";
 			public const string INVALID_PERSONREFERENCE = "Invalid Person Reference: Personal Info does not exist.";
 			public const string INVALID_ACCOUNT_UPDATE = "Account Update Failed. Please Check the logs or contact the Administrator";
 			public const string INVALID_ACCOUNT_CREATE = "Account Creation Failed. Please Check the logs or contact the Administrator";
@@ -23,9 +25,16 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_USERNAME = "Username already in use";
 			public const string INVALID_EMAIL = "Email Address already in use";
 			public const string INVALID_ACCOUNT_DELETE = "Account Deletion Failed. Please contact the administrator";
+			public const string INVALID_TRANSACTION = "Transaction does not exist. Please contact the administrator";
+			public const string INVALID_TRANSACTION_UNCOMMENTABLE = "Transaction is not commentable. Please contact the administrator";
+			public const string INVALID_SEARCH_QUERY = "Search Value is Empty.";
+			
+			public const string INVALID_STATUS_EDIT_1= "Status is not editable";
+			public const string INVALID_STATUS_DELETE_1= "Status is not deletable";
 
 			public const string UNRECOGNIZED_SERIALNUMBER = $"Serial number not recognize";
 			public const string INVALID_SERIALNUMBER_EXIST = "Serial number already exists. Please provide a unique serial number.";
+      public const string NULL_SPNAME = "Service Partner is Empty. Please select or provide correct service partner";
 
 
       public static class Config

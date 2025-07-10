@@ -1,0 +1,16 @@
+﻿@using CCIMS.Web.App_Code._Globals
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Repositories.Interfaces
+
+@inject IConfigurationRepository configuration
+@{      
+  var model = new SpaCaseCreationEmailDetailsViewModel(configuration, "CC12345678")
+  {
+      CustomerName = "Jane Smith",
+      ServicePartner = "Auto Parts Inc.",
+      SerialNumber = "SN12345678"
+  };
+
+}
+
+@await Html.PartialAsync(Routes.Partials.EMAIL.TEST, model)

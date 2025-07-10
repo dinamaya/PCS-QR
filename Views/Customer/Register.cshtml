@@ -4,6 +4,8 @@
 @{
 	ViewData[Keys.ViewData.TITLE] = "Customer Form";
 	Layout = "~/Views/Shared/_PublicLayout.cshtml";
+
+	string spName = ((string)ViewData[Keys.ViewData.SPNAME]);
 }
 <!-- Add in your HTML head -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
@@ -16,7 +18,7 @@
 		<div class="row justify-content-center">
 			<div class="col-lg-5 text-center mx-auto">
 				<h1 class="text-white mb-2 mt-5">Welcome!</h1>
-				<p class="text-lead text-white">Create a new case.</p>
+				<p class="text-white">Create a new <b class="fw-bolder"><u>@spName</u></b> case.</p>
 			</div>
 		</div>
 	</div>
@@ -40,25 +42,32 @@
 								</div>
 							}
 
-							<form method="post" action="@Url.Action("Register", "Customer", new { token = Model.Token })" id="customerForm">
+							<form method="post" action="@Url.Action("Register", "Customer", new { token = Model.Token })" id="customerForm" onsubmit="return showSpinner()">
 								@Html.AntiForgeryToken()
 								<input type="hidden" name="Token" value="@Context.Request.Query["token"]" />
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>First Name</label>
-										<input class="form-control" type="text" asp-for="FirstName" required />
+										<input class="form-control" type="text" asp-for="FirstName" required pattern="@RegEx.NON_EMPTY_WHITESPACE" />
 										<span asp-validation-for="FirstName" class="text-danger"></span>
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
 										<label>Last Name</label>
-										<input class="form-control" type="text" asp-for="LastName" required />
+										<input class="form-control" type="text" asp-for="LastName" required pattern="@RegEx.NON_EMPTY_WHITESPACE" />
 										<span asp-validation-for="LastName" class="text-danger"></span>
 									</div>
+								</div>
+								<!-- Spinner -->
+								<div id="form-spinner" class="d-none position-fixed top-50 start-50 translate-middle text-center" style="z-index: 1060;">
+									<div class="spinner-border text-primary" role="status">
+										<span class="visually-hidden">Loading...</span>
+									</div>
+									<p class="mt-2 text-white">Please wait while we submit your case...</p>
 								</div>
 								<div class="row mt-3">
 									<div class="col-12 col-sm-6">
 										<label>Contact Number</label>
-										<input class="form-control" type="text" asp-for="ContactNumber" title="Only numbers are allowed" required />
+										<input class="form-control" type="text" asp-for="ContactNumber" title="Only numbers are allowed" required pattern="@RegEx.PHONE" />
 										<span asp-validation-for="ContactNumber" class="text-danger"></span>
 									</div>
 									<div class="col-12 col-sm-6 mt-3 mt-sm-0">
@@ -71,21 +80,21 @@
 								<div class="row mt-3">
 									<div class="col">
 										<label>Address</label>
-										<input class="form-control" type="text" asp-for="Address" required />
+										<input class="form-control" type="text" asp-for="Address" required pattern="@RegEx.NON_EMPTY_WHITESPACE" />
 										<span asp-validation-for="Address" class="text-danger"></span>
 									</div>
-								</div>							
+								</div>
 								<div class="row mt-3">
 									<label class="col-12">Serial Number</label>
-									<div class="col-9 mt-3 mt-sm-0">
-										<input id="txt-sn" class="form-control" type="text" name="SerialNumber" placeholder="eg. 987654321" required />
+									<div class="col-12 col-sm-6 col-lg-9 mt-3 mt-sm-0">
+										<input id="txt-sn" class="form-control" type="text" name="SerialNumber" placeholder="eg. 987654321" required pattern="@RegEx.NON_EMPTY_WHITESPACE" />
 									</div>
-									<div class="col-3 mt-3 mt-sm-0">
+									<div class="col-12 col-sm-6 col-lg-3 mt-3 mt-sm-0">
 										<input class="d-none" type="file" id="file-scan" accept="image/*" onchange="handleFileChange()" capture="environment" />
 										<button class="btn bg-gradient-primary mb-0 me-2 w-100" onclick="triggerCamera()" type="button" name="button">Scan</button>
 									</div>
 								</div>
-
+								<input type="hidden" asp-for="ServicePartner" />
 								<!-- Privacy Policy Checkbox -->
 								<div class="row mt-4">
 									<div class="col-12">
@@ -100,10 +109,14 @@
 									</div>
 								</div>
 
-								<div class="text-left mt-4">
-									<button class="btn bg-gradient-dark ms-auto mb-0" type="submit" title="Send">Submit</button>
+								<div class="row mt-4 px-2">
+									<button class="col-12 col-sm-12 col-lg-3 col-xl-2 btn bg-gradient-dark" type="submit" title="Send">Submit</button>
 								</div>
 							</form>
+							<div id="form-overlay"
+								 class="d-none position-fixed top-0 start-0 w-100 h-100"
+								 style="z-index: 1050; background-color: rgba(0, 0, 0, 0.5);">
+							</div>
 						</div>
 					</div>
 				</div>
@@ -112,14 +125,13 @@
 	</div>
 </div>
 
-
 @(await Html.PartialAsync(Routes.Partials.Customer.MODAL_SCAN))
 @(await Html.PartialAsync(Routes.Partials.Customer.MODAL_POLICY))
 
 
 <script defer>
 	let cropper = null;
-	let modalElem = null;		
+	let modalElem = null;
 	let modal = null;
 
 	$(document).ready(function () {
@@ -140,11 +152,11 @@
 
 		const reader = new FileReader();
 		reader.onload = readFile;
-		
+
 		reader.readAsDataURL(file);
 	}
 
-	function readFile(e){
+	function readFile(e) {
 
 		const img = e.target.result
 		const imgPreviewer = document.getElementById("img-preview");
@@ -153,8 +165,7 @@
 		img.onload = loadCropper(imgPreviewer)
 	}
 
-	function loadCropper(imgPreviewer)
-	{
+	function loadCropper(imgPreviewer) {
 		modal.show();
 
 		modalElem.addEventListener('shown.bs.modal', () => {
@@ -170,3 +181,24 @@
 	}
 
 </script>
+
+<script>
+	function showSpinner() {
+		// Show spinner
+		document.getElementById('form-spinner').classList.remove('d-none');
+
+		// Show background overlay
+		document.getElementById('form-overlay').classList.remove('d-none');
+
+		// Disable submit button
+		document.querySelector("#customerForm button[type='submit']").disabled = true;
+
+		// Prevent user interaction with form
+		document.getElementById('customerForm').classList.add('pointer-events-none');
+
+		// Continue with form submission
+		return true;
+	}
+</script>
+
+

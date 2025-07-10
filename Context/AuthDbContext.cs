@@ -17,21 +17,21 @@ namespace CCIMS.Web.Context
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-			modelBuilder.Entity<AccountsV>(entity =>
-			{
-				entity
-						.HasNoKey()
-						.ToView("Accounts_v");
+      modelBuilder.Entity<AccountsV>(entity =>
+      {
+        entity
+            .HasNoKey()
+            .ToView("Accounts_v");
 
-				entity.Property(e => e.AccountId).HasMaxLength(450);
-				entity.Property(e => e.Email).HasMaxLength(256);
-				entity.Property(e => e.RoleName).HasMaxLength(256);
-				entity.Property(e => e.PersonId).HasColumnName("PersonID");
-				entity.Property(e => e.RoleId).HasMaxLength(450);
-				entity.Property(e => e.UserName).HasMaxLength(256);
-			});
+        entity.Property(e => e.AccountId).HasMaxLength(250);
+        entity.Property(e => e.Email).HasMaxLength(256);
+        entity.Property(e => e.PersonId).HasColumnName("PersonID");
+        entity.Property(e => e.RoleId).HasMaxLength(250);
+        entity.Property(e => e.RoleName).HasMaxLength(256);
+        entity.Property(e => e.UserName).HasMaxLength(256);
+      });
 
-			modelBuilder.Entity<Account>()
+      modelBuilder.Entity<Account>()
 				.Ignore(c => c.EmailConfirmed)
 				.Ignore(c => c.PhoneNumber)
 				.Ignore(c => c.PhoneNumberConfirmed)

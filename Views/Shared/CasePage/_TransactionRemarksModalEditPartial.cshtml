@@ -1,0 +1,53 @@
+﻿@using CCIMS.Web.App_Code._Globals.Constants
+@using CCIMS.Web.Models.ViewModels
+@using CCIMS.Web.Models.ViewModels.Partials
+@using CCIMS.Web.App_Code._Globals.Extensions
+
+@{
+	var comments = new InputFieldViewModel()
+			{
+				OperationName = "edit",
+				IdName = "comments",
+				Title = "Comments / Remarks",
+				ClassName = "col",
+			};
+
+}
+
+<!-- Update Status -->
+<div class="modal modal-lg fade" id="modal-edit-transaction" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<form id="form-edit-transaction">
+		<div class="modal-dialog">
+			<div class="modal-content p-2">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Transaction Remarks</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<div class="p-4	">
+						<div class="row">
+							@await Html.RenderAsync(comments)
+						</div>
+					</div>
+				</div>
+
+				<input type="hidden" id="hdn-edit-transId" />
+
+				<div class="modal-footer">
+					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="mx-2 col btn border-1 btn-primary">Update</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<script type="module">
+	import { onEdit as onTransactionEdit, initModalNotifs as initTransactionModalNotifs, initModal as initTransactionModal} from "/js/components/transactionModalEdit.js"
+	window.onTransactionEdit = onTransactionEdit;
+
+	initTransactionModal('@comments.Id', 'hdn-edit-transId');
+	initTransactionModalNotifs('@comments.NotifId');
+	var _remarks = document.getElementById('@comments.Id');
+	_remarks.placeholder = `${_remarks.placeholder} (Optional)`;
+</script>

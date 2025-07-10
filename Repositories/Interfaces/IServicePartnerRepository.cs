@@ -4,9 +4,12 @@ using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-	public interface IServicePartnerRepository : ICreateRepository<SPCreationRequestDto> , IEditRepository<SPEditRequestDto>
-	{
+	public interface IServicePartnerRepository : ICreateRepository<SPCreationRequestDto> , IEditRepository<SPEditRequestDto>, IDeactivateRepository
+  {
 		Task<SPEditResponseDto> GetById(string id);
     Task<IEnumerable<ServicePartnerRowViewModel>> GetAll();
-	}
+    Task<string> GetNameByQrId(string qrId);
+    Task<string> GetQrIdByName(string name);
+    Task<IEnumerable<DropdownOptionDto>> GetDropdownOptionsByName(string name);
+  }
 }

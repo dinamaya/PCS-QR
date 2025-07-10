@@ -63,6 +63,20 @@
 			@RenderBody()
 		</div>
 		@await Html.PartialAsync(Routes.Partials.FOOTER)
+
+		<!-- Spinner -->
+		<div>
+			<div id="pnl-spinner" class="d-none position-fixed top-50 start-50 translate-middle text-center" style="z-index: 9061;">
+				<div class="spinner-border text-primary" role="status">
+					<span class="visually-hidden">Loading...</span>
+				</div>
+				<p class="mt-2 text-white">Please wait...</p>
+			</div>
+			<div id="pnl-spinner-overlay"
+					 class="d-none position-fixed top-0 start-0 w-100 h-100"
+					 style="z-index: 9060; background-color: rgba(0, 0, 0, 0.5);">
+			</div>
+		</div>
 	</main>
 
 	<!-- Scripts -->
@@ -72,12 +86,70 @@
 	<script src="~/js/soft-ui-dashboard.min.js" defer></script>
 	
 	<script>
+		window.okEditParam = '@Queries.SUCCESS_EDIT';
+		window.okCreateParam = '@Queries.SUCCESS_CREATE';
+		window.okDeleteParam = '@Queries.SUCCESS_DELETE';
+
 		var win = navigator.platform.indexOf('Win') > -1;
 		if (win && document.querySelector('#sidenav-scrollbar')) {
 			var options = {
 				damping: '0.5'
 			}
 			Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+		}
+
+		document.querySelectorAll('input[type="password"]').forEach(toggle => {
+			toggle.addEventListener('click', () => {
+				const input = toggle.previousElementSibling;
+				const icon = toggle.querySelector('i');
+				if (input.type === 'password') {
+					input.type = 'text';
+					icon.classList.remove('bi-eye');
+					icon.classList.add('bi-eye-slash');
+				} else {
+					input.type = 'password';
+					icon.classList.remove('bi-eye-slash');
+					icon.classList.add('bi-eye');
+				}
+			});
+		});
+
+		function displaySpinner(btnId, formId) 
+		{
+			// Show spinner
+			document.getElementById('pnl-spinner').classList.remove('d-none');
+
+			// Show background overlay
+			document.getElementById('pnl-spinner-overlay').classList.remove('d-none');
+
+			// Disable submit button
+			var _btn = document.querySelector(`#${btnId} button[type='submit']`);
+			if(_btn) _btn.disabled = true;
+
+			// Prevent user interaction with form
+			var _frm = document.getElementById(formId);
+			if(_frm) _frm.classList.add('pointer-events-none');
+
+			return true;
+		}
+
+		function hideSpinner(btnId, formId) 
+		{
+			// Show spinner
+			document.getElementById('pnl-spinner').classList.add('d-none');
+
+			// Show background overlay
+			document.getElementById('pnl-spinner-overlay').classList.add('d-none');
+
+			// Disable submit button
+			var _btn = document.querySelector(`#${btnId} button[type='submit']`);
+			if(_btn) _btn.disabled = false;
+
+			// Prevent user interaction with form
+			var _frm = document.getElementById(formId);
+			if(_frm) _frm.classList.remove('pointer-events-none');
+
+			return true;
 		}
 	</script>
 

@@ -1,5 +1,5 @@
 ﻿import { accountCreationRequestDto } from "../dtos/accountCreationRequestDto.js";
-import { displayErrors, showErrorModal, handleError } from "../utils.js";
+import { handleError, confirmAction, httpPost } from "../utils.js";
 
 let inputs = {
   lname: null,
@@ -56,31 +56,7 @@ export function initModal(
   inputs.type = $(`#${typeId}`);
 }
 
-function post()
-{
-  Swal.mixin({
-    customClass: {
-      confirmButton: 'btn bg-gradient-success',
-      cancelButton: 'btn bg-gradient-danger'
-    },
-    buttonsStyling: !1
-  })
-    .fire({
-      title: 'Create Account?',
-      text: 'This will create current account with the provided details!',
-      icon: 'question',
-      confirmButtonText: 'Create',
-      cancelButtonText: 'Cancel',
-      reverseButtons: !0,
-      showCancelButton: !0
-    })
-    .then(submit)
-    .catch(e => {
-      showErrorModal(e.message, "Account Creation Failed", "There was a problem while creating the account.", notifs);
-    });
-}
-
-function submit(e)
+function submit(e, errorTitle, errorDescription, notifList)
 {
   if (!e.isConfirmed) return;
 
@@ -94,30 +70,31 @@ function submit(e)
     inputs.pass2.val(),
   );
 
-  $.post({
-    url: window.baseUrl,
-    contentType: 'application/json',
-    data: JSON.stringify(dto),
-    success: function (response) {
-      const modalEl = $('#modal-create');
-      const modalInstance = bootstrap.Modal.getInstance(modalEl);
-      modalInstance.hide();
 
-      setTimeout(() => {
-        const url = new URL(window.location.href);
-
-        url.searchParams.set('q', window.okCreateParam);
-        window.location.href = url.toString();
-      }, 300);
-    },
-    error: (error) => handleError(error, "Account Creation Failed", "There was a problem while creating the account.", notifs)
-  });
+  httpPost(
+    window.baseUrl,
+    dto,
+    'modal-create',
+    errorTitle,
+    errorDescription,
+    notifList,
+    () => displaySpinner(),
+    () => hideSpinner(),
+  );
 }
 
 
 $(document).ready(function () {
   $('#form-create').submit(function (event) {
     event.preventDefault();
-    post();
+    confirmAction(
+      'Create',
+      'Create Account?',
+      'This will create current account with the provided details!',
+      'Account Creation Failed',
+      'There was a problem while creating the account.',
+      notifs,
+      submit
+    );
   });
 });

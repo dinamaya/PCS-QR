@@ -28,7 +28,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
 		public async Task CreateAsync(AccountCreationRequestDto creationRequest, string createdBy)
 		{
-			var date = DateTime.UtcNow;
+			var date = DateTime.UtcNow.ToLocalTime();
 
 			var person = new Person
 			{
@@ -77,6 +77,7 @@ namespace CCIMS.Web.Repositories.Implementations
 				LastName = a.LastName,
 				Email = a.Email,
 				Username = a.UserName,
+				CreatedBy = a.Creator,
 				DateCreated = a.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
 				Type = a.RoleName,
 			})
@@ -119,24 +120,31 @@ namespace CCIMS.Web.Repositories.Implementations
       {
         var setUsernameResult = await _userManager.SetUserNameAsync(account, editRequestDto.Username);
         if (!setUsernameResult.Succeeded)
-          throw new InvalidOperationException("Failed to update " + string.Join(", ", setUsernameResult.Errors.Select(e => e.Description)));
+          throw new InvalidOperationException(setUsernameResult.Errors.Select(e => e.Description).FirstOrDefault());
       }
 
       if (!string.Equals(account.Email, editRequestDto.Email, StringComparison.OrdinalIgnoreCase))
       {
         var setEmailResult = await _userManager.SetEmailAsync(account, editRequestDto.Email);
         if (!setEmailResult.Succeeded)
-          throw new InvalidOperationException("Failed to update " + string.Join(", ", setEmailResult.Errors.Select(e => e.Description)));
+          throw new InvalidOperationException(setEmailResult.Errors.Select(e => e.Description).FirstOrDefault());
       }
 
 
       account.DateModified = date;
 			account.ModifiedBy = modifiedBy;
 
-			if (editRequestDto.Password.IsNullOrEmpty())
-				account.PasswordHash = _passHasher.HashPassword(account, editRequestDto.Password);
-			
-			var result = await _userManager.UpdateAsync(account);
+			if (!editRequestDto.Password.IsNullOrEmpty() && editRequestDto.PasswordResetType.Equals("Change"))
+			{
+        var resetToken = await _userManager.GeneratePasswordResetTokenAsync(account);
+
+        var resetPassResult = await _userManager.ResetPasswordAsync(account, resetToken, editRequestDto.Password);
+
+        if (!resetPassResult.Succeeded)
+          throw new InvalidOperationException(resetPassResult.Errors.Select(e => e.Description).FirstOrDefault());
+      }
+
+      var result = await _userManager.UpdateAsync(account);
 
 			if (!result.Succeeded) throw new Exception(Exceptions.Message.INVALID_ACCOUNT_UPDATE);
 
@@ -170,17 +178,22 @@ namespace CCIMS.Web.Repositories.Implementations
 
     public async Task DeactivateAsync(string id)
     {
-      using var transaction = await _authDb.Database.BeginTransactionAsync();
+      var date = DateTime.Now.ToLocalTime();
 
+      using var transaction = await _authDb.Database.BeginTransactionAsync();
+			
       var account = await _authDb.Accounts.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
       var person = await _authDb.People.FindAsync(account.PersonID) ?? throw new Exception(Exceptions.Message.INVALID_PERSONREFERENCE);
 
+			account.DateModified = date;
       account.IsActive = false;
-      person.IsActive = false;
 
       var result = await _userManager.UpdateAsync(account);
       if (!result.Succeeded)
         throw new Exception(Exceptions.Message.INVALID_ACCOUNT_DELETE);
+      
+			person.DateModified = date;
+      person.IsActive = false;
 
       _authDb.People.Update(person);
       await _authDb.SaveChangesAsync();

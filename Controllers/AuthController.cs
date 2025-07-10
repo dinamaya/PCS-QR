@@ -47,7 +47,7 @@ namespace CCIMS.Web.Controllers
 		{
 			try
 			{
-				if (loginRequestDTO.Username.IsNullOrEmpty() && loginRequestDTO.PlaintextPassword.IsNullOrEmpty())
+				if (loginRequestDTO.Username.IsNullOrEmpty() || loginRequestDTO.PlaintextPassword.IsNullOrEmpty())
 					throw new InvalidDataException("Please provide username and password");
 
 				var loginResponseDTO = await _authRepo.Login(loginRequestDTO);

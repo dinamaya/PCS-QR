@@ -6,6 +6,7 @@ using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -43,6 +44,9 @@ namespace CCIMS.Web.Repositories.Implementations
 		public async Task EditAsync(StatusEditRequestDto editRequestDto, string modifiedBy)
 		{
 			var status = await _mainDb.Statuses.FindAsync(editRequestDto.Id) ?? throw new Exception(Exceptions.Message.INVALID_STATUS);
+      
+      if (status.Name.Equals("Closed") || status.Name.Equals("On-Queue"))
+        throw new Exception(status.Name + " " + Exceptions.Message.INVALID_STATUS_EDIT_1);
 
 			status.Name = editRequestDto.Name;
       status.IsCommentable = editRequestDto.IsCommentable;
@@ -56,6 +60,7 @@ namespace CCIMS.Web.Repositories.Implementations
     {
       return await _mainDb.Statuses
         .AsNoTracking()
+        .Where(s => s.IsActive)
         .OrderByDescending(s => s.DateCreated)
         .Select(s => new StatusRowViewModel()
         {
@@ -63,7 +68,7 @@ namespace CCIMS.Web.Repositories.Implementations
           StatusName = s.Name,
           IsCommentable = s.IsCommentable ? "Commentable" : "Not",
           DateCreated = s.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
-          IsActive = s.IsActive ? "Active" : "Not"
+          IsEditable = !(s.Name.Equals("Closed") || s.Name.Equals("On-Queue"))
         })
         .ToListAsync();
     }
@@ -82,6 +87,7 @@ namespace CCIMS.Web.Repositories.Implementations
     {
       return await _mainDb.Statuses
         .AsNoTracking()
+        .Where(s => s.IsActive)
         .OrderBy(s => s.Name)
         .Select(s => new DropdownOptionViewModel()
         {
@@ -96,5 +102,20 @@ namespace CCIMS.Web.Repositories.Implementations
       var result = await _mainDb.Statuses.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_STATUS);
       return result.IsCommentable;
 		}
-	}
+
+    public async Task DeactivateAsync(string id)
+    {
+      var date = DateTime.Now.ToLocalTime();
+
+      var status = await _mainDb.Statuses.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_STATUS);
+
+      if (status.Name.Equals("Closed") || status.Name.Equals("On-Queue"))
+        throw new Exception(status.Name + " " + Exceptions.Message.INVALID_STATUS_EDIT_1);
+
+      status.IsActive = false;
+      status.DateModified = date;
+
+      await _mainDb.SaveChangesAsync();
+    }
+  }
 }

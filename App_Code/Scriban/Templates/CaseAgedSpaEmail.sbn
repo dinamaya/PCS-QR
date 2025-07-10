@@ -1,0 +1,135 @@
+﻿<div style="margin: 0; padding: 0; background-color: #f8f9fa;">
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8f9fa;">
+		<tr>
+			<td align="center">
+				<!-- Main Container -->
+				<table width="1500" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; padding: 30px; position: relative;">
+
+					<!-- Header -->
+					<tr>
+						<td align="left" style="padding-bottom: 20px;">
+							<a href="{{ BaseUrl }}" target="_blank">
+								<img src="{{ BaseUrl }}img/icons/icon_ccims_lg.svg" alt="Main Logo" height="60" style="display: inline-block;" />
+							</a>
+							<img src="{{ BaseUrl }}img/icons/VST-ECS.png" alt="Secondary Logo" height="60" style="float: right; display: inline-block;" />
+						</td>
+					</tr>
+
+					<!-- Divider -->
+					<tr>
+						<td style="border-top: 4px solid #cb0c9f; padding-top: 20px;"></td>
+					</tr>
+
+					<!-- Thank You Message -->
+					<tr>
+						<td background="{{ BaseUrl }}img/curved-images/banner-1.png" style="background-size: cover; background-repeat: no-repeat; padding: 60px 20px;padding-bottom: 0px;" align="center">
+							<img src="{{ BaseUrl }}img/icons/diamond.png" alt="Icon" width="48" height="48" style="display: block; border-radius: 50%; background-color: #fff; box-shadow: 0 5px 10px rgba(0,0,0,0.12);" />
+							<h3 style="color: white; font-family: Arial, sans-serif; margin-top: 20px;">Customer Aged Cases</h3>
+							<table style="background: white; justify-content: start; display:flex; padding: 3rem; width: 1400px; box-shadow: 0px 1px 1px 0.4px black;border-radius: 0.5rem 0.5rem 0 0;padding-top: 48px;padding-bottom: 0px;margin-top: 25px;">							</table>
+						</td>
+					</tr>
+
+					<!-- Message Content -->
+					<tr>
+						<td align="left" style="padding: 30px 20px 20px 20px; position: relative; width: auto; display: flex; justify-content: center; height: auto;padding-top: 0px;">
+							<table style="background: white; justify-content: start; display:flex; padding: 3rem; width: 1400px; box-shadow: 0px 2px 1px 0.4px black;border-radius: 0 0 0.5rem 0.5rem;padding-top: 0px;">
+								<tbody style="width: 100%;">
+									<tr style="width: 100%;display: inline-block;">
+										<td style="padding-bottom: 0px;height: auto;">
+											<h4 style="color: #344767; font-family: Arial, sans-serif; margin: 0;height: auto; ">
+												Hello Team
+											</h4>
+										</td>
+									</tr>
+									<tr style="width: 100%;display: inline-block;">
+										<td>
+											<p>
+												Please be advised that the following <b>{{ Cases.size }}</b> cases has remained open for <b>3+ days </b>  since their last update.
+											</p>
+											<p>
+												These cases are assigned to your team for review and appropriate action.
+											</p>
+											<p>
+												Below are the details for your reference:
+											</p>
+										</td>
+									</tr>
+									<tr style="width: 100%;display: inline-block;">
+										<td style="width: 100%;display: inline-block;">
+											<div style="width: 100%;display: inline-block;">
+												<table style="border: solid; width: 100%" cellpadding="8">
+													<thead style="border: 1px solid;">
+														<tr>
+															<th style="text-align: center">#</th>
+															<th style="text-align: center">Option</th>
+															<th style="text-align: center">Case Number</th>
+															<th style="text-align: center">Date Last Updated</th>
+															<th style="text-align: center">Customer Name</th>
+															<th style="text-align: center">Service Partner</th>
+														</tr>
+													</thead>
+													<tbody style="font-size: 13px;">
+														{{ for _case in Cases }}
+														<tr>
+															<td style="border: 2px solid;width: 80px;">{{ for.index + 1 }}</td>
+															<td style="text-align: center;border: 2px solid;padding-top: 14px;padding-bottom: 14px;width: 120px;">
+																<a href="{{ _case.CaseTrackingLink }}" target="_blank" style="
+																	display: inline-block;
+																	background-color: #cb0c9f;
+																	color: #ffffff;
+																	font-family: Arial, sans-serif;
+																	font-size: 14px;
+																	font-weight: bold;
+																	text-decoration: none;
+																	padding: 5px 40px;
+																	border-radius: 5px;
+																	box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
+																	">
+																	Update	
+																</a>
+															</td>
+															<td style="border: 2px solid;width: 200px;">{{ _case.CaseNumber }}</td>
+															<td style="border: 2px solid;width: 220px;">{{ _case.DateLastUpdated }}</td>
+															<td style="border: 2px solid;">{{ _case.CustomerName }}</td>
+															<td style="border: 2px solid;">{{ _case.ServicePartner }}</td>
+														</tr>
+														{{ end }}
+
+													</tbody>
+												</table>
+											</div>
+										</td>
+									</tr>
+
+									<tr>
+										<td>
+											<div>
+												<p style="margin-top: 40px;">
+													Should you encounter any inconvenience, please do not hesitate to contact the administrator.
+												</p>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<!--Footer-->
+					<tr>
+						<td align="center" style="font-size: 16px; color: #999999; font-family: Arial, sans-serif; padding-top: 30px;">
+							This is an automated message – please do not reply.
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<br />
+							<br />
+							<br />
+						</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>

@@ -10,15 +10,18 @@
 		<div class="modal-dialog">
 			<div class="modal-content p-2">
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" i	d="staticBackdropLabel">Generate QR</h1>
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">Service Partner QR</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 
 				<div class="modal-body">
 					<div class="row my-4">
 						<div class="card-body">
-							<div class="col-12 p-3 d-flex justify-content-center">
-								<img id="img-qrCode" class="w-75 border-radius-lg shadow-lg" src="/img/qr_placeholder.png" alt="product_image">
+							<div class="col-12">
+								<h3 id="txt-spname" class="text-center px-5">Service Partner</h3>
+							</div>
+							<div class="col-12 d-flex justify-content-center">
+								<img id="img-qrCode" class="w-75" src="/img/qr_placeholder.png" alt="product_image">
 							</div>
 						</div>
 					</div>
@@ -29,7 +32,7 @@
 
 				<div class="modal-footer">
 					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal" onclick="closeQr()">Close</button>
-					<button type="button" class="mx-2 col btn border-1 btn-primary" onclick="downQr()">Download</button>
+					<button type="button" class="mx-2 col btn border-1 bg-gradient-primary" onclick="downQr()">Download</button>
 				</div>
 			</div>
 		</div>

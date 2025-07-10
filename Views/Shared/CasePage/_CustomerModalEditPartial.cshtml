@@ -3,6 +3,8 @@
 @using CCIMS.Web.Models.ViewModels.Partials
 @using CCIMS.Web.App_Code._Globals.Extensions
 
+@model string
+
 @{
 	var fname = new InputFieldViewModel()
 			{
@@ -20,85 +22,35 @@
 				ClassName = "col-12 col-md-6 "
 			};
 
-	var uname = new InputFieldViewModel()
-			{
-				OperationName = "edit",
-				IdName = "uname",
-				Title = "Username",
-				ClassName = "col"
-			};
-
 	var email = new InputFieldViewModel()
 			{
 				OperationName = "edit",
 				IdName = "email",
-				Title = "Email",
+				Title = "Email Address",
 				ClassName = "col-12 col-md-6 ",
 				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Email
 			};
 
-	var pass1 = new InputFieldViewModel()
+	var contact = new InputFieldViewModel()
 			{
 				OperationName = "edit",
-				IdName = "pass1",
-				Title = "Password",
-				ClassName = "col",
-				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Password
-			};
-
-	var pass2 = new InputFieldViewModel()
-			{
-				OperationName = "edit",
-				IdName = "pass2",
-				Title = "Retype Password",
+				IdName = "contact",
+				Title = "Contact Number",
 				ClassName = "col-12 col-md-6 ",
-				Type = CCIMS.Web.App_Code._Globals.Enums.InputType.Password
 			};
-
-	var roles = new SelectViewModel()
+			
+	var address = new InputFieldViewModel()
 			{
 				OperationName = "edit",
-				IdName = "roles",
-				Title = "Account Role / Type",
-				InputContainerClassName = "col",
-				Options = (IEnumerable<DropdownOptionViewModel>)ViewData[Keys.ViewData.Types.ROLES]
+				IdName = "address",
+				Title = "Address",
+				ClassName = "col-12 ",
 			};
-
-	var radBtnPass1 = new RadioGroupButtonViewModel()
-			{
-				OperationName = "edit",
-				IdName = "reset",
-				Title = "Reset",
-				Elements = [pass1, pass2]
-			};
-
-	var radBtnPass2 = new RadioGroupButtonViewModel()
-			{
-				OperationName = "edit",
-				IdName = "change",
-				Title = "Change",
-			};
-
-
-	var radioGroupPass = new RadioGroupViewModel
-			{
-				OperationName = "edit",
-				IdName = "passwords",
-				Title = "Change Password",
-				RadioGroupButtons = [radBtnPass1, radBtnPass2]
-			};
-
-	radioGroupPass.JavaScript = $@"
-    if ($(""#{radBtnPass1.Id}"").is("":checked"")) {{
-        $(""#{radioGroupPass.Id}"").slideDown(300);
-    }} else {{
-        $(""#{radioGroupPass.Id}"").slideUp(300);
-    }}";
 
 }
 
 
-<!-- Edit Account -->
+<!-- Edit Customer -->
 <div class="modal modal-xl fade" id="modal-edit-customer" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<form id="form-edit-customer">
 		<div class="modal-dialog">
@@ -115,25 +67,24 @@
 							@await Html.RenderAsync(fname)
 							@await Html.RenderAsync(lname)
 						</div>
-
+						
 						<div class="row">
-							@await Html.RenderAsync(uname)
+							@await Html.RenderAsync(contact)
 							@await Html.RenderAsync(email)
 						</div>
 
-						@await Html.RenderAsync(radioGroupPass)
-
 						<div class="row">
-							@await Html.RenderAsync(roles)
+							@await Html.RenderAsync(address)
 						</div>
+
 					</div>
 				</div>
 
-				<input type="text" id="hdn-edit-accId" />
+				<input type="hidden" id="hdn-edit-custId" value="@Model" />
 
 				<div class="modal-footer">
 					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="mx-2 col btn border-1 btn-primary">Edit</button>
+					<button type="submit" class="mx-2 col btn border-1 bg-gradient-primary">Edit</button>
 				</div>
 			</div>
 		</div>
@@ -141,13 +92,7 @@
 </div>
 
 <script type="module">
-	import { initModal as initEditModal, onEdit as showEdit } from '/js/components/accModalEdit.js';
-	const selectEditRoles = new Choices(document.getElementById('@roles.Id'), {
-		searchEnabled: false
-	});
-
-	initEditModal('@lname.Id', '@fname.Id', '@uname.Id', '@email.Id', '@pass1.Id', '@pass2.Id', selectEditRoles, 'hdn-edit-accId', '@radioGroupPass.Id');
-	window.showEdit = showEdit;
-
-
+	import { initModal as initEditModal, initModalNotifs as initEditNotifs } from '/js/components/customerModalEdit.js';
+	initEditModal('@lname.Id', '@fname.Id', '@email.Id', '@contact.Id', '@address.Id', 'hdn-edit-custId');
+	initEditNotifs('@lname.NotifId', '@fname.NotifId', '@email.NotifId', '@contact.NotifId', '@address.NotifId');
 </script>

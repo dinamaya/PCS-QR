@@ -8,7 +8,7 @@ namespace CCIMS.Web.Models.Entities.Main
 {
   public class QRCode : HashedEntity, ICreatable, IModifiable, IActivatable
   {
-		public QRCode() : base("QRC") {}
+		public QRCode() : base("QRC", 1) {}
 
     public string ServicePartnerId { get; set; }
 

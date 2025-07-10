@@ -1,49 +1,45 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CCIMS.Web.Models;
-using CCIMS.Web.Models.ViewModels;
+using CCIMS.Web.Repositories.Interfaces;
 using System.Diagnostics;
-using CCIMS.Web.Context;
+using System.Threading.Tasks;
+using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Controllers
 {
-	[Authorize]
-	public class DashboardController : Controller
-	{
+  [Authorize]
+  public class DashboardController : Controller
+  {
+    private readonly ILogger<DashboardController> _logger;
+    private readonly IDashboardRepository _dashboardRepo;
 
-		private readonly ILogger<DashboardController> _logger;
-		private readonly MainDbContext _context;
+    public DashboardController(ILogger<DashboardController> logger, IDashboardRepository dashboardRepo)
+    {
+      _logger = logger;
+      _dashboardRepo = dashboardRepo;
+    }
 
-		public DashboardController(ILogger<DashboardController> logger, MainDbContext context)
-		{
-			_logger = logger;
-			_context = context;
-		}
+    public async Task<IActionResult> Index()
+    {
+      ViewBag.AgingCasesCount = await _dashboardRepo.GetAgingCasesCountAsync();
+      ViewBag.ClosedCasesCount = await _dashboardRepo.GetClosedCasesCountAsync();
+      ViewBag.CasesCreatedToday = await _dashboardRepo.GetCasesCreatedTodayCountAsync();
+      ViewBag.TotalCasesCount = await _dashboardRepo.GetTotalCasesCountAsync();
+      ViewBag.WeeklyCasesChart = await _dashboardRepo.GetWeeklyCasesChartAsync();
+      ViewBag.WeeklyClosedCasesChart = await _dashboardRepo.GetWeeklyClosedCasesChartAsync();
+      ViewBag.LatestCaseSubmission = await _dashboardRepo.GetLatestCaseSubmissionsAsync();
+      ViewBag.Top3ServicePartnersAgingCases = await _dashboardRepo.GetTop3ServicePartnersAgingCases();
+      ViewBag.TopAgingCases = await _dashboardRepo.GetTopAgingCases();
 
-		public IActionResult Index()
-		{
-      var agingCasesCount = _context.AgingCasesVs.Count();
-			var closedCasesCount = _context.ClosedCasesVs.Count();
-      var casesCreatedToday = _context.CasesCreatedTodayVs.Count();
-      var totalCasesCount = _context.Cases.Count();
-      var weeklyCasesChart = _context.WeeklyCasesChartVs.ToList();
-      var weeklyAgingCasesChart = _context.WeeklyAgingCasesChartVs.ToList();
-
-      ViewBag.AgingCasesCount = agingCasesCount;
-			ViewBag.ClosedCasesCount = closedCasesCount;
-			ViewBag.CasesCreatedToday = casesCreatedToday;
-      ViewBag.TotalCasesCount = totalCasesCount;
-      ViewBag.WeeklyCasesChart = weeklyCasesChart;
-      ViewBag.WeeklyAgingCasesChart = weeklyAgingCasesChart;
 
       return View();
     }
 
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
-		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-		}
-	}
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+      return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+  }
 }
-

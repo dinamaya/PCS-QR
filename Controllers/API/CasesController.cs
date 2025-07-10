@@ -5,6 +5,7 @@ using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CCIMS.Web.Controllers.API
 {
@@ -28,7 +29,7 @@ namespace CCIMS.Web.Controllers.API
       try
       {
         var currStat = await _caseRepo.GetCurrentStatus(caseId);
-        var availStats = await _transactionRepo.GetAvailableStatusByCaseId(caseId);
+        var availStats = currStat.Equals("Closed") ? Enumerable.Empty<DropdownOptionViewModel>() : await _transactionRepo.GetAvailableStatusByCaseId(caseId);
 
         response.Message = "Status fetched";
         response.Result = new()
@@ -60,6 +61,66 @@ namespace CCIMS.Web.Controllers.API
         response.Message = "Status updated";
 
         return Ok(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<ResponseDto<CaseEditResponseDto>>> Get([FromQuery] string id)
+    {
+      var response = new ResponseDto<CaseEditResponseDto>();
+      try
+      {
+        string createdBy = User.GetClaim(AuthClaims.ACCOUNT_ID);
+        var result = await _caseRepo.GetById(id);
+
+        response.Result = new CaseEditResponseDto()
+        {
+          SerialNumber = result.SerialNumber,
+          ServicePartner = result.ServicePartner,
+        };
+
+        response.Message = "Case (" + id + ") found";
+
+        return Ok(response);
+      }
+      catch (Exception ex)
+      {
+        response.Message = "Error: " + ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
+      }
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<ResponseDto>> Put([FromBody] CaseEditRequestDto requestDto)
+    {
+      var response = new ResponseDto();
+      try
+      {
+        string accountId = User.GetClaim(AuthClaims.ACCOUNT_ID);
+        if (requestDto.ServicePartner.IsNullOrEmpty())
+          throw new InvalidOperationException(Exceptions.Message.NULL_SPNAME);
+
+        await _caseRepo.EditAsync(requestDto, accountId);
+
+        response.Message = "Case (" + requestDto.Id + ") Updated";
+
+        return Ok(response);
+      }
+      catch (InvalidOperationException ex)
+      {
+        response.Message = ex.Message;
+        response.IsSuccess = false;
+
+        return BadRequest(response);
       }
       catch (Exception ex)
       {

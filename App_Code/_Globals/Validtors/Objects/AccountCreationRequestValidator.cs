@@ -17,13 +17,13 @@ namespace CCIMS.Web.App_Code._Globals.Validtors.Objects
       Include(accountBasicInfoValidator);
 
       RuleFor(x => x.Password)
-          .Equal(x => x.RetypePass).WithMessage("Passwords are not equals")
+          .Equal(x => x.RetypePass).WithMessage("Passwords do not match")
           .NotEmpty().WithMessage("Password is required.")
           .MinimumLength(6).WithMessage("Password must be at least 6 characters.")
           .MaximumLength(100).WithMessage("Password must not exceed 100 characters.");
 
       RuleFor(x => x.RetypePass)
-        .Equal(x => x.Password).WithMessage("Passwords are not equals")
+        .Equal(x => x.Password).WithMessage("Passwords do not match")
         .NotEmpty().WithMessage("Retype Password is required.");
     }
   }
