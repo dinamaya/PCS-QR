@@ -29,18 +29,18 @@ namespace CCIMS.Web.App_Code._Globals.Constants
 			public const string INVALID_TRANSACTION_UNCOMMENTABLE = "Transaction is not commentable. Please contact the administrator";
 			public const string INVALID_SEARCH_QUERY = "Search Value is Empty.";
 			
-			public const string INVALID_STATUS_EDIT_1= "Status is not editable";
-			public const string INVALID_STATUS_DELETE_1= "Status is not deletable";
+			public const string INVALID_STATUS_EDIT_1= "The status cannot be edited";
+			public const string INVALID_STATUS_DELETE_1= "The status cannot be deleted.";
 
 			public const string UNRECOGNIZED_SERIALNUMBER = $"Serial number not recognize";
 			public const string INVALID_SERIALNUMBER_EXIST = "Serial number already exists. Please provide a unique serial number.";
-			public const string INVALID_STATUS_EXIST = "Status already exist. Please provide another status name.";
+			public const string INVALID_STATUS_EXIST = "Status already exists. Please provide another status name.";
       public const string NULL_SPNAME = "Service Partner is Empty. Please select or provide correct service partner";
 
 
       public static class Config
 			{
-        public const string INVALID_SYS_SECDETAILS = "Invalid Security Details Please contact the administrator";
+        public const string INVALID_SYS_SECDETAILS = "Invalid security details. Please contact the administrator.";
 				public const string INVALID_APIURL_PSGC = "Incorrect PSGC base URL";
       }
     }
