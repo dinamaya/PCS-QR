@@ -97,7 +97,8 @@ namespace CCIMS.Web.Repositories
         "Case Number / ID" => _context.LatestCasesVs.Where(c => c.CaseNumber.Contains(value)),
         "Service Partner Name" => _context.LatestCasesVs.Where(c => c.ServicePartnerName.Contains(value)),
         "Days Aged" => GetByDaysAged(value),
-        _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
+        "Out of SLA" => _context.LatestCasesVs.Where(c => c.AgedDays >= 3 && c.Status != "Closed"),
+          _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
       };
     }
 

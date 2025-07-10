@@ -33,8 +33,8 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         shouldSort: false
     });
 
-    $selectValue.closest(".col").parent().addClass("d-none");
-    $textValue.closest(".col").parent().parent().addClass("d-none");
+    // $selectValue.closest(".col").parent().addClass("d-none"); // Will be handled in change event
+    // $textValue.closest(".col").parent().parent().addClass("d-none"); // Will be handled in change event
 
     // Initialize flatpickr
     if (document.querySelector('.datepicker')) {
@@ -49,39 +49,47 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
 
     $selectCategory.on('change', function () {
         const label = $(this).find("option:selected").text().trim();
-        reset();
+        reset(); // Resets hiddenValue, textValue, choicesValue
+
+        // Default to hiding all optional inputs
         const $selectWrapper = $selectValue.closest(".col").parent();
         const $textWrapper = $textValue.closest(".col").parent();
         $selectWrapper.addClass("d-none");
         $textWrapper.addClass("d-none");
+        $dateRangeContainer.addClass("d-none"); // Hide datepicker by default
 
-        // Hide datepicker by default
-        $dateRangeContainer.addClass("d-none");
-
-        if (label === "Days Aged" || label === "Status") {
+        if (label === "Out of SLA") {
+            // For "Out of SLA", only show date picker
+            $dateRangeContainer.removeClass("d-none");
+            $hiddenValue.val(""); // Explicitly clear value for "Out of SLA"
+        } else if (label === "Days Aged") {
+            // For "Days Aged", show select dropdown for values
             $selectWrapper.removeClass("d-none");
-            const newChoices = label === "Days Aged" ? agedList : statusList;
-            choicesValue.setChoices(newChoices, 'value', 'label', false);
+            choicesValue.setChoices(agedList, 'value', 'label', false);
             choicesValue.setChoiceByValue("");
-
-            // Show datepicker for Service Partner and Status
-            if (label === "Status") {
-                $dateRangeContainer.removeClass("d-none");
-            }
-        }
-        else if (label && label !== "Select Categories") {
+        } else if (label === "Status") {
+            // For "Status", show select dropdown for values AND date picker
+            $selectWrapper.removeClass("d-none");
+            choicesValue.setChoices(statusList, 'value', 'label', false);
+            choicesValue.setChoiceByValue("");
+            $dateRangeContainer.removeClass("d-none");
+        } else if (label === "Service Partner Name") {
+            // For "Service Partner Name", show text input AND date picker
             $textWrapper.removeClass("d-none");
-
-            // Show datepicker for Service Partner
-            if (label === "Service Partner Name") {
-                $dateRangeContainer.removeClass("d-none");
-            }
+            $dateRangeContainer.removeClass("d-none");
+        } else if (label && label !== "Select Categories" && label !== "") {
+            // For other simple text-based categories (e.g., "Serial Number", "Case Number / ID", "Remarks / Comment")
+            $textWrapper.removeClass("d-none"); // Show text input field
+        } else {
+            // "Select Categories" or empty label, ensure value is cleared
+            $hiddenValue.val("");
         }
 
-        // Reset date range when category changes (except for allowed categories)
-        if (label !== "Status" && label !== "Service Partner Name") {
+
+        // Reset date range visual and hidden field if the current category does not use it.
+        if (label !== "Status" && label !== "Service Partner Name" && label !== "Out of SLA") {
             $hiddenDateRange.val("");
-            $dateRange.val("");
+            // $dateRange.val(""); // flatpickrInstance.clear() handles the visible input
             if (flatpickrInstance) {
                 flatpickrInstance.clear();
             }
@@ -111,7 +119,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         event.preventDefault();
         const params = new URLSearchParams();
 
-        
+
         if ($selectCategory.val() != "" && $hiddenValue.val() == "") {
             params.set('c', $selectCategory.val());
             params.set('v', "");
@@ -125,7 +133,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
 
         // Add date range parameter if it exists and is allowed for the selected category
         const selectedLabel = $selectCategory.find("option:selected").text().trim();
-        if ($hiddenDateRange.val() != "" && (selectedLabel === "Status" || selectedLabel === "Service Partner Name")) {
+        if ($hiddenDateRange.val() != "" && (selectedLabel === "Status" || selectedLabel === "Service Partner Name" || selectedLabel === "Out of SLA")) {
             params.set('dateRange', $hiddenDateRange.val());
         }
 
@@ -150,7 +158,7 @@ function reset() {
 // Function to handle export with current filters
 function exportWithCurrentFilters() {
     const selectedLabel = $selectCategory.find("option:selected").text().trim();
-    const dateRangeValue = (selectedLabel === "Status" || selectedLabel === "Service Partner Name") ? $hiddenDateRange.val() || null : null;
+    const dateRangeValue = (selectedLabel === "Status" || selectedLabel === "Service Partner Name" || selectedLabel === "Out of SLA") ? $hiddenDateRange.val() || null : null;
 
     const exportData = {
         Category: $selectCategory.val() || null,
@@ -246,7 +254,7 @@ $(document).ready(function () {
     // Restore date range selection only if allowed for the selected category
     if (dateRangeValue && searchCategory) {
         const label = $($selectCategory).find("option:selected").text().trim();
-        if (label === "Status" || label === "Service Partner Name") {
+        if (label === "Status" || label === "Service Partner Name" || label === "Out of SLA") {
             $hiddenDateRange.val(dateRangeValue);
             if (flatpickrInstance) {
                 // Parse the date range and set it in flatpickr
