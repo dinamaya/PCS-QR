@@ -56,6 +56,8 @@ namespace CCIMS.Web.Repositories
             DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+            UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
+
           }).ToListAsync();
     }
 
@@ -77,6 +79,7 @@ namespace CCIMS.Web.Repositories
           DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+          UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
         }
       ).ToListAsync();
     }
@@ -235,6 +238,7 @@ namespace CCIMS.Web.Repositories
           DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+          UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
         }
       ).ToListAsync();
     }
@@ -258,6 +262,7 @@ namespace CCIMS.Web.Repositories
             DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+            UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
           })
           .ToListAsync();
     }
