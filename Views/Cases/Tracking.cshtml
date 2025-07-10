@@ -10,7 +10,6 @@
   ViewData[Keys.ViewData.TITLE] = "Case Tracking";
 
   var _user = User.Identities.FirstOrDefault();
-  bool isAuthenticated = _user.IsAuthenticated;
 
   var caseNumber = new InputFieldViewModel()
       {
@@ -38,25 +37,6 @@
       <img src="../img/icons/icon_vst_sm.svg" class="navbar-brand-img h-100" style="max-height: 2.2rem;" alt="main_logo">
       <span class="ms-1 font-weight-bolder fs-6">CCI Monitoring System</span>
     </a>
-    <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon mt-2">
-        <span class="navbar-toggler-bar bar1"></span>
-        <span class="navbar-toggler-bar bar2"></span>
-        <span class="navbar-toggler-bar bar3"></span>
-      </span>
-    </button>
-    <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
-      <ul class="navbar-nav navbar-nav-hover mx-auto">
-      </ul>
-      <ul class="navbar-nav d-lg-block d-none">
-        <li class="nav-item">
-          @if (!isAuthenticated)
-          {
-            <a asp-action="Login" asp-controller="Auth" class="btn btn-sm  bg-white  btn-round mb-0 me-1">Sign in</a>
-          }
-        </li>
-      </ul>
-    </div>
   </div>
 </nav>
 

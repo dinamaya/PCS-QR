@@ -91,5 +91,9 @@
 
 	init('@currStatus.Id', statusChoice, '@status.Id', '@comments.Id', 'hdn-update-caseId');
 	initNotifs('@status.NotifId', '@comments.NotifId')
-
 </script>
+<style>
+	.choices__list--dropdown .choices__item[data-value=""] {
+		display: none;
+	}
+</style>

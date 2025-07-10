@@ -17,7 +17,7 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 				options.Cookie.Name = Database.CURRENT_ACCOUNT;
 				options.Cookie.HttpOnly = true;
 				options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-				options.Cookie.SameSite = SameSiteMode.Strict;
+				options.Cookie.SameSite = SameSiteMode.None;
 				options.Cookie.IsEssential = true;
 				options.ExpireTimeSpan = TimeSpan.FromDays(3);
 				options.LoginPath = "/Auth/Login";
