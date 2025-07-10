@@ -58,7 +58,7 @@ namespace CCIMS.Web.Services.Implementations
 
         await CreateEmailAsync(
           customerDto.Email,
-          $"Test CCIMS - Case Registered",
+          $"CCI Monitoring System - Case Registered",
           htmlBody,
           _dev,
           null
@@ -82,7 +82,7 @@ namespace CCIMS.Web.Services.Implementations
 
         await CreateEmailAsync(
           null,
-          $"Test CCIMS - Aged Cases {DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)}",
+          $"CCI Monitoring System - Aged Cases {DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)}",
           agedHtmlBody,
           _dev
         );
@@ -106,7 +106,7 @@ namespace CCIMS.Web.Services.Implementations
 
         await CreateEmailAsync(
           emailDetails.Email,
-          $"Test CCIMS - Case Closed",
+          $"CCI Monitoring System - Case Closed",
           htmlBody,
           _dev,
           null

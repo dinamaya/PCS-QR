@@ -59,7 +59,7 @@ namespace CCIMS.Web.Repositories.Implementations
 			var result = await _userManager.CreateAsync(account, creationRequest.Password);
 			
 			if (!result.Succeeded)
-				throw new Exception($"Failed to create account {account.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+				throw new Exception($"Failed to create account {account.UserName}.\n{string.Join(", ", result.Errors.Select(e => e.Description))}");
 
 			await _authDb.SaveChangesAsync();
 			await _userManager.AddToRoleAsync(account, creationRequest.AccountType);
@@ -185,7 +185,19 @@ namespace CCIMS.Web.Repositories.Implementations
       var account = await _authDb.Accounts.FindAsync(id) ?? throw new Exception(Exceptions.Message.INVALID_ACCOUNTREFERENCE);
       var person = await _authDb.People.FindAsync(account.PersonID) ?? throw new Exception(Exceptions.Message.INVALID_PERSONREFERENCE);
 
-			account.DateModified = date;
+			string appendText = $"DEL{date.ToString(Database.DateFormat.UNIQUE_INPUT)}";
+      string deletedUsername = appendText + "_" + account.UserName;
+      string deletedEmail = appendText + "_" + account.Email;
+
+      var setUsernameResult = await _userManager.SetUserNameAsync(account, deletedUsername);
+      if (!setUsernameResult.Succeeded)
+        throw new InvalidOperationException(setUsernameResult.Errors.Select(e => e.Description).FirstOrDefault());
+
+      var setEmailResult = await _userManager.SetEmailAsync(account, deletedEmail);
+      if (!setEmailResult.Succeeded)
+        throw new InvalidOperationException(setEmailResult.Errors.Select(e => e.Description).FirstOrDefault());
+
+      account.DateModified = date;
       account.IsActive = false;
 
       var result = await _userManager.UpdateAsync(account);
