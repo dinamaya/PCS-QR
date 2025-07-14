@@ -133,7 +133,7 @@ namespace CCIMS.Web.Controllers
                 }
                 else
                 {
-                    results = Enumerable.Empty<CaseRowViewModel>();
+                    results = await _caseRepo.GetAll();
                 }
 
                 return View(results);

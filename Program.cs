@@ -54,48 +54,48 @@ app.MapControllerRoute(
 
 
 #region Database Seeding
-using (var scope = app.Services.CreateScope())
-{
-  //Run Only in Dev Mode
-  // Disable this on production to avoid errors
-  // Populate the Database using the Any Development Project.
-  if (app.Environment.IsDevelopment())
-  {
-    var services = scope.ServiceProvider;
-    await AccountSeeder.Run(services);
-    await ServicePartnerSeeder.Run(services);
-    await StatusSeeder.Run(services);
-  }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//  //Run Only in Dev Mode
+//  // Disable this on production to avoid errors
+//  // Populate the Database using the Any Development Project.
+//  if (app.Environment.IsDevelopment())
+//  {
+//    var services = scope.ServiceProvider;
+//    await AccountSeeder.Run(services);
+//    await ServicePartnerSeeder.Run(services);
+//    await StatusSeeder.Run(services);
+//  }
+//}
 #endregion
 
 #region Hangfire Job Initialization
-using (var scope = app.Services.CreateScope())
-{
-  var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-  var timeList = configuration.GetSection("Hangfire:time").Get<IEnumerable<string>>();
-  var timezone = configuration.GetSection("Hangfire:timezone").Get<string>();
+//using (var scope = app.Services.CreateScope())
+//{
+//  var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+//  var timeList = configuration.GetSection("Hangfire:time").Get<IEnumerable<string>>();
+//  var timezone = configuration.GetSection("Hangfire:timezone").Get<string>();
   
-  foreach (var timeString in timeList)
-  {
-    if (TimeSpan.TryParseExact(timeString, new[] { @"h\:mm", @"hh\:mm" }, CultureInfo.InvariantCulture, out var time))
-    {
-      string cron = Cron.Daily(time.Hours, time.Minutes);
-      string jobId = $"send-aged-cases-at-{time:hh\\:mm}";
+//  foreach (var timeString in timeList)
+//  {
+//    if (TimeSpan.TryParseExact(timeString, new[] { @"h\:mm", @"hh\:mm" }, CultureInfo.InvariantCulture, out var time))
+//    {
+//      string cron = Cron.Daily(time.Hours, time.Minutes);
+//      string jobId = $"send-aged-cases-at-{time:hh\\:mm}";
 
-      RecurringJob.AddOrUpdate<BackgroundJobsService>(
-          jobId,
-          service => service.SendCasesAgedEmail(),
-          cron,
-          TimeZoneInfo.FindSystemTimeZoneById(timezone)
-      );
-    }
-    else
-    {
-      Console.WriteLine($"Invalid time format in Hangfire:time config: {timeString}");
-    }
-  }
-}
+//      RecurringJob.AddOrUpdate<BackgroundJobsService>(
+//          jobId,
+//          service => service.SendCasesAgedEmail(),
+//          cron,
+//          TimeZoneInfo.FindSystemTimeZoneById(timezone)
+//      );
+//    }
+//    else
+//    {
+//      Console.WriteLine($"Invalid time format in Hangfire:time config: {timeString}");
+//    }
+//  }
+//}
 #endregion
 
 app.Run();

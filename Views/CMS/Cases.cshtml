@@ -11,6 +11,12 @@
 
 @Html.AntiForgeryToken()
 
+<div id="page-spinner" class="d-flex justify-content-center align-items-center position-fixed top-50 start-50 translate-middle text-center" style="z-index: 1060; width:100%; height:100%; background-color: rgba(0,0,0,0.1);">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
 <div>
     <div class="container-fluid py-4">
         <div class="row mb-5">
@@ -82,16 +88,51 @@
 
 @(await Html.PartialAsync(Routes.Partials.Cases.STAT_UPDATE_MODAL))
 <script src="~/js/components/casesExport.js"></script>
+
 <script>
     window.baseUrl = '@Url.Content("/api/cases")'
 
-    try {
-        const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
-            searchable: true,
-            fixedHeight: true
-        });
+    function showPageSpinner() {
+        document.getElementById('page-spinner').classList.remove('d-none');
+        // document.getElementById('page-overlay').classList.remove('d-none');
     }
-    catch (e) {
-        console.log("Datatable not found");
+
+    function hidePageSpinner() {
+        document.getElementById('page-spinner').classList.add('d-none');
+        // document.getElementById('page-overlay').classList.add('d-none');
     }
+
+    // Show spinner initially
+    showPageSpinner();
+
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            if (document.getElementById('tbl')) {
+                const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
+                    searchable: true,
+                    fixedHeight: true,
+                    perPage: 10 // Default items per page
+                });
+                // Hide spinner once DataTable is initialized (or after a short delay to ensure rendering)
+                setTimeout(hidePageSpinner, 100); // Adjust delay as needed
+            } else {
+                // If table is not present (e.g. Model is null or empty), hide spinner
+                hidePageSpinner();
+            }
+        }
+        catch (e) {
+            console.log("Datatable not found or error initializing:", e);
+            hidePageSpinner(); // Hide spinner on error too
+        }
+
+        // If there's a search form, attach spinner logic to its submission
+        const searchForm = document.querySelector('@CCIMS.Web.App_Code._Globals.Constants.Routes.Partials.Cases.SEARCH form'); // Assuming the search partial has a form
+        if (searchForm) {
+            searchForm.addEventListener('submit', function() {
+                showPageSpinner();
+                // Spinner will be hidden by DOMContentLoaded on next page load, or if it's an AJAX search, by its success/error handler
+            });
+        }
+    });
 </script>
+
