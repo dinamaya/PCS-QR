@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-	public interface IDashboardRepository
-	{
-		Task<int> GetAgingCasesCountAsync();
-		Task<int> GetClosedCasesCountAsync();
-		Task<int> GetCasesCreatedTodayCountAsync();
-		Task<int> GetTotalCasesCountAsync();
-		Task<List<WeeklyCasesChartV>> GetWeeklyCasesChartAsync();
-		Task<List<WeeklyClosedCasesChartV>> GetWeeklyClosedCasesChartAsync();
-		Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync();
-		Task<List<Top3ServicePartnersAgingCasesV>> GetTop3ServicePartnersAgingCases();
-        Task<List<TopAgingCasesV>> GetTopAgingCases();
-    }
+  public interface IDashboardRepository
+  {
+    Task<int> GetAgingCasesCountAsync();
+    Task<int> GetClosedCasesCountAsync();
+    Task<int> GetCasesCreatedTodayCountAsync();
+    Task<int> GetTotalCasesCountAsync();
+    Task<List<WeeklyCasesChartV>> GetWeeklyCasesChartAsync();
+    Task<List<WeeklyClosedCasesChartV>> GetWeeklyClosedCasesChartAsync();
+    Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync();
+    Task<List<Top3ServicePartnersAgingCasesV>> GetTop3ServicePartnersAgingCases();
+    Task<List<TopAgingCasesV>> GetTopAgingCases();
+  }
 }

@@ -33,9 +33,6 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         shouldSort: false
     });
 
-    // $selectValue.closest(".col").parent().addClass("d-none"); // Will be handled in change event
-    // $textValue.closest(".col").parent().parent().addClass("d-none"); // Will be handled in change event
-
     // Initialize flatpickr
     if (document.querySelector('.datepicker')) {
         flatpickrInstance = flatpickr('.datepicker', {
@@ -49,9 +46,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
 
     $selectCategory.on('change', function () {
         const label = $(this).find("option:selected").text().trim();
-        reset(); // Resets hiddenValue, textValue, choicesValue
-
-        // Default to hiding all optional inputs
+        reset();
         const $selectWrapper = $selectValue.closest(".col").parent();
         const $textWrapper = $textValue.closest(".col").parent();
         $selectWrapper.addClass("d-none");
@@ -72,11 +67,14 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
             $selectWrapper.removeClass("d-none");
             choicesValue.setChoices(statusList, 'value', 'label', false);
             choicesValue.setChoiceByValue("");
-            $dateRangeContainer.removeClass("d-none");
+                $dateRangeContainer.removeClass("d-none");
         } else if (label === "Service Partner Name") {
             // For "Service Partner Name", show text input AND date picker
             $textWrapper.removeClass("d-none");
-            $dateRangeContainer.removeClass("d-none");
+
+            // Show datepicker for Service Partner
+            if (label === "Service Partner Name") {
+                $dateRangeContainer.removeClass("d-none");
         } else if (label && label !== "Select Categories" && label !== "") {
             // For other simple text-based categories (e.g., "Serial Number", "Case Number / ID", "Remarks / Comment")
             $textWrapper.removeClass("d-none"); // Show text input field
@@ -119,7 +117,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         event.preventDefault();
         const params = new URLSearchParams();
 
-
+        
         if ($selectCategory.val() != "" && $hiddenValue.val() == "") {
             params.set('c', $selectCategory.val());
             params.set('v', "");

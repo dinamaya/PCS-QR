@@ -88,7 +88,6 @@
 
 @(await Html.PartialAsync(Routes.Partials.Cases.STAT_UPDATE_MODAL))
 <script src="~/js/components/casesExport.js"></script>
-
 <script>
     window.baseUrl = '@Url.Content("/api/cases")'
 
@@ -106,21 +105,21 @@
     showPageSpinner();
 
     document.addEventListener('DOMContentLoaded', function () {
-        try {
+    try {
             if (document.getElementById('tbl')) {
-                const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
-                    searchable: true,
+        const dataTableSearch = new simpleDatatables.DataTable("#tbl", {
+            searchable: true,
                     fixedHeight: true,
                     perPage: 10 // Default items per page
-                });
+        });
                 // Hide spinner once DataTable is initialized (or after a short delay to ensure rendering)
                 setTimeout(hidePageSpinner, 100); // Adjust delay as needed
             } else {
                 // If table is not present (e.g. Model is null or empty), hide spinner
                 hidePageSpinner();
             }
-        }
-        catch (e) {
+    }
+    catch (e) {
             console.log("Datatable not found or error initializing:", e);
             hidePageSpinner(); // Hide spinner on error too
         }
@@ -132,7 +131,7 @@
                 showPageSpinner();
                 // Spinner will be hidden by DOMContentLoaded on next page load, or if it's an AJAX search, by its success/error handler
             });
-        }
+    }
     });
 </script>
 

@@ -102,7 +102,7 @@ namespace CCIMS.Web.Repositories
         "Service Partner Name" => _context.LatestCasesVs.Where(c => c.ServicePartnerName.Contains(value)),
         "Days Aged" => GetByDaysAged(value),
         "Out of SLA" => _context.LatestCasesVs.Where(c => c.AgedDays >= 3 && c.Status != "Closed"),
-          _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
+        _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
       };
     }
 

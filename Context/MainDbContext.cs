@@ -4,14 +4,14 @@ using CCIMS.Web.Models.SQLViews.Main;
 
 namespace CCIMS.Web.Context
 {
-	public class MainDbContext(DbContextOptions<MainDbContext> options) : DbContext(options)
-	{
-		public virtual DbSet<Case> Cases { get; set; }
-		public virtual DbSet<Customer> Customers { get; set; }
-		public virtual DbSet<QRCode> QRCodes { get; set; }
-		public virtual DbSet<ServicePartner> ServicePartners { get; set; }
-		public virtual DbSet<Status> Statuses { get; set; }
-		public virtual DbSet<Transaction> Transactions { get; set; }
+  public class MainDbContext(DbContextOptions<MainDbContext> options) : DbContext(options)
+  {
+    public virtual DbSet<Case> Cases { get; set; }
+    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<QRCode> QRCodes { get; set; }
+    public virtual DbSet<ServicePartner> ServicePartners { get; set; }
+    public virtual DbSet<Status> Statuses { get; set; }
+    public virtual DbSet<Transaction> Transactions { get; set; }
 
     public virtual DbSet<CaseDetailsV> CaseDetailsVs { get; set; }
     public virtual DbSet<LatestCasesV> LatestCasesVs { get; set; }
@@ -60,8 +60,8 @@ namespace CCIMS.Web.Context
           .HasNoKey()
           .ToView("LatestCasesSubmission_v");
 
-				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-			});
+        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+      });
 
       modelBuilder.Entity<WeeklyCasesChartV>(entity =>
       {
@@ -69,8 +69,8 @@ namespace CCIMS.Web.Context
           .HasNoKey()
           .ToView("WeeklyCasesChart_v");
 
-				entity.Property(e => e.DayOfWeek).HasMaxLength(30);
-			});
+        entity.Property(e => e.DayOfWeek).HasMaxLength(30);
+      });
 
       modelBuilder.Entity<CasesCreatedTodayV>(entity =>
       {
@@ -103,15 +103,15 @@ namespace CCIMS.Web.Context
       .ToView("AgingCases_v");
       });
 
-			modelBuilder.Entity<Case>()
-			  .HasOne(a => a.QRCode)
-			  .WithMany()
-			  .HasForeignKey(a => a.QRCodeId);
+      modelBuilder.Entity<Case>()
+        .HasOne(a => a.QRCode)
+        .WithMany()
+        .HasForeignKey(a => a.QRCodeId);
 
-			modelBuilder.Entity<QRCode>()
-			  .HasOne(a => a.ServicePartner)
-			  .WithMany()
-			  .HasForeignKey(a => a.ServicePartnerId);
+      modelBuilder.Entity<QRCode>()
+        .HasOne(a => a.ServicePartner)
+        .WithMany()
+        .HasForeignKey(a => a.ServicePartnerId);
 
       modelBuilder.Entity<Transaction>(entity =>
       {
@@ -132,8 +132,8 @@ namespace CCIMS.Web.Context
         .HasNoKey()
         .ToView("CaseDetails_v");
 
-				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-			});
+        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+      });
 
       modelBuilder.Entity<LatestCasesV>(entity =>
       {
@@ -152,9 +152,9 @@ namespace CCIMS.Web.Context
         .HasNoKey()
         .ToView("ServicePartners_v");
 
-				entity.Property(e => e.QrId).HasMaxLength(450);
-				entity.Property(e => e.SpId).HasMaxLength(450);
-			});
+        entity.Property(e => e.QrId).HasMaxLength(450);
+        entity.Property(e => e.SpId).HasMaxLength(450);
+      });
 
       modelBuilder.Entity<ServicePartnersWithAgingCasesV>(entity =>
       {
@@ -169,8 +169,8 @@ namespace CCIMS.Web.Context
         .HasNoKey()
         .ToView("Statuses_v");
 
-				entity.Property(e => e.Id).HasMaxLength(450);
-			});
+        entity.Property(e => e.Id).HasMaxLength(450);
+      });
 
       modelBuilder.Entity<TopAgingCasesAllV>(entity =>
       {
@@ -185,11 +185,11 @@ namespace CCIMS.Web.Context
       .HasNoKey()
       .ToView("Transactions_v");
 
-				entity.Property(e => e.CaseId).HasColumnName("CaseID");
-				entity.Property(e => e.StatusId).HasMaxLength(450);
-			});
+        entity.Property(e => e.CaseId).HasColumnName("CaseID");
+        entity.Property(e => e.StatusId).HasMaxLength(450);
+      });
 
-			base.OnModelCreating(modelBuilder);
-		}
-	}
+      base.OnModelCreating(modelBuilder);
+    }
+  }
 }
