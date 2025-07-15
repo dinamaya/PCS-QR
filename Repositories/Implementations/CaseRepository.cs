@@ -43,6 +43,7 @@ namespace CCIMS.Web.Repositories
     public async Task<IEnumerable<CaseRowViewModel>> GetAll()
     {
       return await _context.LatestCasesVs
+          .OrderByDescending(c => c.DateStatusUpdated)
           .Select(c => new CaseRowViewModel()
           {
             Id = c.CaseId.ToString(),
@@ -56,6 +57,8 @@ namespace CCIMS.Web.Repositories
             DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+            UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
+
           }).ToListAsync();
     }
 
@@ -77,6 +80,7 @@ namespace CCIMS.Web.Repositories
           DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+          UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
         }
       ).ToListAsync();
     }
@@ -97,6 +101,7 @@ namespace CCIMS.Web.Repositories
         "Case Number / ID" => _context.LatestCasesVs.Where(c => c.CaseNumber.Contains(value)),
         "Service Partner Name" => _context.LatestCasesVs.Where(c => c.ServicePartnerName.Contains(value)),
         "Days Aged" => GetByDaysAged(value),
+        "Out of SLA" => _context.LatestCasesVs.Where(c => c.AgedDays >= 3 && c.Status != "Closed"),
         _ => throw new InvalidOperationException(Exceptions.Message.INVALID_CATEGORY)
       };
     }
@@ -234,6 +239,7 @@ namespace CCIMS.Web.Repositories
           DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+          UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
         }
       ).ToListAsync();
     }
@@ -257,6 +263,7 @@ namespace CCIMS.Web.Repositories
             DateUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DateCreated = c.DateCreated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
             DaysAged = c.AgedDays == null ? "0" : c.AgedDays.ToString(),
+            UpdatedByFullName = string.IsNullOrWhiteSpace(c.FirstName) && string.IsNullOrWhiteSpace(c.LastName) ? null : (c.FirstName + " " + c.LastName).Trim(),
           })
           .ToListAsync();
     }

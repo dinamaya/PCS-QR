@@ -103,7 +103,7 @@ namespace CCIMS.Web.Repositories.Implementations
         .Select(s => new DropdownOptionViewModel()
         {
           Value = s.Id,
-          Label= s.Name,
+                  Label = s.Name,
         })
         .ToListAsync();
     }
@@ -122,6 +122,24 @@ namespace CCIMS.Web.Repositories.Implementations
 
       if (status.Name.Equals("Closed") || status.Name.Equals("On-Queue"))
         throw new Exception(status.Name + " " + Exceptions.Message.INVALID_STATUS_EDIT_1);
+
+            var transactionsToDeactivate = await _mainDb.Transactions
+                .Where(t => t.StatusId == id && t.IsActive)
+                .ToListAsync();
+
+            foreach (var transaction in transactionsToDeactivate)
+            {
+                var previousTransaction = await _mainDb.Transactions
+                    .Where(t => t.CaseID == transaction.CaseID && t.DateCreated < transaction.DateCreated)
+                    .OrderByDescending(t => t.DateCreated)
+                    .FirstOrDefaultAsync();
+
+                if (previousTransaction != null)
+                {
+                    previousTransaction.IsActive = true;
+                }
+                transaction.IsActive = false;
+            }
 
       status.IsActive = false;
       status.DateModified = date;

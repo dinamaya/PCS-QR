@@ -14,5 +14,6 @@
     public string DateUpdated { get; set; }
     public string DaysAged { get; set; }
     public string IsActive { get; set; }
+    public string UpdatedByFullName { get; set; }
   }
 }
