@@ -8,7 +8,7 @@ namespace CCIMS.Web.Models.ViewModels
     public string CustomerName { get; set; }
     public string SerialNumber { get; set; }
 
-    public SpaCaseCreationEmailDetailsViewModel(IConfigurationRepository configRepo, string caseNumber) : base(configRepo, caseNumber)
+    public SpaCaseCreationEmailDetailsViewModel(IConfigurationRepository configRepo, string caseNumber) : base(configRepo, caseNumber, "")
     {
     }
   }

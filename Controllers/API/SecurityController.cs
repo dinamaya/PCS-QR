@@ -41,6 +41,24 @@ namespace CCIMS.Web.Controllers.API
 			}
 		}
 
+    [HttpGet("enc/case-ref-no")]
+		public async Task<IActionResult> EncryptingCaseNumber(string caseNumber)
+		{
+			try
+			{
+				var encCaseNumber = await _secureRepo.EncryptIDAsync(caseNumber);
+
+				if (encCaseNumber == null) return NotFound("Case not found");
+
+				return Ok(encCaseNumber);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "An error occurred while encrypting.");
+				return BadRequest(ex.Message);
+			}
+		}
+
     // Provide password to hash
     [HttpGet("/qr/aes")]
     public async Task<IActionResult> HashQr(string qrId)

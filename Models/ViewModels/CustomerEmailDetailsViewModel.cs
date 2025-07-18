@@ -8,7 +8,7 @@ namespace CCIMS.Web.Models.ViewModels
     public string ServicePartner { get; set; }
     public string Fullname { get; set; }
 
-    public CustomerEmailDetailsViewModel(IConfigurationRepository configRepo, string caseNumber) : base(configRepo, caseNumber)
+    public CustomerEmailDetailsViewModel(IConfigurationRepository configRepo, string caseNumber, string encryptedCaseNumber) : base(configRepo, caseNumber, encryptedCaseNumber)
     {
     }
   }

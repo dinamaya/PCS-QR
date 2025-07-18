@@ -39,7 +39,7 @@ namespace CCIMS.Web.Services.Implementations
       _configRepo = configRepo;
     }
 
-		public async Task<TaskResultDto> SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber)
+		public async Task<TaskResultDto> SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber, string encryptedCaseNumber)
 		{
 			try
 			{
@@ -47,7 +47,7 @@ namespace CCIMS.Web.Services.Implementations
         var icons = Path.Combine(_server.RootDirectory, "img", "icons");
         var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
 
-        var custModel = new CustomerEmailDetailsViewModel(_configRepo, caseNumber)
+        var custModel = new CustomerEmailDetailsViewModel(_configRepo, caseNumber, encryptedCaseNumber)
         {
           Email = customerDto.Email,
           ServicePartner = customerDto.ServicePartner,
