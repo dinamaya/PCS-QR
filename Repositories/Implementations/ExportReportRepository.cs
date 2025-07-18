@@ -132,9 +132,12 @@ namespace CCIMS.Web.Repositories.Implementations
             worksheet.Cell(1, 5).Value = "Service Partner";
             worksheet.Cell(1, 6).Value = "Serial Number";
             worksheet.Cell(1, 7).Value = "Date Created";
+            worksheet.Cell(1, 8).Value = "Date Updated";
+            worksheet.Cell(1, 9).Value = "Updated By";
+            worksheet.Cell(1, 10).Value = "Days Aged";
 
             // Style headers
-            var headerRange = worksheet.Range("A1:G1");
+            var headerRange = worksheet.Range("A1:J1");
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -152,6 +155,9 @@ namespace CCIMS.Web.Repositories.Implementations
                 worksheet.Cell(i + 2, 5).Value = row.ServicePartner;
                 worksheet.Cell(i + 2, 6).Value = row.SerialNumber;
                 worksheet.Cell(i + 2, 7).Value = row.DateCreated;
+                worksheet.Cell(i + 2, 8).Value = row.DateUpdated;
+                worksheet.Cell(i + 2, 9).Value = row.UpdatedBy;
+                worksheet.Cell(i + 2, 10).Value = row.DaysAged;
             }
         }
 
@@ -163,7 +169,7 @@ namespace CCIMS.Web.Repositories.Implementations
             // Add borders to all cells
             if (dataCount > 0)
             {
-                var dataRange = worksheet.Range(1, 1, dataCount + 1, 7);
+                var dataRange = worksheet.Range(1, 1, dataCount + 1, 10);
                 dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
             }
@@ -179,7 +185,10 @@ namespace CCIMS.Web.Repositories.Implementations
                 CustomerName = caseRow.CustomerName ?? string.Empty,
                 ServicePartner = caseRow.ServicePartnerName ?? string.Empty,
                 SerialNumber = caseRow.SerialNumber ?? string.Empty,
-                DateCreated = caseRow.DateCreated ?? string.Empty
+                DateCreated = caseRow.DateCreated ?? string.Empty,
+                DateUpdated = caseRow.DateUpdated ?? string.Empty,
+                UpdatedBy = caseRow.UpdatedByFullName ?? string.Empty,
+                DaysAged = caseRow.DaysAged ?? string.Empty
             };
         }
     }

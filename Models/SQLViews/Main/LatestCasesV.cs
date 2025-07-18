@@ -38,4 +38,9 @@ public partial class LatestCasesV
   public int? AgedDays { get; set; }
 
   public DateTime DateCreated { get; set; }
+
+  public string? FirstName { get; set; }
+
+  public string? LastName { get; set; }
+
 }

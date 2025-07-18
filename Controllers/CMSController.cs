@@ -91,8 +91,15 @@ namespace CCIMS.Web.Controllers
             ViewData[Keys.ViewData.SUCCESS] = "Case Status Updated Successfully!";
         }
 
-        if (!c.IsNullOrEmpty() && v.IsNullOrEmpty())
-          throw new InvalidOperationException(Exceptions.Message.INVALID_SEARCH_QUERY);
+                var categories = _configRepo.GetCategoriesSearcOptions();
+                var outOfSlaCategory = categories.FirstOrDefault(cat => cat.Label == "Out of SLA");
+                string outOfSlaCategoryId = outOfSlaCategory?.Value ?? string.Empty;
+
+                if (!c.IsNullOrEmpty() && v.IsNullOrEmpty() && c != outOfSlaCategoryId)
+                {
+                    ViewData[Keys.ViewData.ERROR] = Exceptions.Message.INVALID_SEARCH_QUERY; 
+                    return View(Enumerable.Empty<CaseRowViewModel>()); 
+                }
 
         if (!dateRange.IsNullOrEmpty())
         {
@@ -101,22 +108,33 @@ namespace CCIMS.Web.Controllers
           endDate = dates.EndDate;
         }
 
-        if (!c.IsNullOrEmpty() && !v.IsNullOrEmpty())
+                if (!c.IsNullOrEmpty())
         {
-          v = v.Trim();
-          if (d.IsNullOrEmpty() && dateRange.IsNullOrEmpty())
+                    v = v?.Trim() ?? string.Empty; 
+
+                    if (dateRange.IsNullOrEmpty())
+                    {
             results = await _caseRepo.GetByCategory(c, v);
-          else if (d.IsNullOrEmpty() && !dateRange.IsNullOrEmpty())
+                    }
+                    else
+                    {
             results = await _caseRepo.GetDateRangeFilteredCasesByCategory(c, v, startDate, endDate);
+                    }
+                }
+                else if (!d.IsNullOrEmpty()) 
+                {
+                    if (dateRange.IsNullOrEmpty())
+                    {
+                        results = await _caseRepo.GetDataAged3DaysByServicePartner(d);
+                    }
           else
+                    {
             results = Enumerable.Empty<CaseRowViewModel>();
         }
+                }
         else
         {
-          if (!d.IsNullOrEmpty() && dateRange.IsNullOrEmpty())
-            results = await _caseRepo.GetDataAged3DaysByServicePartner(d);
-          else
-            results = Enumerable.Empty<CaseRowViewModel>();
+                    results = await _caseRepo.GetAll();
         }
 
         return View(results);
