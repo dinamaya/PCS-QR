@@ -1,6 +1,7 @@
 ﻿using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace CCIMS.Web.Controllers.API
 {
   [Route("api/fetch")]
   [ApiController]
+  [Authorize]
   public class DataFetchController : ControllerBase
   {
     private readonly IServicePartnerRepository _spRepo;
