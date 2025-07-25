@@ -71,10 +71,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         } else if (label === "Service Partner Name") {
             // For "Service Partner Name", show text input AND date picker
             $textWrapper.removeClass("d-none");
-
-            // Show datepicker for Service Partner
-            if (label === "Service Partner Name") {
-                $dateRangeContainer.removeClass("d-none");
+            $dateRangeContainer.removeClass("d-none");
         } else if (label && label !== "Select Categories" && label !== "") {
             // For other simple text-based categories (e.g., "Serial Number", "Case Number / ID", "Remarks / Comment")
             $textWrapper.removeClass("d-none"); // Show text input field
