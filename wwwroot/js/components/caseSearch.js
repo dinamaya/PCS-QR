@@ -25,10 +25,6 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
     statusList = statuses;
     agedList = agedCounts;
 
-    const $selectWrapper = $selectValue.closest(".col");
-    const $textWrapper = $textValue.closest(".col");
-    const $btnWrapper = $btnSearch.closest(".col-12");
-
     choicesCategory = new Choices($selectCategory[0], {
         searchEnabled: false
     });
@@ -36,12 +32,6 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         searchEnabled: false,
         shouldSort: false
     });
-
-    // Hide all components initially, except for the category dropdown
-    $selectWrapper.addClass("d-none");
-    $textWrapper.addClass("d-none");
-    $dateRangeContainer.addClass("d-none");
-    $btnWrapper.addClass("d-none");
 
     // Initialize flatpickr
     if (document.querySelector('.datepicker')) {
@@ -57,12 +47,11 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
     $selectCategory.on('change', function () {
         const label = $(this).find("option:selected").text().trim();
         reset();
+        const $selectWrapper = $selectValue.closest(".col").parent();
+        const $textWrapper = $textValue.closest(".col").parent();
         $selectWrapper.addClass("d-none");
         $textWrapper.addClass("d-none");
         $dateRangeContainer.addClass("d-none"); // Hide datepicker by default
-        $btnWrapper.removeClass("d-none");
-        $("#pnl-search").removeClass("d-none");
-
 
         if (label === "Out of SLA") {
             // For "Out of SLA", only show date picker
@@ -82,19 +71,13 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         } else if (label === "Service Partner Name") {
             // For "Service Partner Name", show text input AND date picker
             $textWrapper.removeClass("d-none");
-
-            // Show datepicker for Service Partner
-            if (label === "Service Partner Name") {
-                $dateRangeContainer.removeClass("d-none");
-            }
+            $dateRangeContainer.removeClass("d-none");
         } else if (label && label !== "Select Categories" && label !== "") {
             // For other simple text-based categories (e.g., "Serial Number", "Case Number / ID", "Remarks / Comment")
             $textWrapper.removeClass("d-none"); // Show text input field
         } else {
             // "Select Categories" or empty label, ensure value is cleared
             $hiddenValue.val("");
-            $btnWrapper.addClass("d-none");
-            $("#pnl-search").addClass("d-none");
         }
 
 
