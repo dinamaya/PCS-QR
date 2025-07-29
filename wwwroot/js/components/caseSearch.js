@@ -32,6 +32,8 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         searchEnabled: false,
         shouldSort: false
     });
+    $selectValue.closest(".col").parent().addClass("d-none");
+    $textValue.closest(".col").parent().parent().addClass("d-none");
 
     // Initialize flatpickr
     if (document.querySelector('.datepicker')) {
