@@ -32,6 +32,8 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         searchEnabled: false,
         shouldSort: false
     });
+    $selectValue.closest(".col").parent().addClass("d-none");
+    $textValue.closest(".col").parent().parent().addClass("d-none");
 
     // Initialize flatpickr
     if (document.querySelector('.datepicker')) {
@@ -67,14 +69,11 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
             $selectWrapper.removeClass("d-none");
             choicesValue.setChoices(statusList, 'value', 'label', false);
             choicesValue.setChoiceByValue("");
-                $dateRangeContainer.removeClass("d-none");
+            $dateRangeContainer.removeClass("d-none");
         } else if (label === "Service Partner Name") {
             // For "Service Partner Name", show text input AND date picker
             $textWrapper.removeClass("d-none");
-
-            // Show datepicker for Service Partner
-            if (label === "Service Partner Name") {
-                $dateRangeContainer.removeClass("d-none");
+            $dateRangeContainer.removeClass("d-none");
         } else if (label && label !== "Select Categories" && label !== "") {
             // For other simple text-based categories (e.g., "Serial Number", "Case Number / ID", "Remarks / Comment")
             $textWrapper.removeClass("d-none"); // Show text input field
@@ -117,7 +116,7 @@ export function initComponents(selectCategoryId, btnSearchId, textValueId, selec
         event.preventDefault();
         const params = new URLSearchParams();
 
-        
+
         if ($selectCategory.val() != "" && $hiddenValue.val() == "") {
             params.set('c', $selectCategory.val());
             params.set('v', "");

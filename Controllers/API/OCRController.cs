@@ -11,6 +11,7 @@ namespace CCIMS.Web.Controllers.API
 {
   [Route("api/ocr")]
   [ApiController]
+  [Authorize]
   public class OCRController : ControllerBase
   {
     private readonly FileManager _fileManager;

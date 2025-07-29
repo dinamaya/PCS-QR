@@ -48,10 +48,47 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-  name: "default",
-  pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "admin",
+        pattern: "{controller=Home}/{action=Index}/{id?}",
+        defaults: new { controller = "Home", action = "Index" },
+        constraints: new { subdomain = new SubdomainRouteConstraint("admin-cci") }
+    );
 
+    endpoints.MapControllerRoute(
+        name: "external-tracking",
+        pattern: "Cases/Tracking/{id?}",
+        defaults: new { controller = "Cases", action = "Tracking" },
+        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+    );
+
+    endpoints.MapControllerRoute(
+        name: "external-scan",
+        pattern: "Customer/Scan/{data?}",
+        defaults: new { controller = "Customer", action = "Scan" },
+        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+    );
+
+    endpoints.MapControllerRoute(
+        name: "external-register",
+        pattern: "Customer/Register/{token?}",
+        defaults: new { controller = "Customer", action = "Register" },
+        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+    );
+
+    endpoints.MapControllerRoute(
+        name: "external-catch-all",
+        pattern: "{*url}",
+        defaults: new { controller = "Cases", action = "Tracking" },
+        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+    );
+
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 
 #region Database Seeding
 using (var scope = app.Services.CreateScope())

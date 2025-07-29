@@ -125,7 +125,7 @@
         }
 
         // If there's a search form, attach spinner logic to its submission
-        const searchForm = document.querySelector('@CCIMS.Web.App_Code._Globals.Constants.Routes.Partials.Cases.SEARCH form'); // Assuming the search partial has a form
+        const searchForm = document.querySelector('form-search'); // Assuming the search partial has a form
         if (searchForm) {
             searchForm.addEventListener('submit', function() {
                 showPageSpinner();
