@@ -1,4 +1,5 @@
-﻿using CCIMS.Web.App_Code._Globals.Constants;
+﻿using CCIMS.Web.App_Code._Globals;
+using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,13 +13,15 @@ namespace CCIMS.Web.Controllers
     private readonly ICaseRepository _caseRepo;
     private readonly ICustomerRepository _customerRepo;
     private readonly ITransactionRepository _transRepo;
+    private readonly ISecurityRepository _secRepo;
 
-		public CasesController(ICaseRepository caseRepo, ICustomerRepository customerRepo, ITransactionRepository transRepo)
-		{
-			_caseRepo = caseRepo;
-			_customerRepo = customerRepo;
-			_transRepo = transRepo;
-		}
+    public CasesController(ICaseRepository caseRepo, ICustomerRepository customerRepo, ITransactionRepository transRepo, ISecurityRepository secRepo)
+    {
+      _caseRepo = caseRepo;
+      _customerRepo = customerRepo;
+      _transRepo = transRepo;
+      _secRepo = secRepo;
+    }
 
     [Authorize(Roles = "SPA"), HttpGet]
     public async Task<IActionResult> Update(string id, string? q = null)
@@ -51,11 +54,24 @@ namespace CCIMS.Web.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Tracking(string? refNo)
     {
+      string decRefNo = "";
+      try
+      {
+        if(!refNo.IsNullOrEmpty())
+          decRefNo = await _secRepo.DecryptIDAsync(refNo);
+      }
+      catch (Exception ex)
+      {
+        ViewData[Keys.ViewData.ERROR] = ex.Message;
+        return View("Tracking", decRefNo);
+      }
+
       try
       {
         if (!refNo.IsNullOrEmpty())
         {
-          var _case = await _caseRepo.GetByCaseNumber(refNo);
+
+          var _case = await _caseRepo.GetByCaseNumber(decRefNo);
           long caseId = long.Parse(_case.Id);
           var transactions = await _transRepo.GetAllByCaseId(caseId);
 
@@ -66,12 +82,12 @@ namespace CCIMS.Web.Controllers
           ViewData[Keys.ViewData.TRANSACTIONS] = transactions;
         }
 
-        return View("Tracking", refNo);
+        return View("Tracking", decRefNo);
       }
       catch (Exception ex)
       {
         ViewData[Keys.ViewData.ERROR] = ex.Message;
-        return View("Tracking", refNo);
+        return View("Tracking", decRefNo);
       }
     }
 

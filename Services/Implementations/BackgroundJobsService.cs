@@ -12,13 +12,15 @@ namespace CCIMS.Web.Services.Implementations
 		private readonly IEmailService _emailService;
 		private readonly IConfigurationRepository _configRepo;
 		private readonly ICaseRepository _caseRepo;
+		private readonly ISecurityRepository _secureRepo;
 
-    public BackgroundJobsService(ILogger<BackgroundJobsService> logger, IEmailService emailService, ICaseRepository caseRepo, IConfigurationRepository configRepo)
+    public BackgroundJobsService(ILogger<BackgroundJobsService> logger, IEmailService emailService, ICaseRepository caseRepo, IConfigurationRepository configRepo, ISecurityRepository secureRepo)
     {
       _logger = logger;
       _emailService = emailService;
       _caseRepo = caseRepo;
       _configRepo = configRepo;
+      _secureRepo = secureRepo;
     }
 
     public async Task SendCasesAgedEmail()
@@ -42,7 +44,8 @@ namespace CCIMS.Web.Services.Implementations
 
     public async Task SendCaseClosedEmail(CaseDetailsV caseDetails)
     {
-      var emailDetails = new CustomerEmailDetailsViewModel(_configRepo, caseDetails.CaseNumber)
+      string encCaseNumber = await _secureRepo.EncryptIDAsync(caseDetails.CaseNumber);
+      var emailDetails = new CustomerEmailDetailsViewModel(_configRepo, caseDetails.CaseNumber, encCaseNumber)
       {
         Email = caseDetails.Email,
         Fullname = $"{caseDetails.FirstName} {caseDetails.LastName}",
@@ -57,9 +60,9 @@ namespace CCIMS.Web.Services.Implementations
         _logger.LogError(result.Message);
     }
 
-    public async Task SendCaseCreateEmail(CreateCustomerDto emailDetails, string caseNumber)
+    public async Task SendCaseCreateEmail(CreateCustomerDto emailDetails, string caseNumber, string encryptedCaseNumber)
     {
-      var result = await _emailService.SendCustomerRegistrationNotificationAsync(emailDetails, caseNumber);
+      var result = await _emailService.SendCustomerRegistrationNotificationAsync(emailDetails, caseNumber, encryptedCaseNumber);
 
       if (result.IsOk())
         _logger.LogInformation(result.Message);

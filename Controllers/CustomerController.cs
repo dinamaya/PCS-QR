@@ -24,23 +24,25 @@ namespace CCIMS.Web.Controllers
 		private readonly ISecurityRepository _securityRepo;
 		private readonly IServicePartnerRepository _spRepo;
 		private readonly IEmailService _emailService;
+		private readonly ISecurityRepository _secRepo;
 		private readonly MainDbContext _mainDb;
 
-		public CustomerController(
-			ICustomerRepository customerRepository,
-			ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo, IConfigurationRepository configRepo, ITokenProvider tokenProvider, IServicePartnerRepository spRepo, IEmailService emailService)
-		{
-			_customerRepository = customerRepository;
-			_logger = logger;
-			_configRepo = configRepo;
-			_tokenProvider = tokenProvider;
-			_mainDb = mainDb;
-			_securityRepo = securityRepo;
-			_spRepo = spRepo;
-			_emailService = emailService;
-		}
+    public CustomerController(
+      ICustomerRepository customerRepository,
+      ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo, IConfigurationRepository configRepo, ITokenProvider tokenProvider, IServicePartnerRepository spRepo, IEmailService emailService, ISecurityRepository secRepo)
+    {
+      _customerRepository = customerRepository;
+      _logger = logger;
+      _configRepo = configRepo;
+      _tokenProvider = tokenProvider;
+      _mainDb = mainDb;
+      _securityRepo = securityRepo;
+      _spRepo = spRepo;
+      _emailService = emailService;
+      _secRepo = secRepo;
+    }
 
-		[HttpGet]
+    [HttpGet]
 		public async Task<IActionResult> Register(string token)
 		{
 			try
@@ -86,13 +88,15 @@ namespace CCIMS.Web.Controllers
 				}
 
 				string caseNumber = await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
+				string encCaseNumber = await _secRepo.EncryptIDAsync(caseNumber);
 
         BackgroundJob.Enqueue<BackgroundJobsService>(
-          (service) => service.SendCaseCreateEmail(createCustomerDto, caseNumber));
+          (service) => service.SendCaseCreateEmail(createCustomerDto, caseNumber, encCaseNumber));
 
 				_tokenProvider.Remove(createCustomerDto.Token);
+				ViewData[Keys.ViewData.CASE] = caseNumber; 
 
-				return View("ThankYou", caseNumber);
+        return View("ThankYou", encCaseNumber);
 			}
 			catch (Exception ex)
 			{
