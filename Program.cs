@@ -24,6 +24,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddHangfireConfigExtension();
 #endregion
 
+var config = builder.Configuration;
+var adminSubdomain = config["SubdomainConfig:Admin"];
+var externalSubdomain = config["SubdomainConfig:External"];
 
 var app = builder.Build();
 
@@ -54,35 +57,35 @@ app.UseEndpoints(endpoints =>
         name: "admin",
         pattern: "{controller=Home}/{action=Index}/{id?}",
         defaults: new { controller = "Home", action = "Index" },
-        constraints: new { subdomain = new SubdomainRouteConstraint("admin-cci") }
+        constraints: new { subdomain = new SubdomainRouteConstraint(adminSubdomain) }
     );
 
     endpoints.MapControllerRoute(
         name: "external-tracking",
         pattern: "Cases/Tracking/{id?}",
         defaults: new { controller = "Cases", action = "Tracking" },
-        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+        constraints: new { subdomain = new SubdomainRouteConstraint(externalSubdomain) }
     );
 
     endpoints.MapControllerRoute(
         name: "external-scan",
         pattern: "Customer/Scan/{data?}",
         defaults: new { controller = "Customer", action = "Scan" },
-        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+        constraints: new { subdomain = new SubdomainRouteConstraint(externalSubdomain) }
     );
 
     endpoints.MapControllerRoute(
         name: "external-register",
         pattern: "Customer/Register/{token?}",
         defaults: new { controller = "Customer", action = "Register" },
-        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+        constraints: new { subdomain = new SubdomainRouteConstraint(externalSubdomain) }
     );
 
     endpoints.MapControllerRoute(
         name: "external-catch-all",
         pattern: "{*url}",
         defaults: new { controller = "Cases", action = "Tracking" },
-        constraints: new { subdomain = new SubdomainRouteConstraint("cci") }
+        constraints: new { subdomain = new SubdomainRouteConstraint(externalSubdomain) }
     );
 
     endpoints.MapControllerRoute(
