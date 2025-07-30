@@ -4,7 +4,6 @@ using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -12,7 +11,6 @@ namespace CCIMS.Web.Controllers.API
 {
   [Route("api/cases")]
   [ApiController]
-  [Authorize]
   public class CasesController : ControllerBase
   {
     private readonly ICaseRepository _caseRepo;

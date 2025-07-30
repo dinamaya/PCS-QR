@@ -1,13 +1,11 @@
 ﻿using CCIMS.Web.Models.Entities.Auth;
 using CCIMS.Web.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CCIMS.Web.Controllers.API
 {
 	[ApiController, Route("api/secure")]
-    [Authorize]
     public class SecurityController : ControllerBase
 	{
 		private readonly ILogger<SecurityController> _logger;
