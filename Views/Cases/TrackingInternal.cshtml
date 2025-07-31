@@ -23,7 +23,7 @@
 				IdName = "textVal",
 				Title = "Case Number",
 				ClassName = "col mx-2 mb-2 ",
-				InputClassName = "border-0",
+				InputClassName = "border-1",
 				IsLabelVisible = false,
 				IsCompact = true,
 				Value = Model ?? _case?.CaseNumber ?? "",
@@ -41,7 +41,7 @@
 	<div class="row">
 		<div class="col-12">
 			<div class="card mb-4">
-				<div class="card-header pb-0">
+				<div class="card-header pb-0 mb-4">
 					<div class="d-lg-flex">
 						<div class="w-100 w-lg-40">
 							<h6 class="mb-0">Case Tracking</h6>
@@ -55,7 +55,6 @@
 									<div class="col">
 										@await Html.PartialAsync(Routes.Partials.Inputs.TEXTBOX, caseNumber)
 									</div>
-
 									<div class="col-12 col-lg-4 h-auto">
 										<div class="px-2 d-flex mx-2 pb-2 h-100 justify-content-center align-content-center">
 											<button type="submit" class="w-100 h-auto btn bg-gradient-primary btn-sm mb-0" id="btn-search">
