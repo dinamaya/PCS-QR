@@ -11,7 +11,10 @@
 	ViewData[Keys.ViewData.TITLE] = "Case Tracking";
 
 	var adminDomain = Configuration["SubdomainConfig:Admin"];
-	var loginUrl = $"https://{adminDomain}.aldin.dev/Auth/Login";
+	var externalDomain = Configuration["SubdomainConfig:External"];
+	var loginUrl = $"https://{adminDomain}.vstecs.com.ph/Auth/Login";
+	var currentHost = Context.Request.Host.Host;
+	var isExternal = currentHost.StartsWith(externalDomain);
 	var _user = User.Identities.FirstOrDefault();
 
 	var _case = (CaseDetailsViewModel)ViewData[Keys.ViewData.CASE];
@@ -36,7 +39,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
 	<div class="container">
-		<a class="navbar-brand m-0 px-4 text-white" href="@loginUrl">
+		<a class="navbar-brand m-0 px-4 text-white" href="@(isExternal ? null : loginUrl)">
 			<img src="../img/icons/icon_vst_sm.svg" class="navbar-brand-img h-100" style="max-height: 2.2rem;" alt="main_logo">
 			<span class="ms-1 font-weight-bolder fs-6">CCI Monitoring System</span>
 		</a>
