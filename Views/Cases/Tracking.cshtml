@@ -41,7 +41,7 @@
 	<div class="container">
 		<a class="navbar-brand m-0 px-4 text-white" href="@(isExternal ? null : loginUrl)">
 			<img src="../img/icons/icon_vst_sm.svg" class="navbar-brand-img h-100" style="max-height: 2.2rem;" alt="main_logo">
-			<span class="ms-1 font-weight-bolder fs-6">CCI Monitoring System</span>
+			<span class="ms-1 font-weight-bolder fs-6">@(isExternal || !_user.IsAuthenticated ? "CCI Monitoring System" : "Back to Dashboard")</span>
 		</a>
 	</div>
 </nav>
