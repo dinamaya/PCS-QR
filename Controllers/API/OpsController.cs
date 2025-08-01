@@ -10,7 +10,6 @@ namespace CCIMS.Web.Controllers.API
 {
   [Route("api/ops")]
   [ApiController]
-  [Authorize]
   public class OpsController : ControllerBase
   {
     private readonly IOperationsRepository _opsRepo;

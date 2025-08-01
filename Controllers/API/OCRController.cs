@@ -3,7 +3,6 @@ using CCIMS.Web.App_Code._Globals.Constants;
 using CCIMS.Web.App_Code._Globals.Extensions;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +10,6 @@ namespace CCIMS.Web.Controllers.API
 {
   [Route("api/ocr")]
   [ApiController]
-  [Authorize]
   public class OCRController : ControllerBase
   {
     private readonly FileManager _fileManager;

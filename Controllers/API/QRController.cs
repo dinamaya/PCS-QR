@@ -9,13 +9,11 @@ using CCIMS.Web.Models.Entities.Main;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.IdentityModel.Tokens;
 using Azure;
-using Microsoft.AspNetCore.Authorization;
 
 namespace CCIMS.Web.Controllers.API
 {
 	[Route("api/qr")]
 	[ApiController]
-    [Authorize]
     public class QRController : ControllerBase
 	{
 		private readonly ITokenProvider _tokenProvider;

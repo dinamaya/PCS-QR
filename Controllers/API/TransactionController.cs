@@ -2,7 +2,6 @@
 using CCIMS.Web.App_Code._Globals.Extensions;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +9,6 @@ namespace CCIMS.Web.Controllers.API
 {
   [Route("api/transaction")]
   [ApiController]
-  [Authorize]
   public class TransactionController : ControllerBase
   {
     private readonly ITransactionRepository _transRepo;
