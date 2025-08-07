@@ -47,9 +47,9 @@ namespace CCIMS.Web.Context.Seeder
         {
           var acc1 = new Account
           {
-            UserName = "aldin_amaya",
+            UserName = "ops_aamaya",
             PersonID = context.People.FindAsync(p1.Id).Result.Id,
-            Email = "aldin_amaya@gmail.com",
+            Email = "aldinamaya@gmail.com",
             CreatedBy = "1",
             ModifiedBy = "1",
             DateCreated = date,
@@ -62,9 +62,9 @@ namespace CCIMS.Web.Context.Seeder
 
           var acc2 = new Account
           {
-            UserName = "kenjie_sama",
+            UserName = "spa_knapura",
             PersonID = context.People.FindAsync(p2.Id).Result.Id,
-            Email = "kenjie@gmail.com",
+            Email = "ken_napura@msi-ecs.com.ph",
             CreatedBy = acc1.Id,
             ModifiedBy = acc1.Id,
             DateCreated = date,
@@ -78,7 +78,7 @@ namespace CCIMS.Web.Context.Seeder
             if (!result1.Succeeded)
               throw new Exception($"Failed to create user {acc1.UserName}: {string.Join(", ", result1.Errors.Select(e => e.Description))}");
 
-            var result2 = await userManager.CreateAsync(acc2, "Kenjie4Ever!");
+            var result2 = await userManager.CreateAsync(acc2, "K3njie_SP@!00");
             if (!result2.Succeeded)
               throw new Exception($"Failed to create user {acc2.UserName}: {string.Join(", ", result2.Errors.Select(e => e.Description))}");
 
