@@ -1,4 +1,4 @@
-﻿import { download, httpGet } from '../utils.js';
+﻿import { download, httpGet, httpPost } from '../utils.js';
 
 var hdnQrId = null;
 var hdnSpId = null;
@@ -61,4 +61,27 @@ export function resetQr() {
 		hdnSpId.val("");
 		$("#img-qrCode").attr("src", "/img/qr_placeholder.png");
 	}, 800);
+}
+
+export function emailQr() {
+	const spId = hdnSpId.val();
+	const dto = { spId: spId };
+
+	httpPost(
+		'/api/qr/email',
+		dto,
+		'modal-qr',
+		'Emailing QR Code Failed',
+		'There was a problem while emailing the QR code.',
+		null,
+		null,
+		null,
+		() => {
+			Swal.fire({
+				title: 'Email Sent!',
+				text: 'The QR code has been sent to the service partner.',
+				icon: 'success'
+			});
+		}
+	);
 }

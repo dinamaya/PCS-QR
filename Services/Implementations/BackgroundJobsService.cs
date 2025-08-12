@@ -13,14 +13,19 @@ namespace CCIMS.Web.Services.Implementations
 		private readonly IConfigurationRepository _configRepo;
 		private readonly ICaseRepository _caseRepo;
 		private readonly ISecurityRepository _secureRepo;
+        private readonly IServicePartnerRepository _spRepo;
+        private readonly IQRRepository _qrRepo;
 
-    public BackgroundJobsService(ILogger<BackgroundJobsService> logger, IEmailService emailService, ICaseRepository caseRepo, IConfigurationRepository configRepo, ISecurityRepository secureRepo)
+
+    public BackgroundJobsService(ILogger<BackgroundJobsService> logger, IEmailService emailService, ICaseRepository caseRepo, IConfigurationRepository configRepo, ISecurityRepository secureRepo, IServicePartnerRepository spRepo, IQRRepository qrRepo)
     {
       _logger = logger;
       _emailService = emailService;
       _caseRepo = caseRepo;
       _configRepo = configRepo;
       _secureRepo = secureRepo;
+      _spRepo = spRepo;
+      _qrRepo = qrRepo;
     }
 
     public async Task SendCasesAgedEmail()
@@ -69,5 +74,25 @@ namespace CCIMS.Web.Services.Implementations
       else
         _logger.LogError(result.Message);
     }
-  }
+
+    public async Task SendQrCodeEmail(string spId)
+    {
+            var sp = await _spRepo.GetQRById(spId);
+            var qrId = sp.QRCodeId;
+            var qrCode = await _qrRepo.GetById(qrId);
+
+            var emailDetails = new CaseQrCodeEmailViewModel(_configRepo)
+            {
+                Email = sp.Email,
+                Fullname = sp.ContactPerson,
+            };
+
+            var result = await _emailService.SendQrCodeEmailAsync(emailDetails, qrCode);
+
+            if (result.IsOk())
+                _logger.LogInformation(result.Message);
+            else
+                _logger.LogError(result.Message);
+     }
+    }
 }

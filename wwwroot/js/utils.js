@@ -206,7 +206,7 @@ export function httpPut(url, dto, modalId, errorTitle, errorDescription, notifLi
   });
 }
 
-export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList, onBeforeSendCallback = null, onCompleteCallback = null)
+export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifList, onBeforeSendCallback = null, onCompleteCallback = null, successCallback = null)
 {
   console.log(url);
   $.ajax({
@@ -219,8 +219,12 @@ export function httpPost(url, dto, modalId, errorTitle, errorDescription, notifL
         onBeforeSendCallback();
     },
     success: function (response) {
-      hideModal(modalId);
-      refreshPage(window.okCreateParam);
+        if (successCallback) {
+            successCallback(response);
+        } else {
+            hideModal(modalId);
+            refreshPage(window.okCreateParam);
+        }
     },
     error: (error) =>
       handleError(error, errorTitle, errorDescription, notifList),

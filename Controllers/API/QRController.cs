@@ -9,83 +9,93 @@ using CCIMS.Web.Models.Entities.Main;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.IdentityModel.Tokens;
 using Azure;
+using Hangfire;
+using CCIMS.Web.Services.Implementations;
 
 namespace CCIMS.Web.Controllers.API
 {
-	[Route("api/qr")]
-	[ApiController]
+    [Route("api/qr")]
+    [ApiController]
     public class QRController : ControllerBase
-	{
-		private readonly ITokenProvider _tokenProvider;
-		private readonly ISecurityRepository _securityRepo;
-		private readonly IQRRepository _qrRepo;
-		private readonly IServicePartnerRepository _spRepo;
-
-		private readonly MainDbContext _mainDb;
-
-    public QRController(ITokenProvider tokenProvider, MainDbContext mainDb, ISecurityRepository securityRepo, IQRRepository qrRepo, IServicePartnerRepository spRepo)
     {
-      _tokenProvider = tokenProvider;
-      _mainDb = mainDb;
-      _securityRepo = securityRepo;
-      _qrRepo = qrRepo;
-      _spRepo = spRepo;
+        private readonly ITokenProvider _tokenProvider;
+        private readonly ISecurityRepository _securityRepo;
+        private readonly IQRRepository _qrRepo;
+        private readonly IServicePartnerRepository _spRepo;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+
+        private readonly MainDbContext _mainDb;
+
+        public QRController(ITokenProvider tokenProvider, MainDbContext mainDb, ISecurityRepository securityRepo, IQRRepository qrRepo, IServicePartnerRepository spRepo, IBackgroundJobClient backgroundJobClient)
+        {
+            _tokenProvider = tokenProvider;
+            _mainDb = mainDb;
+            _securityRepo = securityRepo;
+            _qrRepo = qrRepo;
+            _spRepo = spRepo;
+            _backgroundJobClient = backgroundJobClient;
+        }
+
+        [HttpPost("token")]
+        public async Task<IActionResult> GetToken([FromBody] string data)
+        {
+            if (string.IsNullOrWhiteSpace(data))
+                return BadRequest("Invalid data.");
+
+            string orgQrId = await _securityRepo.DecryptIDAsync(data);
+            bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == orgQrId);
+            if (!doesExist)
+                throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
+
+            var token = _tokenProvider.Generate(data);
+            return Ok(new { token });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ResponseDto<byte[]>>> Get([FromQuery] string? id = null)
+        {
+            var _response = new ResponseDto<byte[]>();
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    var placeholderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/qr_placeholder.png");
+                    var placeholderBytes = await System.IO.File.ReadAllBytesAsync(placeholderPath);
+
+                    _response.Result = placeholderBytes;
+                    _response.Message = "No QR found, returning placeholder.";
+                    return Ok(_response);
+                }
+
+                var qrResult = await _qrRepo.GetById(id);
+                string sp = await _spRepo.GetNameByQrId(id);
+
+                _response.Result = qrResult;
+                _response.Message = sp;
+
+                return Ok(_response);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+
+                return BadRequest(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.Message = "Error: " + ex.Message;
+                _response.IsSuccess = false;
+
+                return BadRequest(_response);
+            }
+        }
+
+        [HttpPost("email")]
+        public IActionResult Email([FromBody] EmailQrCodeRequestDto request)
+        {
+            _backgroundJobClient.Enqueue<BackgroundJobsService>(x => x.SendQrCodeEmail(request.SpId));
+            return Ok();
+        }
     }
-
-    [HttpPost("token")]
-		public async Task<IActionResult> GetToken([FromBody] string data)
-		{
-			if (string.IsNullOrWhiteSpace(data))
-				return BadRequest("Invalid data.");
-		
-			string orgQrId = await _securityRepo.DecryptIDAsync(data);
-      bool doesExist = await _mainDb.QRCodes.AnyAsync(q => q.Id == orgQrId);
-      if (!doesExist)
-        throw new Exception(Exceptions.Message.INVALID_QRREFERENCE);
-
-      var token = _tokenProvider.Generate(data);
-			return Ok(new { token });
-		}
-
-		[HttpGet]
-		public async Task<ActionResult<ResponseDto<byte[]>>> Get([FromQuery] string? id=null)
-		{
-      var _response = new ResponseDto<byte[]>();
-      try
-      {
-				if (string.IsNullOrEmpty(id))
-				{
-					var placeholderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/qr_placeholder.png");
-					var placeholderBytes = await System.IO.File.ReadAllBytesAsync(placeholderPath);
-
-          _response.Result = placeholderBytes;
-					_response.Message = "No QR found, returning placeholder.";
-					return Ok(_response);
-				}
-
-				var qrResult = await _qrRepo.GetById(id);
-        string sp = await _spRepo.GetNameByQrId(id);
-
-        _response.Result = qrResult;
-				_response.Message = sp;
-
-				return Ok(_response);
-			}
-			catch (InvalidOperationException ex)
-			{
-				_response.Message = ex.Message;
-				_response.IsSuccess = false;
-
-				return BadRequest(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.Message = "Error: " + ex.Message;
-				_response.IsSuccess = false;
-
-				return BadRequest(_response);
-			}
-		}
-
-	}
 }

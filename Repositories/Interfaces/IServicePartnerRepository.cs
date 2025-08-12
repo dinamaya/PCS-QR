@@ -6,7 +6,8 @@ namespace CCIMS.Web.Repositories.Interfaces
 {
 	public interface IServicePartnerRepository : ICreateRepository<SPCreationRequestDto> , IEditRepository<SPEditRequestDto>, IDeactivateRepository
   {
-		Task<SPEditResponseDto> GetById(string id);
+	Task<SPEditResponseDto> GetById(string id);
+    Task<SPEditResponseDto> GetQRById(string id);
     Task<IEnumerable<ServicePartnerRowViewModel>> GetAll();
     Task<string> GetNameByQrId(string qrId);
     Task<string> GetQrIdByName(string name);

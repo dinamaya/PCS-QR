@@ -32,7 +32,7 @@
 
 				<div class="modal-footer">
 					<button type="button" class="mx-2 col btn border-1 btn-outline-secondary" data-bs-dismiss="modal" onclick="closeQr()">Close</button>
-					<button type="button" class="mx-2 col btn border-1 bg-gradient-primary" onclick="()">Email</button>
+					<button type="button" class="mx-2 col btn border-1 bg-gradient-primary" onclick="emailQr()">Email</button>
 					<button type="button" class="mx-2 col btn border-1 bg-gradient-primary" onclick="downQr()">Download</button>
 				</div>
 			</div>
@@ -41,9 +41,10 @@
 </div>
 
 <script type="module">
-	import { initQrModal, viewQr as showQr, downloadQr as downQr, resetQr as closeQr } from '/js/components/qrModalView.js';
+    import { initQrModal, viewQr as showQr, downloadQr as downQr, resetQr as closeQr, emailQr } from '/js/components/qrModalView.js';
 	initQrModal('@Url.Content("/api/qr")');
-  window.showQr = showQr;
+    window.showQr = showQr;
 	window.downQr = downQr;
 	window.closeQr = closeQr;
+	window.emailQr = emailQr;
 </script>
