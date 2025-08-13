@@ -17,12 +17,12 @@
 
 					<!-- Divider -->
 					<tr>
-						<td style="border-top: 4px solid #cb0c9f; padding-top: 20px;"></td>
+						<td style="border-top: 4px solid #D53333; padding-top: 20px;"></td>
 					</tr>
 
 					<!-- Thank You Message -->
 					<tr>
-						<td background="{{ BaseUrl }}img/curved-images/banner-1.png" style="background-size: cover; background-repeat: no-repeat; padding: 60px 20px;padding-bottom: 0px;" align="center">
+						<td background="{{ BaseUrl }}img/curved-images/banner-2.png" style="background-size: cover; background-repeat: no-repeat; padding: 60px 20px;padding-bottom: 0px;" align="center">
 							<img src="{{ BaseUrl }}img/icons/diamond.png" alt="Icon" width="48" height="48" style="display: block; border-radius: 50%; background-color: #fff; box-shadow: 0 5px 10px rgba(0,0,0,0.12);" />
 							<h3 style="color: white; font-family: Arial, sans-serif; margin-top: 20px;">Customer Aged Cases</h3>
 							<table style="background: white; justify-content: start; display:flex; padding: 3rem; width: 1400px; box-shadow: 0px 1px 1px 0.4px black;border-radius: 0.5rem 0.5rem 0 0;padding-top: 48px;padding-bottom: 0px;margin-top: 25px;">							</table>
@@ -75,7 +75,7 @@
 															<td style="text-align: center;border: 2px solid;padding-top: 14px;padding-bottom: 14px;width: 120px;">
 																<a href="{{ _case.CaseTrackingLink }}" target="_blank" style="
 																	display: inline-block;
-																	background-color: #cb0c9f;
+																	background-color: #D53333;
 																	color: #ffffff;
 																	font-family: Arial, sans-serif;
 																	font-size: 14px;
