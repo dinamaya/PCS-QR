@@ -94,19 +94,19 @@ app.UseEndpoints(endpoints =>
 });
 
 #region Database Seeding
-using (var scope = app.Services.CreateScope())
-{
-  //Run Only in Dev Mode
-  // Disable this on production to avoid errors
-  // Populate the Database using the Any Development Project.
-  if (app.Environment.IsDevelopment())
-  {
-    var services = scope.ServiceProvider;
-    await AccountSeeder.Run(services);
-    await ServicePartnerSeeder.Run(services);
-    await StatusSeeder.Run(services);
-  }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//  //Run Only in Dev Mode
+//  // Disable this on production to avoid errors
+//  // Populate the Database using the Any Development Project.
+//  if (app.Environment.IsDevelopment())
+//  {
+//    var services = scope.ServiceProvider;
+//    await AccountSeeder.Run(services);
+//    await ServicePartnerSeeder.Run(services);
+//    await StatusSeeder.Run(services);
+//  }
+//}
 #endregion
 
 #region Hangfire Job Initialization
