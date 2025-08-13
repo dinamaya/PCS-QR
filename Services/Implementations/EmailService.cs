@@ -107,7 +107,7 @@ namespace CCIMS.Web.Services.Implementations
 
                 await CreateEmailAsync(
                   emailDetails.Email,
-                  $"CCI Monitoring System - Case Closed",
+                  $"CCI Monitoring System - Case Closed ({emailDetails.CaseNumber}) | {emailDetails.ServicePartner} | {emailDetails.SerialNumber}",
                   htmlBody,
                   _dev,
                   null

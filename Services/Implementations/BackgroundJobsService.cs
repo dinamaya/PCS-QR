@@ -55,6 +55,8 @@ namespace CCIMS.Web.Services.Implementations
         Email = caseDetails.Email,
         Fullname = $"{caseDetails.FirstName} {caseDetails.LastName}",
         ServicePartner = caseDetails.SpName,
+        SerialNumber = caseDetails.SerialNumber,
+
       };
 
       var result = await _emailService.SendCaseClosedNotificationAsync(emailDetails);
