@@ -53,13 +53,14 @@ namespace CCIMS.Web.Services.Implementations
                     Email = customerDto.Email,
                     ServicePartner = customerDto.ServicePartner,
                     Fullname = customer,
+                    SerialNumber = customerDto.SerialNumber,
                 };
 
                 var htmlBody = await RenderEmailAsync(_custTemplatePath, custModel);
 
                 await CreateEmailAsync(
                   customerDto.Email,
-                  $"CCI Monitoring System - Case Registered",
+                            $"CCI Monitoring System - Case Registered ({custModel.CaseNumber}) | {custModel.ServicePartner} | {custModel.SerialNumber}",
                   htmlBody,
                   _dev,
                   null
@@ -83,7 +84,7 @@ namespace CCIMS.Web.Services.Implementations
 
                 await CreateEmailAsync(
                   null,
-                  $"CCI Monitoring System - Aged Cases {DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)}",
+                  $"CCI Monitoring System - Aged Cases ({DateTime.Now.ToLocalTime().ToString(Database.DateFormat.DISPLAY_COMPLETE)})",
                   agedHtmlBody,
                   _dev
                 );
