@@ -20,7 +20,7 @@ namespace CCIMS.Web.Services.Implementations
         private readonly string _agedTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseAgedSpaEmail.sbn");
         private readonly string _custTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationCustomerEmail.sbn");
         private readonly string _closedtemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseClosedCustomerEmail.sbn");
-        private readonly string _qrCodeTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "QrCodeEmail.sbn");
+        private readonly string _qrCodeTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseQrCodeEmail.sbn");
 
         private readonly EmailCredential _dev;
         private readonly EmailCredential _prod;
@@ -126,9 +126,6 @@ namespace CCIMS.Web.Services.Implementations
         {
             try
             {
-                var contentId = Guid.NewGuid().ToString();
-                emailDetails.QrCodeContentId = contentId;
-
                 var tempFilePath = Path.GetTempFileName();
                 await File.WriteAllBytesAsync(tempFilePath, qrCode);
 
@@ -138,14 +135,14 @@ namespace CCIMS.Web.Services.Implementations
                 {
                     new EmailAttachment
                     {
-                        Path = tempFilePath,
-                        ContentId = contentId
+                        Name = "QRCode.png",
+                        Path = tempFilePath
                     }
                 };
 
                 await CreateEmailAsync(
                     emailDetails.Email,
-                    "Your Service Partner QR Code",
+                    $"CCI Monitoring System - QR Code | {emailDetails.Spname}",
                     htmlBody,
                     _dev,
                     attachments
@@ -187,8 +184,14 @@ namespace CCIMS.Web.Services.Implementations
                 {
                     if (!File.Exists(a.Path)) continue;
 
-                    var resource = bodyBuilder.LinkedResources.Add(a.Path);
-                    resource.ContentId = a.ContentId;
+                    var attachment = new MimePart("image", "png")
+                    {
+                        Content = new MimeContent(File.OpenRead(a.Path), ContentEncoding.Default),
+                        ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                        ContentTransferEncoding = ContentEncoding.Base64,
+                        FileName = a.Name
+                    };
+                    bodyBuilder.Attachments.Add(attachment);
                 }
             }
 

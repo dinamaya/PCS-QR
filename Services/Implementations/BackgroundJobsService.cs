@@ -85,6 +85,7 @@ namespace CCIMS.Web.Services.Implementations
             {
                 Email = sp.Email,
                 Fullname = sp.ContactPerson,
+                Spname = sp.CompanyName,
             };
 
             var result = await _emailService.SendQrCodeEmailAsync(emailDetails, qrCode);

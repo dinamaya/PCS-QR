@@ -6,6 +6,7 @@ namespace CCIMS.Web.Models.ViewModels
     {
         public string BaseUrl { get; }
         public string Fullname { get; set; }
+        public string Spname { get; set; }
         public string Email { get; set; }
         public string QrCodeContentId { get; set; }
 
