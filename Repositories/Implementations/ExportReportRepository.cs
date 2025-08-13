@@ -33,6 +33,8 @@ namespace CCIMS.Web.Repositories.Implementations
             // Apply the same filtering logic as the Cases action
             if(!request.ServicePartner.IsNullOrEmpty())
               allCases = await _caseRepo.GetDataAged3DaysByServicePartner(request.ServicePartner);
+            else if (request.Category.IsNullOrEmpty() && request.CategoryValue.IsNullOrEmpty())
+                allCases = await _caseRepo.GetAll();
             else
               allCases = await _caseRepo.GetDateRangeFilteredCasesByCategory(request.Category, request.CategoryValue, startDate, endDate);
 
