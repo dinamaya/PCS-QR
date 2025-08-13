@@ -94,6 +94,28 @@ namespace CCIMS.Web.Services.Implementations
                 _logger.LogInformation(result.Message);
             else
                 _logger.LogError(result.Message);
-     }
+    }
+    
+
+        public async Task SendSPCreateEmail(string spId)
+        {
+            var sp = await _spRepo.GetQRById(spId);
+            var qrId = sp.QRCodeId;
+            var qrCode = await _qrRepo.GetById(qrId);
+
+            var emailDetails = new CaseQrCodeEmailViewModel(_configRepo)
+            {
+                Email = sp.Email,
+                Fullname = sp.ContactPerson,
+                Spname = sp.CompanyName,
+            };
+
+            var result = await _emailService.SendSPCreateNotificationAsync(emailDetails, qrCode);
+
+            if (result.IsOk())
+                _logger.LogInformation(result.Message);
+            else
+                _logger.LogError(result.Message);
+        }
     }
 }

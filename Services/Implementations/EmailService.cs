@@ -158,6 +158,42 @@ namespace CCIMS.Web.Services.Implementations
             }
         }
 
+        public async Task<TaskResultDto> SendSPCreateNotificationAsync(CaseQrCodeEmailViewModel emailDetails, byte[] qrCode)
+        {
+            try
+            {
+                var tempFilePath = Path.GetTempFileName();
+                await File.WriteAllBytesAsync(tempFilePath, qrCode);
+
+                var htmlBody = await RenderEmailAsync(_qrCodeTemplatePath, emailDetails);
+
+                var attachments = new List<EmailAttachment>
+                {
+                    new EmailAttachment
+                    {
+                        Name = "QRCode.png",
+                        Path = tempFilePath
+                    }
+                };
+
+                await CreateEmailAsync(
+                    emailDetails.Email,
+                    $"CCI Monitoring System - {emailDetails.Spname} Added as a Service Partner ",
+                    htmlBody,
+                    _dev,
+                    attachments
+                );
+
+                File.Delete(tempFilePath);
+
+                return TaskResultDto.Success("Email Sent Successfully");
+            }
+            catch (Exception ex)
+            {
+                return TaskResultDto.Fail(Exceptions.GetMessage(ex));
+            }
+        }
+
         private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment>? attachments = null)
         {
             var message = new MimeMessage();

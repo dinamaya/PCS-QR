@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Hangfire;
+using CCIMS.Web.Services.Implementations;
 
 namespace CCIMS.Web.Controllers.API
 {
@@ -19,12 +21,14 @@ namespace CCIMS.Web.Controllers.API
   {
     private readonly IServicePartnerRepository _spRepo;
 		private readonly IQRRepository _qrRepo;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-		public ServicePartnerController(IServicePartnerRepository spRepo, IQRRepository qrRepo)
-		{
-			_spRepo = spRepo;
+        public ServicePartnerController(IServicePartnerRepository spRepo, IQRRepository qrRepo, IBackgroundJobClient backgroundJobClient)
+        {
+            _spRepo = spRepo;
 			_qrRepo = qrRepo;
-		}
+            _backgroundJobClient = backgroundJobClient;
+        }
 
 		[HttpPost]
     public async Task<ActionResult<ResponseDto>> Post([FromBody] SPCreationRequestDto creationDto)
@@ -48,7 +52,9 @@ namespace CCIMS.Web.Controllers.API
 
 				await _qrRepo.CreateAsync(qr, "");
 
-				response.Message = "Service Partner created successfully";
+                _backgroundJobClient.Enqueue<BackgroundJobsService>(x => x.SendSPCreateEmail(_spRepo.InsertedId));
+
+                response.Message = "Service Partner created successfully";
 
 				return Ok(response);
       }
