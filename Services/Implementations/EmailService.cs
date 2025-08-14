@@ -40,7 +40,7 @@ namespace CCIMS.Web.Services.Implementations
             _configRepo = configRepo;
         }
 
-        public async Task<TaskResultDto> SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber, string encryptedCaseNumber)
+        public async Task<TaskResultDto> SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber, string encryptedCaseNumber, string spEmail)
         {
             try
             {
@@ -63,7 +63,8 @@ namespace CCIMS.Web.Services.Implementations
                             $"CCI Monitoring System - Case Registered ({custModel.CaseNumber}) | {custModel.ServicePartner} | {custModel.SerialNumber}",
                   htmlBody,
                   _dev,
-                  null
+                  null,
+                  cc: [spEmail]
                 );
 
                 return TaskResultDto.Success("Email Sent Successfully");
@@ -97,7 +98,7 @@ namespace CCIMS.Web.Services.Implementations
             }
         }
 
-        public async Task<TaskResultDto> SendCaseClosedNotificationAsync(CustomerEmailDetailsViewModel emailDetails)
+        public async Task<TaskResultDto> SendCaseClosedNotificationAsync(CustomerEmailDetailsViewModel emailDetails, string spEmail)
         {
             try
             {
@@ -111,7 +112,8 @@ namespace CCIMS.Web.Services.Implementations
                   $"CCI Monitoring System - Case Closed ({emailDetails.CaseNumber}) | {emailDetails.ServicePartner} | {emailDetails.SerialNumber}",
                   htmlBody,
                   _dev,
-                  null
+                  null,
+                  cc: [spEmail]
                 );
 
                 return TaskResultDto.Success("Email Sent Successfully");
@@ -195,13 +197,19 @@ namespace CCIMS.Web.Services.Implementations
             }
         }
 
-        private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment>? attachments = null)
+        private async Task CreateEmailAsync(string to, string subject, string htmlBody, EmailCredential credential, IEnumerable<EmailAttachment>? attachments = null, IEnumerable<string>? cc = null)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Customer Carry-In Monitoring System", credential.SenderEmailAddress));
 
             foreach (var recipient in _testEmails)
                 message.Cc.Add(new MailboxAddress("", recipient));
+
+            if(cc != null)
+            {
+                foreach (var recipient in cc)
+                    message.Cc.Add(new MailboxAddress("", recipient));
+            }
 
             if (!to.IsNullOrEmpty())
                 message.To.Add(new MailboxAddress("", to));

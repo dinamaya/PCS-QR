@@ -1,4 +1,6 @@
-﻿using CCIMS.Web.App_Code._Globals.Constants;
+﻿using CCIMS.Web.App_Code._Globals;
+using CCIMS.Web.App_Code._Globals.Constants;
+using CCIMS.Web.App_Code._Globals.Extensions;
 using CCIMS.Web.Context;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.ViewModels;
@@ -86,12 +88,16 @@ namespace CCIMS.Web.Controllers
 					ViewBag.ErrorMessage = "Please fill in the required fields";
 					return View("Register", createCustomerDto.Token);
 				}
+				QRTokenDto qrToken = null;
+				_tokenProvider.IsValid(createCustomerDto.Token, out qrToken);
 
-				string caseNumber = await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
+				string decryptedQrId = await _secRepo.DecryptIDAsync(qrToken.QRID);
+                string email = await _mainDb.ServicePartnersVs.AsNoTracking().Where(s => s.QrId == decryptedQrId).Select(s => s.Email).FirstOrDefaultAsync();
+                string caseNumber = await _customerRepository.CreateCustomerCaseAsync(createCustomerDto);
 				string encCaseNumber = await _secRepo.EncryptIDAsync(caseNumber);
 
         BackgroundJob.Enqueue<BackgroundJobsService>(
-          (service) => service.SendCaseCreateEmail(createCustomerDto, caseNumber, encCaseNumber));
+          (service) => service.SendCaseCreateEmail(createCustomerDto, caseNumber, encCaseNumber, email));
 
 				_tokenProvider.Remove(createCustomerDto.Token);
 				ViewData[Keys.ViewData.CASE] = caseNumber; 

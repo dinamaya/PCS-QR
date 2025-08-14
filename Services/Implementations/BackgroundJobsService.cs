@@ -47,7 +47,7 @@ namespace CCIMS.Web.Services.Implementations
         _logger.LogError(result.Message);
     }
 
-    public async Task SendCaseClosedEmail(CaseDetailsV caseDetails)
+    public async Task SendCaseClosedEmail(CaseDetailsV caseDetails, string spEmail)
     {
       string encCaseNumber = await _secureRepo.EncryptIDAsync(caseDetails.CaseNumber);
       var emailDetails = new CustomerEmailDetailsViewModel(_configRepo, caseDetails.CaseNumber, encCaseNumber)
@@ -59,7 +59,7 @@ namespace CCIMS.Web.Services.Implementations
 
       };
 
-      var result = await _emailService.SendCaseClosedNotificationAsync(emailDetails);
+      var result = await _emailService.SendCaseClosedNotificationAsync(emailDetails, spEmail);
 
       if (result.IsOk())
         _logger.LogInformation(result.Message);
@@ -67,9 +67,9 @@ namespace CCIMS.Web.Services.Implementations
         _logger.LogError(result.Message);
     }
 
-    public async Task SendCaseCreateEmail(CreateCustomerDto emailDetails, string caseNumber, string encryptedCaseNumber)
+    public async Task SendCaseCreateEmail(CreateCustomerDto emailDetails, string caseNumber, string encryptedCaseNumber, string spEmail)
     {
-      var result = await _emailService.SendCustomerRegistrationNotificationAsync(emailDetails, caseNumber, encryptedCaseNumber);
+      var result = await _emailService.SendCustomerRegistrationNotificationAsync(emailDetails, caseNumber, encryptedCaseNumber, spEmail);
 
       if (result.IsOk())
         _logger.LogInformation(result.Message);
