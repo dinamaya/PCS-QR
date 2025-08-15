@@ -12,7 +12,7 @@
 
 	var adminDomain = Configuration["SubdomainConfig:Admin"];
 	var externalDomain = Configuration["SubdomainConfig:External"];
-	var loginUrl = $"https://{adminDomain}.vstecs.com.ph/Auth/Login";
+	var loginUrl = $"https://{adminDomain}.msi-ecs.com.ph/Auth/Login";
 	var currentHost = Context.Request.Host.Host;
 	var isExternal = currentHost.StartsWith(externalDomain);
 	var _user = User.Identities.FirstOrDefault();
