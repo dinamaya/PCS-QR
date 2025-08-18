@@ -43,6 +43,7 @@ namespace CCIMS.Web.Repositories
     public async Task<IEnumerable<CaseRowViewModel>> GetAll()
     {
       return await _context.LatestCasesVs
+          .AsNoTracking()
           .OrderByDescending(c => c.DateStatusUpdated)
           .Select(c => new CaseRowViewModel()
           {
