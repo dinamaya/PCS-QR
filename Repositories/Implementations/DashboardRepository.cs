@@ -30,19 +30,29 @@ namespace CCIMS.Web.Repositories
     public async Task<int> GetTotalCasesCountAsync() => await _context.Cases.CountAsync();
 
     public async Task<List<WeeklyCasesChartV>> GetWeeklyCasesChartAsync() =>
-      await _context.WeeklyCasesChartVs.ToListAsync();
+      await _context.WeeklyCasesChartVs
+                    .AsNoTracking()
+                    .ToListAsync();
 
     public async Task<List<WeeklyClosedCasesChartV>> GetWeeklyClosedCasesChartAsync() =>
-      await _context.WeeklyClosedCasesChartVs.ToListAsync();
+      await _context.WeeklyClosedCasesChartVs
+                    .AsNoTracking()
+                    .ToListAsync();
 
     public async Task<List<LatestCasesSubmissionV>> GetLatestCaseSubmissionsAsync() =>
-      await _context.LatestCasesSubmissionVs.ToListAsync();
+      await _context.LatestCasesSubmissionVs
+                    .AsNoTracking()
+                    .ToListAsync();
 
     public async Task<List<Top3ServicePartnersAgingCasesV>> GetTop3ServicePartnersAgingCases() =>
-      await _context.Top3ServicePartnersAgingCasesVs.ToListAsync();
+      await _context.Top3ServicePartnersAgingCasesVs
+                    .AsNoTracking()
+                    .ToListAsync();
 
     public async Task<List<TopAgingCasesV>> GetTopAgingCases() =>
-        await _context.TopAgingCasesVs.ToListAsync();
-  }
+      await _context.TopAgingCasesVs
+                    .AsNoTracking()
+                    .ToListAsync();
+    }
 }
 
