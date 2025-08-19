@@ -12,7 +12,8 @@
 
 	var adminDomain = Configuration["SubdomainConfig:Admin"];
 	var externalDomain = Configuration["SubdomainConfig:External"];
-	var loginUrl = $"https://{adminDomain}.msi-ecs.com.ph/Auth/Login";
+	var backToDashboard = Configuration["SubdomainConfig:BackToDashboard"];
+	var loginUrl = $"https://{adminDomain}.{backToDashboard}/Auth/Login";
 	var currentHost = Context.Request.Host.Host;
 	var isExternal = currentHost.StartsWith(externalDomain);
 	var _user = User.Identities.FirstOrDefault();
