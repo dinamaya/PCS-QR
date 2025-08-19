@@ -3,6 +3,7 @@ using CCIMS.Web.App_Code._Globals.Extensions;
 using CCIMS.Web.Models.DTOs;
 using CCIMS.Web.Models.ViewModels;
 using CCIMS.Web.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -22,7 +23,7 @@ namespace CCIMS.Web.Controllers.API
       _transactionRepo = transactionRepo;
     }
 
-    [HttpGet("status")]
+    [HttpGet("status"), Authorize(Roles = "SPA")]
     public async Task<ActionResult<ResponseDto<CaseStatusDto>>> Status(long caseId)
     {
       var response = new ResponseDto<CaseStatusDto>();
@@ -49,7 +50,7 @@ namespace CCIMS.Web.Controllers.API
       }
     }
 
-    [HttpPut("status")]
+    [HttpPut("status"), Authorize(Roles = "SPA")]
     public async Task<ActionResult<ResponseDto>> Status([FromBody] CaseStatusUpdateRequestDto caseStatusUpdateRequest)
     {
       var response = new ResponseDto();
@@ -71,7 +72,7 @@ namespace CCIMS.Web.Controllers.API
       }
     }
 
-    [HttpGet]
+    [HttpGet, Authorize(Roles = "SPA")]
     public async Task<ActionResult<ResponseDto<CaseEditResponseDto>>> Get([FromQuery] string id)
     {
       var response = new ResponseDto<CaseEditResponseDto>();
@@ -99,7 +100,7 @@ namespace CCIMS.Web.Controllers.API
       }
     }
 
-    [HttpPut]
+    [HttpPut, Authorize(Roles = "SPA")]
     public async Task<ActionResult<ResponseDto>> Put([FromBody] CaseEditRequestDto requestDto)
     {
       var response = new ResponseDto();
