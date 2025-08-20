@@ -28,16 +28,29 @@ export function showErrorModal(message, title, defaultMessage, notifs) {
   console.error(title, _message);
 }
 
-export function showErrorSimpleModal(message, title, defaultMessage)
-{
-  const _message = message || defaultMessage;
-  Swal.fire({
-    title: title,
-    text: _message,
-    icon: "error"
-  });
+export function showErrorSimpleModal(message, title, defaultMessage) {
+    const _message = message || defaultMessage;
+    if (title == "Session expired") {
+        Swal.fire({
+            title: title,
+            text: _message,
+            icon: "error"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload();
+            }
+        });
+    }
 
-  console.error(title, _message);
+    else {
+        Swal.fire({
+            title: title,
+            text: _message,
+            icon: "error"
+        })
+    }
+
+    console.error(title, _message);
 }
 
 export function handleError(error, title, defaultMessage, notifs)
