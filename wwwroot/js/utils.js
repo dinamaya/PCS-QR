@@ -59,7 +59,7 @@ export function handleError(error, title, defaultMessage, notifs)
   {
     if (error.status == 401)
     {
-      showErrorSimpleModal("Please refresh the page", "Session expired")
+      showErrorSimpleModal("Your session has expired. Please log in again.", "Session expired")
       return;
     }
 
@@ -80,7 +80,7 @@ export function handleError(error, title, defaultMessage, notifs)
 export function handleSimpleError(error, title, defaultMessage) {
   try {
     if (error.status == 401) {
-      showErrorSimpleModal("Please refresh the page", "Session expired")
+      showErrorSimpleModal("Your session has expired. Please log in again.", "Session expired")
       return;
     }
 
@@ -117,7 +117,7 @@ export function isNullOrEmpty(text) {
 
 export function checkErrorResponse(respone) {
   if (respone.status == 401) {
-    showErrorSimpleModal("Please refresh the page", "Session expired")
+    showErrorSimpleModal("Your session has expired. Please log in again.", "Session expired")
     throw new Error("Session expired"); 
   }
 
