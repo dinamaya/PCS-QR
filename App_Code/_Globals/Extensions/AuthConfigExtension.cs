@@ -19,11 +19,29 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 				options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 				options.Cookie.SameSite = SameSiteMode.None;
 				options.Cookie.IsEssential = true;
-				options.ExpireTimeSpan = TimeSpan.FromDays(3);
-				options.LoginPath = "/Auth/Login";
-				options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-				options.SlidingExpiration = true;
-			});
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(2);
+                options.SlidingExpiration = true;
+
+                options.LoginPath = "/Auth/Login";
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+
+                options.Events.OnSigningIn = context =>
+                {
+                    var props = context.Properties;
+
+                    if (props.IsPersistent)
+                    {
+                        props.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5);
+                    }
+                    else 
+                    {
+                        props.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(3);
+                        props.IsPersistent = false;
+                    }
+
+                    return Task.CompletedTask;
+                };
+            });
 
 			services.AddHttpContextAccessor();
 			services.AddHttpClient();
