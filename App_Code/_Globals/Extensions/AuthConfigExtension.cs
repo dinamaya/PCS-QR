@@ -41,6 +41,17 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 
                     return Task.CompletedTask;
                 };
+
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    if (context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
+                    context.Response.Redirect(context.RedirectUri);
+                    return Task.CompletedTask;
+                };
             });
 
 			services.AddHttpContextAccessor();
