@@ -31,11 +31,11 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 
                     if (props.IsPersistent)
                     {
-                        props.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(5);
+                        props.ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8);
                     }
                     else 
                     {
-                        props.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(3);
+                        props.ExpiresUtc = DateTimeOffset.UtcNow.AddHours(4);
                         props.IsPersistent = false;
                     }
 
