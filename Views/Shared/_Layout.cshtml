@@ -86,15 +86,6 @@
 	<script src="~/js/soft-ui-dashboard.min.js" defer></script>
 	
 	<script>
-		$(function () {
-			$.ajaxSetup({
-				headers: {
-					'X-Requested-With': 'XMLHttpRequest',
-					'RequestVerificationToken': $('meta[name="csrf-token"]').attr('content')
-				}
-			});
-		});
-
 		window.okEditParam = '@Queries.SUCCESS_EDIT';
 		window.okCreateParam = '@Queries.SUCCESS_CREATE';
 		window.okDeleteParam = '@Queries.SUCCESS_DELETE';
@@ -160,6 +151,38 @@
 
 			return true;
 		}
+
+		// GLOBAL SESSION CHECK ON ANY LINK CLICK
+		$(document).on('click', 'a', function (e) {
+			const url = $(this).attr('href');
+
+			// Ignore anchor-only links, javascript:void(0), external links
+			if (!url || url.startsWith('#') || url.startsWith('javascript') || url.startsWith('http')) return;
+
+			e.preventDefault();
+
+			$.ajax({
+				url: url,
+				method: 'GET',
+				headers: { 'X-Requested-With': 'XMLHttpRequest' },
+				success: function () {
+					window.location.href = url;
+				},
+				error: function (xhr) {
+					if (xhr.status === 401) {
+						Swal.fire({
+							title: "Session expired",
+							text: "Your session has expired. Please log in again.",
+							icon: "error"
+						}).then(() => {
+							window.location.href = "/Auth/Login";
+						});
+					} else {
+						window.location.href = url;
+					}
+				}
+			});
+		});
 	</script>
 
 </body>
