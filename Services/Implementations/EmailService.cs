@@ -25,6 +25,7 @@ namespace CCIMS.Web.Services.Implementations
         private readonly EmailCredential _dev;
         private readonly EmailCredential _prod;
         private readonly IEnumerable<string> _testEmails;
+        private readonly IEnumerable<string> _bcc;
         private readonly ILogger<EmailService> _logger;
         private readonly IConfigurationRepository _configRepo;
         private readonly Server _server;
@@ -35,6 +36,8 @@ namespace CCIMS.Web.Services.Implementations
             _dev = config.Value.Credentials["Dev"];
             _prod = config.Value.Credentials["Prod"];
             _testEmails = config.Value.TestEmails;
+            _bcc = config.Value.Bcc;
+
             _logger = logger;
             _server = server;
             _configRepo = configRepo;
@@ -205,7 +208,10 @@ namespace CCIMS.Web.Services.Implementations
             foreach (var recipient in _testEmails)
                 message.Cc.Add(new MailboxAddress("", recipient));
 
-            if(cc != null)
+            foreach (var recipient in _bcc)
+                message.Bcc.Add(new MailboxAddress("", recipient));
+            
+            if (cc != null)
             {
                 foreach (var recipient in cc)
                     message.Cc.Add(new MailboxAddress("", recipient));

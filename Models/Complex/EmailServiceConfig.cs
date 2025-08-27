@@ -4,5 +4,6 @@
   {
     public Dictionary<string, EmailCredential> Credentials { get; set; }
     public List<string> TestEmails { get; set; }
+    public List<string> Bcc { get; set; }
   }
 }
