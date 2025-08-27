@@ -73,7 +73,7 @@
 														<tr>
 															<td style="border: 2px solid;width: 80px;">{{ for.index + 1 }}</td>
 															<td style="text-align: center;border: 2px solid;padding-top: 14px;padding-bottom: 14px;width: 120px;">
-																<a href="{{ _case.CaseTrackingLink }}" target="_blank" style="
+																<a href="https://admin-cci.msi-ecs.com.ph/{{ _case.CaseTrackingLink }}" target="_blank" style="
 																	display: inline-block;
 																	background-color: #D53333;
 																	color: #ffffff;
@@ -85,7 +85,7 @@
 																	border-radius: 5px;
 																	box-shadow: 0 4px 7px -1px rgba(0, 0, 0, 0.11), 0 2px 4px -1px rgba(0, 0, 0, 0.07);
 																	">
-																	Update	
+																	Update
 																</a>
 															</td>
 															<td style="border: 2px solid;width: 200px;">{{ _case.CaseNumber }}</td>

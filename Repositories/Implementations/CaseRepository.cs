@@ -191,16 +191,14 @@ namespace CCIMS.Web.Repositories
 
       await _context.SaveChangesAsync();
     }
-
+    
     public async Task<IEnumerable<AgedCaseViewModel>> GetAgedCases(string caseNumberCategoryId)
     {
-      var baseUrl = new Uri(_configRepo.GetBaseUrl());
-     
       return await _context.LatestCasesVs
         .Where(c => c.AgedDays >= 3 && c.Status != "Closed")
         .Select(c => new AgedCaseViewModel()
         {
-          CaseTrackingLink = new Uri(baseUrl, $"CMS/Cases?c={caseNumberCategoryId}&v={c.CaseNumber}").AbsoluteUri,
+          CaseTrackingLink = $"CMS/Cases?c={caseNumberCategoryId}&v={c.CaseNumber}",
           CaseNumber = c.CaseNumber,
           DateLastUpdated = c.DateStatusUpdated.ToString(Database.DateFormat.DISPLAY_COMPLETE),
           CustomerName = c.CustomerLastName + ", " + c.CustomerFirstName,
