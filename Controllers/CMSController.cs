@@ -201,8 +201,11 @@ namespace CCIMS.Web.Controllers
 
         // Generate filename and return file
         var fileName = $"Cases_Export_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-        return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
-      }
+        var fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                // Return as JSON
+                return Json(new { fileBytes = Convert.ToBase64String(excelBytes), fileType, fileName });
+            }
       catch (Exception ex)
       {
         return BadRequest("Error exporting all cases to Excel: " + ex.Message);

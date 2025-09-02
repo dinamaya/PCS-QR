@@ -33,20 +33,41 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Export failed: ${response.status} ${response.statusText}`);
+                        // Try to parse error response as JSON
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.error || `Export failed: ${response.status} ${response.statusText}`);
+                        }).catch(() => {
+                            // Fallback if error response is not JSON
+                            throw new Error(`Export failed: ${response.status} ${response.statusText}`);
+                        });
                     }
-                    return response.blob();
+                    return response.json();
                 })
-                .then(blob => {
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    // Decode Base64 string and create blob
+                    const byteCharacters = atob(data.fileBytes);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: data.fileType });
+
                     // Create download link
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Cases_Export_${new Date().toISOString().replace(/[:.]/g, '')}.xlsx`;
+                    a.download = data.fileName;
                     document.body.appendChild(a);
                     a.click();
                     a.remove();
-                    window.URL.revokeObjectURL(url);
+
+                    // Revoke URL after a short delay
+                    setTimeout(() => window.URL.revokeObjectURL(url), 100);
 
                     console.log('Export completed successfully');
                 })
