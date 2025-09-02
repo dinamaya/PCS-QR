@@ -83,64 +83,29 @@
         });
     }
 
-    // Enhanced function to get DataTable search term
+    // Gets the search term from the simple-datatable search input.
     function getDataTableSearchTerm() {
-        // Method 1: Check for Simple DataTables instance
-        if (window.dataTable && window.dataTable.input) {
-            const searchValue = window.dataTable.input.value;
-            if (searchValue && searchValue.trim()) {
-                console.log('Search term from DataTable API:', searchValue);
-                return searchValue.trim();
-            }
+        const table = document.getElementById('tbl');
+        if (!table) {
+            console.log('Export: Could not find table #tbl');
+            return null;
         }
 
-        // Method 2: Try to get from various search input selectors
-        const searchSelectors = [
-            'input[type="search"]',                    // Standard search input
-            '.dataTables_filter input',                // DataTables wrapper
-            '.dataTable-search',                       // Simple DataTables
-            '.dataTable-input',                        // Simple DataTables input
-            '.simple-datatables-search',               // Simple DataTables search
-            '[data-search]',                           // Custom search attribute
-            '#dataTable_filter input',                 // Specific ID
-            '.search-input',                           // Generic class
-            'input[placeholder*="Search"]',            // Input with Search in placeholder
-            'input[placeholder*="search"]',            // Input with search in placeholder
-            'input[aria-label*="Search"]',             // ARIA label with Search
-            'input[aria-label*="search"]'              // ARIA label with search
-        ];
-
-        for (const selector of searchSelectors) {
-            const searchInput = document.querySelector(selector);
-            if (searchInput && searchInput.value && searchInput.value.trim()) {
-                console.log(`Search term from selector "${selector}":`, searchInput.value);
-                return searchInput.value.trim();
-            }
+        // The simple-datatables library creates a wrapper div around the table.
+        // The most reliable way to get the search term is to find the input within this specific table's wrapper.
+        const wrapper = table.closest('.dataTable-wrapper');
+        if (!wrapper) {
+            console.log('Export: Could not find .dataTable-wrapper for the table.');
+            return null;
         }
 
-        // Method 3: Try to find the search input within the table's parent container
-        const tableContainer = table.closest('.dataTables_wrapper, .dataTable-wrapper, .table-container');
-        if (tableContainer) {
-            const searchInput = tableContainer.querySelector('input[type="search"], input.search, .search-input');
-            if (searchInput && searchInput.value && searchInput.value.trim()) {
-                console.log('Search term from table container:', searchInput.value);
-                return searchInput.value.trim();
-            }
+        const searchInput = wrapper.querySelector('.dataTable-input');
+        if (searchInput && searchInput.value) {
+            console.log('Export: Found search term in table wrapper:', searchInput.value);
+            return searchInput.value.trim();
         }
 
-        // Method 4: Check if there's a global DataTable variable
-        if (typeof $ !== 'undefined' && $.fn.DataTable) {
-            const dtInstance = $(table).DataTable();
-            if (dtInstance && dtInstance.search) {
-                const searchTerm = dtInstance.search();
-                if (searchTerm && searchTerm.trim()) {
-                    console.log('Search term from jQuery DataTable:', searchTerm);
-                    return searchTerm.trim();
-                }
-            }
-        }
-
-        console.log('No search term found');
+        console.log('Export: Could not find .dataTable-input within the table wrapper.');
         return null;
     }
 });
