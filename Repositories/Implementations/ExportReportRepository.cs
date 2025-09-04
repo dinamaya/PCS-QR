@@ -84,17 +84,30 @@ namespace CCIMS.Web.Repositories.Implementations
             if (string.IsNullOrWhiteSpace(searchTerm))
                 return cases;
 
-            var searchTermLower = searchTerm.Trim().ToLowerInvariant();
+            // Split the search term into individual words and convert to lower case.
+            var searchWords = searchTerm.Trim().ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
+            // If there are no words, return all cases.
+            if (searchWords.Length == 0)
+                return cases;
+
+            // Filter the cases. A case is a match if ALL search words are found somewhere in its properties.
             return cases.Where(c =>
-                (!string.IsNullOrEmpty(c.CaseNumber) && c.CaseNumber.ToLowerInvariant().Contains(searchTermLower)) ||
-                (!string.IsNullOrEmpty(c.Status) && c.Status.ToLowerInvariant().Contains(searchTermLower)) ||
-                (!string.IsNullOrEmpty(c.Comments) && c.Comments.ToLowerInvariant().Contains(searchTermLower)) ||
-                (!string.IsNullOrEmpty(c.CustomerName) && c.CustomerName.ToLowerInvariant().Contains(searchTermLower)) ||
-                (!string.IsNullOrEmpty(c.ServicePartnerName) && c.ServicePartnerName.ToLowerInvariant().Contains(searchTermLower)) ||
-                (!string.IsNullOrEmpty(c.SerialNumber) && c.SerialNumber.ToLowerInvariant().Contains(searchTermLower)) ||
-                (!string.IsNullOrEmpty(c.DateCreated) && c.DateCreated.ToLowerInvariant().Contains(searchTermLower))
-            );
+            {
+                // Concatenate all searchable fields for the current case into a single string.
+                var searchableContent = string.Join(" ",
+                    c.CaseNumber?.ToLowerInvariant() ?? "",
+                    c.Status?.ToLowerInvariant() ?? "",
+                    c.Comments?.ToLowerInvariant() ?? "",
+                    c.CustomerName?.ToLowerInvariant() ?? "",
+                    c.ServicePartnerName?.ToLowerInvariant() ?? "",
+                    c.SerialNumber?.ToLowerInvariant() ?? "",
+                    c.DateCreated?.ToLowerInvariant() ?? ""
+                );
+
+                // Check if all search words are present in the concatenated string.
+                return searchWords.All(word => searchableContent.Contains(word));
+            });
         }
 
         public async Task<byte[]> ExportCasesToExcelAsync(IEnumerable<CaseRowViewModel> cases)
