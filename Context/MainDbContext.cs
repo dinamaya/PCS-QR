@@ -4,192 +4,206 @@ using CCIMS.Web.Models.SQLViews.Main;
 
 namespace CCIMS.Web.Context
 {
-  public class MainDbContext(DbContextOptions<MainDbContext> options) : DbContext(options)
-  {
-    public virtual DbSet<Case> Cases { get; set; }
-    public virtual DbSet<Customer> Customers { get; set; }
-    public virtual DbSet<QRCode> QRCodes { get; set; }
-    public virtual DbSet<ServicePartner> ServicePartners { get; set; }
-    public virtual DbSet<Status> Statuses { get; set; }
-    public virtual DbSet<Transaction> Transactions { get; set; }
-
-    public virtual DbSet<CaseDetailsV> CaseDetailsVs { get; set; }
-    public virtual DbSet<LatestCasesV> LatestCasesVs { get; set; }
-    public virtual DbSet<ServicePartnersV> ServicePartnersVs { get; set; }
-    public virtual DbSet<ServicePartnersWithAgingCasesV> ServicePartnersWithAgingCasesVs { get; set; }
-    public virtual DbSet<StatusesV> StatusesVs { get; set; }
-    public virtual DbSet<TransactionsV> TransactionsVs { get; set; }
-    public virtual DbSet<AgingCasesV> AgingCasesVs { get; set; }
-    public virtual DbSet<ClosedCasesV> ClosedCasesVs { get; set; }
-    public virtual DbSet<CasesCreatedTodayV> CasesCreatedTodayVs { get; set; }
-    public virtual DbSet<WeeklyCasesChartV> WeeklyCasesChartVs { get; set; }
-    public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
-    public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
-    public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
-    public virtual DbSet<TopAgingCasesAllV> TopAgingCasesAllVs { get; set; }
-    public virtual DbSet<WeeklyClosedCasesChartV> WeeklyClosedCasesChartVs { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class MainDbContext(DbContextOptions<MainDbContext> options) : DbContext(options)
     {
+        public virtual DbSet<Case> Cases { get; set; }
+        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<QRCode> QRCodes { get; set; }
+        public virtual DbSet<ServicePartner> ServicePartners { get; set; }
+        public virtual DbSet<Status> Statuses { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
+        public virtual DbSet<Rating> Ratings { get; set; }
+        public virtual DbSet<CaseDetailsV> CaseDetailsVs { get; set; }
+        public virtual DbSet<LatestCasesV> LatestCasesVs { get; set; }
+        public virtual DbSet<ServicePartnersV> ServicePartnersVs { get; set; }
+        public virtual DbSet<ServicePartnersWithAgingCasesV> ServicePartnersWithAgingCasesVs { get; set; }
+        public virtual DbSet<StatusesV> StatusesVs { get; set; }
+        public virtual DbSet<TransactionsV> TransactionsVs { get; set; }
+        public virtual DbSet<AgingCasesV> AgingCasesVs { get; set; }
+        public virtual DbSet<ClosedCasesV> ClosedCasesVs { get; set; }
+        public virtual DbSet<CasesCreatedTodayV> CasesCreatedTodayVs { get; set; }
+        public virtual DbSet<WeeklyCasesChartV> WeeklyCasesChartVs { get; set; }
+        public virtual DbSet<LatestCasesSubmissionV> LatestCasesSubmissionVs { get; set; }
+        public virtual DbSet<Top3ServicePartnersAgingCasesV> Top3ServicePartnersAgingCasesVs { get; set; }
+        public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
+        public virtual DbSet<TopAgingCasesAllV> TopAgingCasesAllVs { get; set; }
+        public virtual DbSet<WeeklyClosedCasesChartV> WeeklyClosedCasesChartVs { get; set; }
 
-      modelBuilder.Entity<WeeklyClosedCasesChartV>(entity =>
-      {
-        entity
-          .HasNoKey()
-          .ToView("WeeklyClosedCasesChart_v");
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
 
-        entity.Property(e => e.DayOfWeek).HasMaxLength(30);
-      });
-      modelBuilder.Entity<TopAgingCasesV>(entity =>
-      {
-        entity
+            modelBuilder.Entity<WeeklyClosedCasesChartV>(entity =>
+            {
+                entity
             .HasNoKey()
-            .ToView("TopAgingCases_v");
-      });
+            .ToView("WeeklyClosedCasesChart_v");
 
-      modelBuilder.Entity<Top3ServicePartnersAgingCasesV>(entity =>
-      {
-        entity
-      .HasNoKey()
-      .ToView("Top3ServicePartnersAgingCases_v");
-      });
+                entity.Property(e => e.DayOfWeek).HasMaxLength(30);
+            });
+            modelBuilder.Entity<TopAgingCasesV>(entity =>
+            {
+                entity
+              .HasNoKey()
+              .ToView("TopAgingCases_v");
+            });
 
-      modelBuilder.Entity<LatestCasesSubmissionV>(entity =>
-      {
-        entity
-          .HasNoKey()
-          .ToView("LatestCasesSubmission_v");
+            modelBuilder.Entity<Top3ServicePartnersAgingCasesV>(entity =>
+            {
+                entity
+        .HasNoKey()
+        .ToView("Top3ServicePartnersAgingCases_v");
+            });
 
-        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-      });
+            modelBuilder.Entity<LatestCasesSubmissionV>(entity =>
+            {
+                entity
+            .HasNoKey()
+            .ToView("LatestCasesSubmission_v");
 
-      modelBuilder.Entity<WeeklyCasesChartV>(entity =>
-      {
-        entity
-          .HasNoKey()
-          .ToView("WeeklyCasesChart_v");
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            });
 
-        entity.Property(e => e.DayOfWeek).HasMaxLength(30);
-      });
+            modelBuilder.Entity<WeeklyCasesChartV>(entity =>
+            {
+                entity
+            .HasNoKey()
+            .ToView("WeeklyCasesChart_v");
 
-      modelBuilder.Entity<CasesCreatedTodayV>(entity =>
-      {
-        entity
-      .HasNoKey()
-      .ToView("CasesCreatedToday_v");
+                entity.Property(e => e.DayOfWeek).HasMaxLength(30);
+            });
 
-        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-        entity.Property(e => e.Id).ValueGeneratedOnAdd();
-        entity.Property(e => e.QrcodeId)
-      .HasMaxLength(450)
-      .HasColumnName("QRCodeId");
-      });
+            modelBuilder.Entity<CasesCreatedTodayV>(entity =>
+            {
+                entity
+        .HasNoKey()
+        .ToView("CasesCreatedToday_v");
 
-      modelBuilder.Entity<ClosedCasesV>(entity =>
-      {
-        entity
-      .HasNoKey()
-      .ToView("ClosedCases_v");
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.QrcodeId)
+        .HasMaxLength(450)
+        .HasColumnName("QRCodeId");
+            });
 
-        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-        entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
-        entity.Property(e => e.StatusId).HasMaxLength(450);
-      });
+            modelBuilder.Entity<ClosedCasesV>(entity =>
+            {
+                entity
+        .HasNoKey()
+        .ToView("ClosedCases_v");
 
-      modelBuilder.Entity<AgingCasesV>(entity =>
-      {
-        entity
-      .HasNoKey()
-      .ToView("AgingCases_v");
-      });
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+                entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
+                entity.Property(e => e.StatusId).HasMaxLength(450);
+            });
 
-      modelBuilder.Entity<Case>()
+            modelBuilder.Entity<AgingCasesV>(entity =>
+            {
+                entity
+        .HasNoKey()
+        .ToView("AgingCases_v");
+            });
+
+
+            modelBuilder.Entity<Rating>(entity =>
+            {
+                entity
+                    .HasOne(a => a.Case)
+                    .WithMany()
+                    .HasForeignKey(a => a.CaseId);
+
+                entity
+                    .HasOne(a => a.Customer)
+                    .WithMany()
+                    .HasForeignKey(a => a.CustomerId);
+            });
+
+            modelBuilder.Entity<Case>()
         .HasOne(a => a.QRCode)
         .WithMany()
         .HasForeignKey(a => a.QRCodeId);
 
-      modelBuilder.Entity<QRCode>()
-        .HasOne(a => a.ServicePartner)
-        .WithMany()
-        .HasForeignKey(a => a.ServicePartnerId);
+            modelBuilder.Entity<QRCode>()
+              .HasOne(a => a.ServicePartner)
+              .WithMany()
+              .HasForeignKey(a => a.ServicePartnerId);
 
-      modelBuilder.Entity<Transaction>(entity =>
-      {
-        entity
-      .HasOne(a => a.Case)
-        .WithMany()
-        .HasForeignKey(a => a.CaseID);
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity
+        .HasOne(a => a.Case)
+          .WithMany()
+          .HasForeignKey(a => a.CaseID);
 
-        entity
-      .HasOne(a => a.Status)
-        .WithMany()
-        .HasForeignKey(a => a.StatusId);
-      });
+                entity
+        .HasOne(a => a.Status)
+          .WithMany()
+          .HasForeignKey(a => a.StatusId);
+            });
 
-      modelBuilder.Entity<CaseDetailsV>(entity =>
-      {
-        entity
+            modelBuilder.Entity<CaseDetailsV>(entity =>
+            {
+                entity
+          .HasNoKey()
+          .ToView("CaseDetails_v");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+            });
+
+            modelBuilder.Entity<LatestCasesV>(entity =>
+            {
+                entity
+                    .HasNoKey()
+                    .ToView("LatestCases_v");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+                entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
+                entity.Property(e => e.StatusId).HasMaxLength(450);
+            });
+
+            modelBuilder.Entity<ServicePartnersV>(entity =>
+            {
+                entity
+          .HasNoKey()
+          .ToView("ServicePartners_v");
+
+                entity.Property(e => e.QrId).HasMaxLength(450);
+                entity.Property(e => e.SpId).HasMaxLength(450);
+            });
+
+            modelBuilder.Entity<ServicePartnersWithAgingCasesV>(entity =>
+            {
+                entity
+          .HasNoKey()
+          .ToView("ServicePartnersWithAgingCases_v");
+            });
+
+            modelBuilder.Entity<StatusesV>(entity =>
+            {
+                entity
+          .HasNoKey()
+          .ToView("Statuses_v");
+
+                entity.Property(e => e.Id).HasMaxLength(450);
+            });
+
+            modelBuilder.Entity<TopAgingCasesAllV>(entity =>
+            {
+                entity
+          .HasNoKey()
+          .ToView("TopAgingCasesAll_v");
+            });
+
+            modelBuilder.Entity<TransactionsV>(entity =>
+            {
+                entity
         .HasNoKey()
-        .ToView("CaseDetails_v");
+        .ToView("Transactions_v");
 
-        entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-      });
+                entity.Property(e => e.CaseId).HasColumnName("CaseID");
+                entity.Property(e => e.StatusId).HasMaxLength(450);
+            });
 
-      modelBuilder.Entity<LatestCasesV>(entity =>
-      {
-          entity
-              .HasNoKey()
-              .ToView("LatestCases_v");
-
-          entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-          entity.Property(e => e.ServicePartnerId).HasMaxLength(450);
-          entity.Property(e => e.StatusId).HasMaxLength(450);
-      });
-
-      modelBuilder.Entity<ServicePartnersV>(entity =>
-      {
-        entity
-        .HasNoKey()
-        .ToView("ServicePartners_v");
-
-        entity.Property(e => e.QrId).HasMaxLength(450);
-        entity.Property(e => e.SpId).HasMaxLength(450);
-      });
-
-      modelBuilder.Entity<ServicePartnersWithAgingCasesV>(entity =>
-      {
-        entity
-        .HasNoKey()
-        .ToView("ServicePartnersWithAgingCases_v");
-      });
-
-      modelBuilder.Entity<StatusesV>(entity =>
-      {
-        entity
-        .HasNoKey()
-        .ToView("Statuses_v");
-
-        entity.Property(e => e.Id).HasMaxLength(450);
-      });
-
-      modelBuilder.Entity<TopAgingCasesAllV>(entity =>
-      {
-        entity
-        .HasNoKey()
-        .ToView("TopAgingCasesAll_v");
-      });
-
-      modelBuilder.Entity<TransactionsV>(entity =>
-      {
-        entity
-      .HasNoKey()
-      .ToView("Transactions_v");
-
-        entity.Property(e => e.CaseId).HasColumnName("CaseID");
-        entity.Property(e => e.StatusId).HasMaxLength(450);
-      });
-
-      base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
+        }
     }
-  }
 }
