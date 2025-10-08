@@ -9,8 +9,9 @@ namespace CCIMS.Web.Services.Interfaces
     Task<TaskResultDto> SendCustomerRegistrationNotificationAsync(CreateCustomerDto customerDto, string caseNumber, string encryptedCaseNumber, string spEmail);
     Task<TaskResultDto> SendAgedCasesEmailAsync(CaseAgedEmailDetailsViewModel agedCases);
     Task<TaskResultDto> SendCaseClosedNotificationAsync(CustomerEmailDetailsViewModel emailDetails, string spEmail);
+    Task<TaskResultDto> SendCaseFeedbackNotificationAsync(CustomerEmailDetailsViewModel emailDetails, string spEmail);
     Task<TaskResultDto> SendQrCodeEmailAsync(CaseQrCodeEmailViewModel emailDetails, byte[] qrCode);
-    Task<TaskResultDto> SendSPCreateNotificationAsync(CaseQrCodeEmailViewModel emailDetails, byte[] qrCode);
+    Task<TaskResultDto> SendSPCreateNotificationAsync(CaseQrCodeEmailViewModel emailDetails, byte[] qrCode);  
     Task TestAsync();
   }
 }

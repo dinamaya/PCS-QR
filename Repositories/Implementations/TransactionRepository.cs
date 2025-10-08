@@ -83,6 +83,9 @@ namespace CCIMS.Web.Repositories.Implementations
                 BackgroundJob.Enqueue<BackgroundJobsService>(
                             (service) => service.SendCaseClosedEmail(caseDetails, spEmail));
 
+                BackgroundJob.Enqueue<BackgroundJobsService>(
+                            (service) => service.SendCaseFeedbackEmail(caseDetails, spEmail));
+
                 _logger.LogInformation($"Successfully sent case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}");
             }
 

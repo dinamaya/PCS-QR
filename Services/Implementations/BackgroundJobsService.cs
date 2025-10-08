@@ -58,6 +58,8 @@ namespace CCIMS.Web.Services.Implementations
 
       };
 
+
+
       var result = await _emailService.SendCaseClosedNotificationAsync(emailDetails, spEmail);
 
       if (result.IsOk())
@@ -66,7 +68,29 @@ namespace CCIMS.Web.Services.Implementations
         _logger.LogError(result.Message);
     }
 
-    public async Task SendCaseCreateEmail(CreateCustomerDto emailDetails, string caseNumber, string encryptedCaseNumber, string spEmail)
+        public async Task SendCaseFeedbackEmail(CaseDetailsV caseDetails, string spEmail)
+        {
+            string encCaseNumber = await _secureRepo.EncryptIDAsync(caseDetails.CaseNumber);
+            var emailDetails = new CustomerEmailDetailsViewModel(_configRepo, caseDetails.CaseNumber, encCaseNumber)
+            {
+                Email = caseDetails.Email,
+                Fullname = $"{caseDetails.FirstName} {caseDetails.LastName}",
+                ServicePartner = caseDetails.SpName,
+                SerialNumber = caseDetails.SerialNumber,
+
+            };
+
+
+
+            var result = await _emailService.SendCaseFeedbackNotificationAsync(emailDetails, spEmail);
+
+            if (result.IsOk())
+                _logger.LogInformation(result.Message);
+            else
+                _logger.LogError(result.Message);
+        }
+
+        public async Task SendCaseCreateEmail(CreateCustomerDto emailDetails, string caseNumber, string encryptedCaseNumber, string spEmail)
     {
       var result = await _emailService.SendCustomerRegistrationNotificationAsync(emailDetails, caseNumber, encryptedCaseNumber, spEmail);
 
@@ -75,6 +99,7 @@ namespace CCIMS.Web.Services.Implementations
       else
         _logger.LogError(result.Message);
     }
+
 
     public async Task SendQrCodeEmail(string spId)
     {

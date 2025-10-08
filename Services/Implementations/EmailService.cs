@@ -20,6 +20,7 @@ namespace CCIMS.Web.Services.Implementations
         private readonly string _agedTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseAgedSpaEmail.sbn");
         private readonly string _custTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationCustomerEmail.sbn");
         private readonly string _closedtemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseClosedCustomerEmail.sbn");
+        private readonly string _feedbackTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseFeedbackCustomerEmail.sbn");
         private readonly string _qrCodeTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseQrCodeEmail.sbn");
 
         private readonly EmailCredential _dev;
@@ -120,6 +121,33 @@ namespace CCIMS.Web.Services.Implementations
                 );
 
                 return TaskResultDto.Success("Email Sent Successfully");
+            }
+
+            catch (Exception ex)
+            {
+                return TaskResultDto.Fail(Exceptions.GetMessage(ex));
+            }
+        }
+
+        public async Task<TaskResultDto> SendCaseFeedbackNotificationAsync(CustomerEmailDetailsViewModel emailDetails, string spEmail)
+        {
+            try
+            {
+                var icons = Path.Combine(_server.RootDirectory, "img", "icons");
+                var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
+
+                var htmlBody = await RenderEmailAsync(_feedbackTemplatePath, emailDetails);
+
+                await CreateEmailAsync(
+                  emailDetails.Email,
+                  $"CCI Monitoring System - We Value Your Feedback! ({emailDetails.CaseNumber}) | {emailDetails.ServicePartner} | {emailDetails.SerialNumber}",
+                  htmlBody,
+                  _dev,
+                  null,
+                  cc: [spEmail]
+                );
+
+                return TaskResultDto.Success("Feedback Email Sent Successfully");
             }
 
             catch (Exception ex)
