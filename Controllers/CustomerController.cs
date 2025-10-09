@@ -185,6 +185,13 @@ namespace CCIMS.Web.Controllers
                     throw new Exception("Invalid case number.");
                 }
 
+                var existingRating = await _mainDb.Ratings.FirstOrDefaultAsync(r => r.CaseId == caseEntity.Id);
+                if (existingRating != null)
+                {
+                    ViewBag.ErrorMessage = "Feedback has already been submitted.";
+                    return View(model);
+                }
+
                 var rating = new Models.Entities.Main.Rating
                 {
                     CaseId = caseEntity.Id,
