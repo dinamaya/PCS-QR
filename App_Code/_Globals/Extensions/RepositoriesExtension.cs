@@ -18,8 +18,9 @@ namespace CCIMS.Web.App_Code._Globals.Extensions
 			services.AddScoped<IServicePartnerRepository, ServicePartnerRepository>();
 			services.AddScoped<IAccountRepository, AccountRepository>();
 			services.AddScoped<IOperationsRepository, OperationsRepository>();
+            services.AddScoped<IRatingRepository, RatingRepository>();
 
-			services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
 			services.AddScoped<ICaseRepository, CaseRepository>();
 			services.AddScoped<ITransactionRepository, TransactionRepository>();
 			services.AddScoped<ICameraRepository, CameraRepository>();

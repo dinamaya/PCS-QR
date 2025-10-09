@@ -9,6 +9,7 @@ namespace CCIMS.Web.Models.ViewModels
     public string BaseUrl { get; }
     public string CaseNumber { get; set; }
     public string CaseTrackingLink { get; }
+    public string FeedbackFormLink { get; }
 
     public EmailAssetViewModel(IConfigurationRepository configRepo, string caseNumber, string encryptedCaseNumber)
     {
@@ -16,6 +17,7 @@ namespace CCIMS.Web.Models.ViewModels
       BaseUrl = _uri.AbsoluteUri;
       CaseNumber = caseNumber;
       CaseTrackingLink = new Uri(_uri, $"Cases/Tracking?refNo={encryptedCaseNumber}").AbsoluteUri;
+      FeedbackFormLink = new Uri(_uri, $"Customer/Feedback?refNo={encryptedCaseNumber}").AbsoluteUri;
     }
   }
 }

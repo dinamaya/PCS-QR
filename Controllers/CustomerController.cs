@@ -27,12 +27,14 @@ namespace CCIMS.Web.Controllers
 		private readonly IServicePartnerRepository _spRepo;
 		private readonly IEmailService _emailService;
 		private readonly ISecurityRepository _secRepo;
-		private readonly MainDbContext _mainDb;
+        private readonly IRatingRepository _ratingRepo;
+        private readonly MainDbContext _mainDb;
 
     public CustomerController(
       ICustomerRepository customerRepository,
-      ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo, IConfigurationRepository configRepo, ITokenProvider tokenProvider, IServicePartnerRepository spRepo, IEmailService emailService, ISecurityRepository secRepo)
+      ILogger<CustomerController> logger, MainDbContext mainDb, ISecurityRepository securityRepo, IConfigurationRepository configRepo, ITokenProvider tokenProvider, IServicePartnerRepository spRepo, IEmailService emailService, ISecurityRepository secRepo, IRatingRepository ratingRepo)
     {
+      _ratingRepo = ratingRepo;
       _customerRepository = customerRepository;
       _logger = logger;
       _configRepo = configRepo;
@@ -128,5 +130,79 @@ namespace CCIMS.Web.Controllers
 				return RedirectToAction("Index", "Home");
 			}
 		}
-	}
+
+
+        [HttpGet]
+        public async Task<IActionResult> Feedback(string token)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(token))
+                {
+                    throw new Exception("Token is missing.");
+                }
+
+                string caseNumber = await _secRepo.DecryptIDAsync(token);
+                if (string.IsNullOrEmpty(caseNumber))
+                {
+                    throw new Exception("Invalid token.");
+                }
+
+                var model = new FeedbackViewModel
+                {
+                    Token = token,
+                    CaseNumber = caseNumber
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.Message}");
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Feedback(FeedbackViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ErrorMessage = "Please fill in the required fields";
+                return View(model);
+            }
+
+            try
+            {
+                string caseNumber = await _secRepo.DecryptIDAsync(model.Token);
+                var caseEntity = await _mainDb.Cases.FirstOrDefaultAsync(c => c.CaseNumber == caseNumber);
+                if (caseEntity == null)
+                {
+                    throw new Exception("Invalid case number.");
+                }
+
+                var rating = new Models.Entities.Main.Rating
+                {
+                    CaseId = caseEntity.Id,
+                    CustomerId = caseEntity.CustomerID,
+                    RatingVal = model.Rating,
+                    Comment = model.Comment,
+                    DateCreated = DateTime.UtcNow
+                };
+
+                await _ratingRepo.AddRatingAsync(rating);
+
+                ViewBag.IsFeedback = true;
+                return View("ThankYou");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error submitting feedback: {ex.Message}");
+                ViewBag.ErrorMessage = ex.Message;
+                return View(model);
+            }
+        }
+    }
 }
