@@ -152,7 +152,7 @@ namespace CCIMS.Web.Controllers
             try
             {
                 await InitializeValues();
-                IEnumerable<CaseRowViewModel> results = Enumerable.Empty<CaseRowViewModel>();
+                IEnumerable<RatingRowViewModel> results = Enumerable.Empty<RatingRowViewModel>();
 
                 // Parse date range if provided
                 DateTime? startDate = null;
