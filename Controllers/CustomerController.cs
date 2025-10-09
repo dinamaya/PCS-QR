@@ -9,6 +9,7 @@ using CCIMS.Web.Repositories.Interfaces;
 using CCIMS.Web.Services.Implementations;
 using CCIMS.Web.Services.Interfaces;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -133,6 +134,7 @@ namespace CCIMS.Web.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Feedback(string token)
         {
             try
