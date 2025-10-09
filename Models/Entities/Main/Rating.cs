@@ -9,6 +9,7 @@ namespace CCIMS.Web.Models.Entities.Main
         public string CustomerId { get; set; }
         [ForeignKey("Case")]
         public long CaseId { get; set; }
+        public string CaseNumber { get; set; }
         public int RatingVal { get; set; }
         public string Comment { get; set; }
         public DateTime DateCreated { get; set; }

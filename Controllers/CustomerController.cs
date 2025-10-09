@@ -188,6 +188,7 @@ namespace CCIMS.Web.Controllers
                 var rating = new Models.Entities.Main.Rating
                 {
                     CaseId = caseEntity.Id,
+                    CaseNumber = caseNumber,
                     CustomerId = caseEntity.CustomerID,
                     RatingVal = model.Rating,
                     Comment = model.Comment,
