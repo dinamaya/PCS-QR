@@ -18,9 +18,10 @@ namespace CCIMS.Web.Controllers
         private readonly ICaseRepository _caseRepo;
         private readonly IConfigurationRepository _configRepo;
         private readonly IExportReportRepository _exportRepo;
+        private readonly IRatingRepository _ratingRepo;
 
         public CMSController(IServicePartnerRepository spRepo, IAccountRepository accountRepo, IOperationsRepository opsRepo, IConfigurationRepository configRepo, ICaseRepository caseRepo,
-            IExportReportRepository exportRepo)
+            IExportReportRepository exportRepo, IRatingRepository ratingRepo)
         {
             _spRepo = spRepo;
             _accountRepo = accountRepo;
@@ -28,6 +29,7 @@ namespace CCIMS.Web.Controllers
             _configRepo = configRepo;
             _caseRepo = caseRepo;
             _exportRepo = exportRepo;
+            _ratingRepo = ratingRepo;
         }
 
         [Authorize]
@@ -147,75 +149,17 @@ namespace CCIMS.Web.Controllers
         }
 
         [Authorize(Roles = "SPA")]
-        public async Task<IActionResult> Ratings(string? c = null, string? v = null, string? d = null, string? dateRange = null, string? q = null)
+        public async Task<IActionResult> Ratings()
         {
             try
             {
-                await InitializeValues();
-                IEnumerable<RatingRowViewModel> results = Enumerable.Empty<RatingRowViewModel>();
-
-                // Parse date range if provided
-                DateTime? startDate = null;
-                DateTime? endDate = null;
-
-                if (!q.IsNullOrEmpty())
-                {
-                    if (q.Equals(Queries.SUCCESS_EDIT))
-                        ViewData[Keys.ViewData.SUCCESS] = "Case Status Updated Successfully!";
-                }
-
-                var categories = _configRepo.GetCategoriesSearcOptions();
-                var outOfSlaCategory = categories.FirstOrDefault(cat => cat.Label == "Out of SLA");
-                string outOfSlaCategoryId = outOfSlaCategory?.Value ?? string.Empty;
-
-                if (!c.IsNullOrEmpty() && v.IsNullOrEmpty() && c != outOfSlaCategoryId)
-                {
-                    ViewData[Keys.ViewData.ERROR] = Exceptions.Message.INVALID_SEARCH_QUERY;
-                    return View(Enumerable.Empty<CaseRowViewModel>());
-                }
-
-                if (!dateRange.IsNullOrEmpty())
-                {
-                    var dates = ParseDateRange(dateRange);
-                    startDate = dates.StartDate;
-                    endDate = dates.EndDate;
-                }
-
-                if (!c.IsNullOrEmpty())
-                {
-                    v = v?.Trim() ?? string.Empty;
-
-                    if (dateRange.IsNullOrEmpty())
-                    {
-                        results = await _caseRepo.GetByCategory(c, v);
-                    }
-                    else
-                    {
-                        results = await _caseRepo.GetDateRangeFilteredCasesByCategory(c, v, startDate, endDate);
-                    }
-                }
-                else if (!d.IsNullOrEmpty())
-                {
-                    if (dateRange.IsNullOrEmpty())
-                    {
-                        results = await _caseRepo.GetDataAged3DaysByServicePartner(d);
-                    }
-                    else
-                    {
-                        results = Enumerable.Empty<CaseRowViewModel>();
-                    }
-                }
-                else
-                {
-                    results = await _caseRepo.GetAll();
-                }
-
+                var results = await _ratingRepo.GetAllAsync();
                 return View(results);
             }
             catch (Exception ex)
             {
                 ViewData[Keys.ViewData.ERROR] = ex.Message;
-                return View(Enumerable.Empty<CaseRowViewModel>());
+                return View(Enumerable.Empty<RatingRowViewModel>());
             }
         }
 

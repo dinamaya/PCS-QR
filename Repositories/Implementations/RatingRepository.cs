@@ -26,20 +26,19 @@ namespace CCIMS.Web.Repositories.Implementations
 
         public async Task<IEnumerable<RatingRowViewModel>> GetAllAsync()
         {
-            var results = await (from r in _context.Ratings
-                                 join c in _context.LatestCasesVs on r.CaseId equals c.CaseId
-                                 select new RatingRowViewModel
+            var results = await _context.RatingsDetailsVs
+                                 .Select(r => new RatingRowViewModel
                                  {
                                      Id = r.Id.ToString(),
                                      CaseId = r.CaseId.ToString(),
-                                     CaseNumber = c.CaseNumber,
+                                     CaseNumber = r.CaseNumber,
                                      Comment = r.Comment,
                                      CustomerId = r.CustomerId,
-                                     CustomerName = c.CustomerFirstName + " " + c.CustomerLastName,
+                                     CustomerName = r.FirstName + " " + r.LastName,
                                      DateCreated = r.DateCreated,
                                      RatingVal = r.RatingVal,
-                                     SerialNumber = c.SerialNumber,
-                                     ServicePartnerName = c.ServicePartnerName
+                                     SerialNumber = r.SerialNumber,
+                                     ServicePartnerName = r.SpName
                                  }).ToListAsync();
             return results;
         }
