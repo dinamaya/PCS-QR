@@ -14,16 +14,18 @@ namespace CCIMS.Web.Controllers
     private readonly ICustomerRepository _customerRepo;
     private readonly ITransactionRepository _transRepo;
     private readonly ISecurityRepository _secRepo;
+    private readonly IRatingRepository _ratingRepo;
 
-    public CasesController(ICaseRepository caseRepo, ICustomerRepository customerRepo, ITransactionRepository transRepo, ISecurityRepository secRepo)
-    {
-      _caseRepo = caseRepo;
-      _customerRepo = customerRepo;
-      _transRepo = transRepo;
-      _secRepo = secRepo;
-    }
+    public CasesController(ICaseRepository caseRepo, ICustomerRepository customerRepo, ITransactionRepository transRepo, ISecurityRepository secRepo, IRatingRepository ratingRepo)
+        {
+            _caseRepo = caseRepo;
+            _customerRepo = customerRepo;
+            _transRepo = transRepo;
+            _secRepo = secRepo;
+            _ratingRepo = ratingRepo;
+        }
 
-    [Authorize(Roles = "SPA"), HttpGet]
+        [Authorize(Roles = "SPA"), HttpGet]
     public async Task<IActionResult> Update(string id, string? q = null)
     {
       try
@@ -36,12 +38,14 @@ namespace CCIMS.Web.Controllers
         var _case = await _caseRepo.GetById(id);
         long caseId = long.Parse(_case.Id);
         var transactions = await _transRepo.GetAllByCaseId(caseId);
+        var rating = await _ratingRepo.GetByCaseIdAsync(caseId);
 
         var customer = await _customerRepo.GetById(_case.CustomerId);
 
         ViewData[Keys.ViewData.CUSTOMER] = customer;
         ViewData[Keys.ViewData.CASE] = _case;
         ViewData[Keys.ViewData.TRANSACTIONS] = transactions;
+        ViewData[Keys.ViewData.RATING] = rating;
 
         return View();
       }

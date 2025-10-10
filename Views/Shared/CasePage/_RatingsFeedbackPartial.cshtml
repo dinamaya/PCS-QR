@@ -1,0 +1,57 @@
+﻿@using CCIMS.Web.Models.ViewModels
+@model RatingRowViewModel
+
+<div class="card">
+    <div class="card-header pb-0">
+        <div class="d-flex align-items-center">
+            <p class="mb-0 fw-bolder">Rating and Feedback</p>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (Model != null)
+        {
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="rating" class="form-control-label">Rating</label>
+                        <div>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= Model.RatingVal)
+                                {
+                                    <i class="fas fa-star text-warning"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star text-warning"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                <div class="form-group">
+                    <label for="rating-date" class="form-control-label">Date</label>
+                    <p id="rating-date">@Model.DateCreated.ToString("MMMM dd, yyyy")</p>
+                </div>
+            </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="comment" class="form-control-label">Comment</label>
+                        <p id="comment">@Model.Comment</p>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <p>No rating and feedback yet from customer.</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

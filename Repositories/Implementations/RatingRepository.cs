@@ -43,5 +43,25 @@ namespace CCIMS.Web.Repositories.Implementations
                                  }).ToListAsync();
             return results;
         }
+
+        public async Task<RatingRowViewModel> GetByCaseIdAsync(long caseId)
+        {
+            var result = await _context.RatingsDetailsVs
+                                 .Where(r => r.CaseId == caseId)
+                                 .Select(r => new RatingRowViewModel
+                                 {
+                                     Id = r.Id.ToString(),
+                                     CaseId = r.CaseId.ToString(),
+                                     CaseNumber = r.CaseNumber,
+                                     Comment = r.Comment,
+                                     CustomerId = r.CustomerId,
+                                     CustomerName = r.FirstName + " " + r.LastName,
+                                     DateCreated = r.DateCreated,
+                                     RatingVal = r.RatingVal,
+                                     SerialNumber = r.SerialNumber,
+                                     ServicePartnerName = r.SpName
+                                 }).FirstOrDefaultAsync();
+            return result;
+        }
     }
 }

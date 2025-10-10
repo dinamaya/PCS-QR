@@ -9,5 +9,6 @@ namespace CCIMS.Web.Repositories.Interfaces
     {
         Task AddRatingAsync(Rating rating);
         Task<IEnumerable<RatingRowViewModel>> GetAllAsync();
+        Task<RatingRowViewModel> GetByCaseIdAsync(long caseId);
     }
 }

@@ -45,7 +45,8 @@
 				public const string TROW = @"../Shared/CasePage/_TableRowPartial";
 				public const string TRANS_HIST = @"../Shared/CasePage/_TransactionsHistoryPartial";
 				public const string CASE_DETAILS = @"../Shared/CasePage/_CaseDetailsPartial";
-				public const string SEARCH = @"../Shared/CasePage/_SearchBarPartial";
+                public const string RATINGS_FEEDBACK = @"../Shared/CasePage/_RatingsFeedbackPartial";
+                public const string SEARCH = @"../Shared/CasePage/_SearchBarPartial";
 				public const string STAT_UPDATE_MODAL = @"../Shared/CasePage/_ModalStatusUpdatePartial";
 				public const string CUSTOMER_UPDATE_MODAL = @"../Shared/CasePage/_CustomerModalEditPartial";
 				public const string CASE_UPDATE_MODAL = @"../Shared/CasePage/_CaseModalEditPartial";
