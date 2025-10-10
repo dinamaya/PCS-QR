@@ -26,12 +26,36 @@
     <script src="~/js/star-rating.min.js"></script>
     <script src="~/js/themes/krajee-svg/theme.js"></script>
     <script>
+        // jQuery script for the star rating plugin
         $(document).ready(function () {
             $("#rating-input").rating({
                 theme: 'krajee-svg',
                 showCaption: false,
                 showClear: false
             });
+        });
+
+        // JS for the character counter to avoid conflicts
+        document.addEventListener('DOMContentLoaded', function () {
+            const commentInput = document.getElementById('comment-input');
+            const charCounter = document.getElementById('char-counter');
+
+            if (commentInput && charCounter) {
+                const maxLength = commentInput.getAttribute('maxlength');
+
+                commentInput.addEventListener('input', function () {
+                    const currentLength = this.value.length;
+                    const remaining = maxLength - currentLength;
+
+                    charCounter.textContent = remaining + ' characters remaining';
+
+                    if (remaining <= 20) {
+                        charCounter.classList.add('text-danger');
+                    } else {
+                        charCounter.classList.remove('text-danger');
+                    }
+                });
+            }
         });
     </script>
 }
@@ -67,7 +91,10 @@
                                 <div class="row mt-3">
                                     <div class="col-12">
                                         <label>Comment</label>
-                                        <textarea class="form-control" asp-for="Comment" rows="5" required></textarea>
+                                        <textarea class="form-control" id="comment-input" asp-for="Comment" rows="5" required maxlength="1500"></textarea>
+                                        <div class="d-flex justify-content-end">
+                                            <small id="char-counter" class="form-text text-muted">1500 characters remaining</small>
+                                        </div>
                                         <span asp-validation-for="Comment" class="text-danger"></span>
                                     </div>
                                 </div>
