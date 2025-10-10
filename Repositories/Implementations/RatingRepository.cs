@@ -27,6 +27,7 @@ namespace CCIMS.Web.Repositories.Implementations
         public async Task<IEnumerable<RatingRowViewModel>> GetAllAsync()
         {
             var results = await _context.RatingsDetailsVs
+                                 .OrderByDescending(r => r.DateCreated)
                                  .Select(r => new RatingRowViewModel
                                  {
                                      Id = r.Id.ToString(),
