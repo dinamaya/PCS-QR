@@ -66,7 +66,8 @@
                                         {
                                             <tr>
                                                 <td class="text-sm font-weight-normal">@row.CaseNumber</td>
-                                                <td class="text-sm font-weight-normal">
+                                                <td class="text-sm font-weight-normal" data-sort="@row.RatingVal">
+                                                    <span style="display:none;">@row.RatingVal</span>
                                                     @for (int i = 1; i <= 5; i++)
                                                     {
                                                         if (i <= row.RatingVal)
