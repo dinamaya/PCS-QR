@@ -85,7 +85,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
                 BackgroundJob.Schedule<BackgroundJobsService>(
                             (service) => service.SendCaseFeedbackEmail(caseDetails, spEmail),
-                            TimeSpan.FromMinutes(3));
+                            TimeSpan.FromMinutes(1));
 
                 _logger.LogInformation($"Successfully sent case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}");
             }

@@ -66,8 +66,8 @@
                                         @foreach (var row in Model)
                                         {
                                             <tr>
-                                                <td class="text-sm font-weight-normal" ">
-                                                    <a href="javascript:;" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
+                                                <td class="text-sm font-weight-normal d-flex justify-content-center align-items-center" ">
+                                                    <a href="@Url.Action("Update", "Cases", new { id = row.CaseId })" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
                                                         View
                                                     </a>
                                                 </td>
@@ -90,7 +90,7 @@
                                                 <td class="text-sm font-weight-normal">@row.CustomerName</td>
                                                 <td class="text-sm font-weight-normal">@row.ServicePartnerName</td>
                                                 <td class="text-sm font-weight-normal">@row.SerialNumber</td>
-                                                <td class="text-sm font-weight-normal">@row.DateCreated.ToString("yyyy-MM-dd")</td>
+                                                <td class="text-sm font-weight-normal">@row.DateCreated.ToString("yyyy-MM-dd hh:mm tt")</td>
                                             </tr>
                                         }
                                     </tbody>
