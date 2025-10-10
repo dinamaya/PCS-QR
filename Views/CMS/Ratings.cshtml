@@ -51,6 +51,7 @@
                                 <table class="table table-flush" id="tbl">
                                     <thead>
                                         <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">CaseNumber</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Rating</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Comment</th>
@@ -65,6 +66,11 @@
                                         @foreach (var row in Model)
                                         {
                                             <tr>
+                                                <td class="text-sm font-weight-normal" ">
+                                                    <a href="javascript:;" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
+                                                        View
+                                                    </a>
+                                                </td>
                                                 <td class="text-sm font-weight-normal">@row.CaseNumber</td>
                                                 <td class="text-sm font-weight-normal" data-sort="@row.RatingVal">
                                                     <span style="display:none;">@row.RatingVal</span>
