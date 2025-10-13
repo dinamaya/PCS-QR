@@ -65,9 +65,9 @@
                                     <tbody>
                                         @foreach (var row in Model)
                                         {
-                                            <tr>
-                                                <td class="text-sm font-weight-normal d-flex justify-content-center align-items-center" ">
-                                                    <a href="@Url.Action("Update", "Cases", new { id = row.CaseId })" class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
+                                            <tr style="height: 50px;">
+                                                <td class="text-sm font-weight-normal d-flex justify-content-center align-items-center h-100">
+                                                    <a href="@Url.Action("Update", "Cases", new { id = row.CaseId })" class="btn btn-sm btn-outline-secondary my-auto" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
                                                         View
                                                     </a>
                                                 </td>
