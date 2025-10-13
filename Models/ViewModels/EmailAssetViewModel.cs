@@ -4,20 +4,24 @@ using Microsoft.AspNetCore.Hosting.Server;
 
 namespace CCIMS.Web.Models.ViewModels
 {
-  public class EmailAssetViewModel
-  {
-    public string BaseUrl { get; }
-    public string CaseNumber { get; set; }
-    public string CaseTrackingLink { get; }
-    public string FeedbackFormLink { get; }
-
-    public EmailAssetViewModel(IConfigurationRepository configRepo, string caseNumber, string encryptedCaseNumber)
+    public class EmailAssetViewModel
     {
-      var _uri = new Uri(configRepo.GetBaseUrl());
-      BaseUrl = _uri.AbsoluteUri;
-      CaseNumber = caseNumber;
-      CaseTrackingLink = new Uri(_uri, $"Cases/Tracking?refNo={encryptedCaseNumber}").AbsoluteUri;
-      FeedbackFormLink = new Uri(_uri, $"Customer/Feedback?token={encryptedCaseNumber}").AbsoluteUri;
+        public string BaseUrl { get; }
+        public string AdminUrl { get; }
+        public string CaseNumber { get; set; }
+        public string CaseTrackingLink { get; }
+        public string FeedbackFormLink { get; }
+
+        public EmailAssetViewModel(IConfigurationRepository configRepo, string caseNumber, string encryptedCaseNumber)
+        {
+            var _uri = new Uri(configRepo.GetBaseUrl());
+            BaseUrl = _uri.AbsoluteUri;
+            CaseNumber = caseNumber;
+            CaseTrackingLink = new Uri(_uri, $"Cases/Tracking?refNo={encryptedCaseNumber}").AbsoluteUri;
+
+            var _AdminURI = new Uri(configRepo.GetAdminUrl());
+            AdminUrl = _uri.AbsoluteUri;
+            FeedbackFormLink = new Uri(_AdminURI, $"Customer/Feedback?token={encryptedCaseNumber}").AbsoluteUri;
+        }
     }
-  }
 }

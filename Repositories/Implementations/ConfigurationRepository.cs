@@ -85,5 +85,7 @@ namespace CCIMS.Web.Repositories.Implementations
     public string GetTesseractTrainingDataPath() => _config.GetValue<string>("TesseractConfig:TrainingPath");
 
     public string GetBaseUrl() => _config.GetValue<string>("BaseUrl");
-  }
+
+    public string GetAdminUrl() => _config.GetValue<string>("AdminUrl");
+    }
 }

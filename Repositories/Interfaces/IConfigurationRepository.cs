@@ -3,24 +3,25 @@ using CCIMS.Web.Models.ViewModels;
 
 namespace CCIMS.Web.Repositories.Interfaces
 {
-	public interface IConfigurationRepository
-	{
-		string GetBaseUrl();
-    string GetDocumentationUrl();
-		string GetQrScanUrl();
-		string GetPSGCBaseUrl();
-		string GetPSGCProvinces();
+    public interface IConfigurationRepository
+    {
+        string GetBaseUrl();
+        string GetAdminUrl();
+        string GetDocumentationUrl();
+        string GetQrScanUrl();
+        string GetPSGCBaseUrl();
+        string GetPSGCProvinces();
 
-		IEnumerable<DropdownOptionViewModel> GetAgedSearcOptions();
-		int GetAgedKeyByValue(string value);
+        IEnumerable<DropdownOptionViewModel> GetAgedSearcOptions();
+        int GetAgedKeyByValue(string value);
 
-    IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
+        IEnumerable<DropdownOptionViewModel> GetCategoriesSearcOptions();
 
-		IEnumerable<string> GetAllowedEmailDomains();
+        IEnumerable<string> GetAllowedEmailDomains();
 
-    string GetPSGCCitiesByProvinceCode(string code);
-		string GetPSGCBarangaysByCityCode(string code);
-		string GetTesseractTrainingDataPath();
-		ISysAdminSecurityDetails GetSysAdminPrivateDetails();
-  }
+        string GetPSGCCitiesByProvinceCode(string code);
+        string GetPSGCBarangaysByCityCode(string code);
+        string GetTesseractTrainingDataPath();
+        ISysAdminSecurityDetails GetSysAdminPrivateDetails();
+    }
 }
