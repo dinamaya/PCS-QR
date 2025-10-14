@@ -19,9 +19,7 @@ namespace CCIMS.Web.Models.ViewModels
             CaseNumber = caseNumber;
             CaseTrackingLink = new Uri(_uri, $"Cases/Tracking?refNo={encryptedCaseNumber}").AbsoluteUri;
 
-            var _AdminURI = new Uri(configRepo.GetAdminUrl());
-            AdminUrl = _uri.AbsoluteUri;
-            FeedbackFormLink = new Uri(_AdminURI, $"Customer/Feedback?token={encryptedCaseNumber}").AbsoluteUri;
+            FeedbackFormLink = new Uri(_uri, $"Customer/Feedback?token={encryptedCaseNumber}").AbsoluteUri;
         }
     }
 }

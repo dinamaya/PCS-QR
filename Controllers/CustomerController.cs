@@ -134,7 +134,6 @@ namespace CCIMS.Web.Controllers
 
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Feedback(string token)
         {
             try
