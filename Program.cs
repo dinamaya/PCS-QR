@@ -82,6 +82,13 @@ app.UseEndpoints(endpoints =>
     );
 
     endpoints.MapControllerRoute(
+        name: "external-register",
+        pattern: "Customer/Feedback/{token?}",
+        defaults: new { controller = "Customer", action = "Feedback" },
+        constraints: new { subdomain = new SubdomainRouteConstraint(externalSubdomain) }
+    );
+
+    endpoints.MapControllerRoute(
         name: "external-catch-all",
         pattern: "{*url}",
         defaults: new { controller = "Cases", action = "Tracking" },
