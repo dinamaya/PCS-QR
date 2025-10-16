@@ -1,0 +1,106 @@
+﻿<div style="margin: 0; padding: 0; background-color: #f8f9fa;">
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8f9fa;">
+		<tr>
+			<td align="center">
+				<table width="1000" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; padding: 30px;">
+
+					<tr>
+						<td align="left" style="padding-bottom: 20px;">
+							<a href="{{ BaseUrl }}" target="_blank">
+								<img src="{{ BaseUrl }}img/icons/icon_ccims_lg.svg" alt="Main Logo" height="60" style="display: inline-block;"/>
+							</a>
+							<img src="{{ BaseUrl }}img/icons/VST-ECS.png" alt="Secondary Logo" height="60" style="float: right; display: inline-block;"/>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border-top: 4px solid #D53333; padding-top: 20px;"></td>
+					</tr>
+
+					<tr style="padding: 0px 3rem;">
+						<td align="center" style="background-color: #822626; border-radius: 20px; padding: 40px 20px;">
+							<div style="padding: 0px 2rem;">
+								<div style="text-align: center!important; vertical-align: -.1875em; width: 50px!important">
+									<img src="{{ BaseUrl }}img/icons/circle-check-solid.png" height="50" />
+								</div>
+								<h1 style="color: #ffffff; font-family: Arial, sans-serif; font-size: 2rem; margin: 0; padding-top: 1.3rem">
+									We Value Your Feedback
+								</h1>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td align="left" style="padding: 30px 20px 10px 20px;">
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 0;">
+								Thank you for choosing Lenovo. We hope your recent service experience met your expectations.
+							</p>
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 1em 0;">
+								We kindly invite you to complete the Lenovo Service Event Satisfaction Survey sent to your registered email.
+							</p>
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 1em 0;">
+								This survey is solely intended to assess the quality of our service delivery — specifically the speed of repair, the technical skill of our technician, and the clarity of our communication throughout the process.
+							</p>
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 1em 0;">
+								If you haven’t received the survey, please feel free to reach out to us — we’ll be glad to assist you.
+							</p>
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 1em 0;">
+								Your feedback is highly valuable and will help us continuously improve our support and overall service experience.
+							</p>
+							<p style="color: #344767; font-family: Arial, sans-serif; font-size: 16px; margin: 1em 0;">
+								Thank you for your time and continued trust in Lenovo.
+							</p>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="padding: 30px 0;">
+							<table width="100%" cellpadding="0" cellspacing="0" border="0">
+								<tr>
+									<td width="100%" style="padding-left:10px;vertical-align:top;align-content: center;">
+										<h2 style="font-family: Arial, sans-serif; font-size: 20px; color: #D53333; border-left: 5px solid #D53333; padding-left: 10px;">
+											Contact Information
+										</h2>
+										<p style="font-size: 14px; font-family: Arial, sans-serif;">
+											<span>
+												Email:<strong style="margin-left: 0.6em;">vstservicepartnerteam@msi-ecs.com.ph</strong>
+											</span>
+											<br/>
+											<span>
+												DL:<strong style="margin-left: 0.6em;">+632 8868 3587 to 88</strong>
+											</span>
+											<br/>
+											<span>
+												Mobile Number:<strong style="margin-left: 0.6em;">09275077937 / 09275077934 / 09275077931</strong>
+											</span>
+											<br/>
+										</p>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<br />
+						</td>
+					</tr>
+					<tr>
+						<td align="center" style="font-size: 16px; color: #999999; font-family: Arial, sans-serif; padding-top: 30px;">
+							This is an automated message – please do not reply.
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<br/>
+							<br/>
+							<br/>
+						</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>

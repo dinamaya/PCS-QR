@@ -67,7 +67,7 @@ namespace CCIMS.Web.Repositories.Implementations
             var caseDetails = await _mainDb.CaseDetailsVs
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cd => cd.Id == data.CaseId);
-            
+
             var spEmail = await _mainDb.Cases
                 .Where(c => c.Id == caseDetails.Id)
                 .Join(
@@ -83,14 +83,25 @@ namespace CCIMS.Web.Repositories.Implementations
                 BackgroundJob.Enqueue<BackgroundJobsService>(
                             (service) => service.SendCaseClosedEmail(caseDetails, spEmail));
 
+                //BackgroundJob.Schedule<BackgroundJobsService>(
+                //            (service) => service.SendCaseFeedbackEmail(caseDetails, spEmail),
+                //            TimeSpan.FromDays(3));
+
                 BackgroundJob.Schedule<BackgroundJobsService>(
-                            (service) => service.SendCaseFeedbackEmail(caseDetails, spEmail),
+                            (service) => service.SendCaseFeedbackReminderEmail(caseDetails, spEmail),
                             TimeSpan.FromMinutes(1));
+
+
 
                 _logger.LogInformation($"Successfully sent case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}");
             }
+            else
+            {
+                BackgroundJob.Enqueue<BackgroundJobsService>(
+                    (service) => service.SendCaseStatusUpdateEmail(caseDetails, spEmail, status.Name));
+            }
 
-            InsertedId = transaction.Id.ToString();
+                InsertedId = transaction.Id.ToString();
         }
 
         public async Task<IEnumerable<CaseTransactionsViewModel>> GetAllByCaseId(long caseId)

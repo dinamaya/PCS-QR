@@ -21,6 +21,8 @@ namespace CCIMS.Web.Services.Implementations
         private readonly string _custTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseCreationCustomerEmail.sbn");
         private readonly string _closedtemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseClosedCustomerEmail.sbn");
         private readonly string _feedbackTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseFeedbackCustomerEmail.sbn");
+        private readonly string _feedbackReminderTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseFeedbackReminderEmail.sbn");
+        private readonly string _statusUpdateTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseStatusUpdateEmail.sbn");
         private readonly string _qrCodeTemplatePath = Path.Combine("App_Code", "Scriban", "Templates", "CaseQrCodeEmail.sbn");
 
         private readonly EmailCredential _dev;
@@ -80,6 +82,33 @@ namespace CCIMS.Web.Services.Implementations
             }
         }
 
+        public async Task<TaskResultDto> SendCaseFeedbackReminderNotificationAsync(CustomerEmailDetailsViewModel emailDetails, string spEmail)
+        {
+            try
+            {
+                var icons = Path.Combine(_server.RootDirectory, "img", "icons");
+                var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
+
+                var htmlBody = await RenderEmailAsync(_feedbackReminderTemplatePath, emailDetails);
+
+                await CreateEmailAsync(
+                  emailDetails.Email,
+                  $"We Value Your Feedback on Your Recent Lenovo Service Experience",
+                  htmlBody,
+                  _dev,
+                  null,
+                  cc: [spEmail]
+                );
+
+                return TaskResultDto.Success("Feedback Reminder Email Sent Successfully");
+            }
+
+            catch (Exception ex)
+            {
+                return TaskResultDto.Fail(Exceptions.GetMessage(ex));
+            }
+        }
+
         public async Task<TaskResultDto> SendAgedCasesEmailAsync(CaseAgedEmailDetailsViewModel agedCases)
         {
             var task = new TaskResultDto();
@@ -114,6 +143,33 @@ namespace CCIMS.Web.Services.Implementations
                 await CreateEmailAsync(
                   emailDetails.Email,
                   $"CCI Monitoring System - Case Closed ({emailDetails.CaseNumber}) | {emailDetails.ServicePartner} | {emailDetails.SerialNumber}",
+                  htmlBody,
+                  _dev,
+                  null,
+                  cc: [spEmail]
+                );
+
+                return TaskResultDto.Success("Email Sent Successfully");
+            }
+
+            catch (Exception ex)
+            {
+                return TaskResultDto.Fail(Exceptions.GetMessage(ex));
+            }
+        }
+
+        public async Task<TaskResultDto> SendCaseStatusUpdateEmailNotificationAsync(CaseStatusUpdateEmailViewModel emailDetails, string spEmail)
+        {
+            try
+            {
+                var icons = Path.Combine(_server.RootDirectory, "img", "icons");
+                var illus = Path.Combine(_server.RootDirectory, "img", "illustrations");
+
+                var htmlBody = await RenderEmailAsync(_statusUpdateTemplatePath, emailDetails);
+
+                await CreateEmailAsync(
+                  emailDetails.Email,
+                  $"CCI Monitoring System - {emailDetails.Status} ({emailDetails.CaseNumber}) | {emailDetails.ServicePartner} | {emailDetails.SerialNumber}",
                   htmlBody,
                   _dev,
                   null,
@@ -238,7 +294,7 @@ namespace CCIMS.Web.Services.Implementations
 
             foreach (var recipient in _bcc)
                 message.Bcc.Add(new MailboxAddress("", recipient));
-            
+
             if (cc != null)
             {
                 foreach (var recipient in cc)
