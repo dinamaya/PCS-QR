@@ -28,7 +28,7 @@
 									<img src="{{ BaseUrl }}img/icons/circle-check-solid.png" height="50" />
 								</div>
 								<h1 style="color: #ffffff; font-family: Arial, sans-serif; font-size: 2rem; margin: 0; padding-top: 1.3rem">
-									{{ Status }}
+									Status Update: {{ Status }}
 								</h1>
 							</div>
 						</td>
