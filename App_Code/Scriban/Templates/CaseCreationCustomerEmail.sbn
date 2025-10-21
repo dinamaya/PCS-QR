@@ -28,8 +28,11 @@
 									<img src="{{ BaseUrl }}img/icons/circle-check-solid.png" height="50" />
 								</div>
 								<h1 style="color: #ffffff; font-family: Arial, sans-serif; font-size: 2rem; margin: 0; padding-top: 1.3rem">
-									Thank you for submitting your case!
+									Thank you for submitting your case!  
 								</h1>
+								<p style="color: #ffffff; font-family: Arial, sans-serif; font-size: 1.2rem; margin: 0; padding-top: 0.5rem;">
+									Case Status : On-Queue
+								</p>
 							</div>
 						</td>
 					</tr>
