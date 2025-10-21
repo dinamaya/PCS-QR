@@ -73,7 +73,7 @@
 														<tr>
 															<td style="border: 2px solid;width: 80px;">{{ for.index + 1 }}</td>
 															<td style="text-align: center;border: 2px solid;padding-top: 14px;padding-bottom: 14px;width: 120px;">
-																<a href="https://admin-cci.msi-ecs.com.ph/{{ _case.CaseTrackingLink }}" target="_blank" style="
+																<a href="{{ _case.AdminCaseTrackingLink }}" target="_blank" style="
 																	display: inline-block;
 																	background-color: #D53333;
 																	color: #ffffff;
