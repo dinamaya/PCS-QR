@@ -95,7 +95,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
                 _logger.LogInformation($"Successfully sent case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}");
             }
-            else
+            else if (!status.Name.Equals("On-Queue", StringComparison.OrdinalIgnoreCase))
             {
                 BackgroundJob.Enqueue<BackgroundJobsService>(
                     (service) => service.SendCaseStatusUpdateEmail(caseDetails, spEmail, status.Name));
