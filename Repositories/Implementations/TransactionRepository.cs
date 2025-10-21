@@ -89,7 +89,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
                 BackgroundJob.Schedule<BackgroundJobsService>(
                             (service) => service.SendCaseFeedbackReminderEmail(caseDetails, spEmail),
-                            TimeSpan.FromMinutes(1));
+                            TimeSpan.FromDays(3));
 
 
 
