@@ -201,7 +201,7 @@ namespace CCIMS.Web.Controllers
                     DateCreated = DateTime.UtcNow
                 };
 
-                await _ratingRepo.AddRatingAsync(rating);
+                //await _ratingRepo.AddRatingAsync(rating);
 
                 ViewBag.IsFeedback = true;
                 return View("ThankYou");

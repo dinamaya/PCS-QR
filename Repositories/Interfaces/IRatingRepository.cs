@@ -7,8 +7,8 @@ namespace CCIMS.Web.Repositories.Interfaces
 {
     public interface IRatingRepository
     {
-        Task AddRatingAsync(Rating rating);
-        Task<IEnumerable<RatingRowViewModel>> GetAllAsync();
-        Task<RatingRowViewModel> GetByCaseIdAsync(long caseId);
+        //Task AddRatingAsync(Rating rating);
+        // Task<IEnumerable<RatingRowViewModel>> GetAllAsync();
+        //Task<RatingRowViewModel> GetByCaseIdAsync(long caseId);
     }
 }

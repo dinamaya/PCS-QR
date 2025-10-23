@@ -28,16 +28,16 @@ namespace CCIMS.Web.Context
         public virtual DbSet<TopAgingCasesV> TopAgingCasesVs { get; set; }
         public virtual DbSet<TopAgingCasesAllV> TopAgingCasesAllVs { get; set; }
         public virtual DbSet<WeeklyClosedCasesChartV> WeeklyClosedCasesChartVs { get; set; }
-        public virtual DbSet<RatingsDetailsV> RatingsDetailsVs { get; set; }
+        // public virtual DbSet<RatingsDetailsV> RatingsDetailsVs { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RatingsDetailsV>(entity =>
-            {
-                entity
-                    .HasNoKey()
-                    .ToView("RatingsDetails_v");
-            });
+            //modelBuilder.Entity<RatingsDetailsV>(entity =>
+            //{
+            //    entity
+            //        .HasNoKey()
+            //        .ToView("RatingsDetails_v");
+            //});
 
             modelBuilder.Entity<WeeklyClosedCasesChartV>(entity =>
             {

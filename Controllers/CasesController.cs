@@ -38,14 +38,14 @@ namespace CCIMS.Web.Controllers
         var _case = await _caseRepo.GetById(id);
         long caseId = long.Parse(_case.Id);
         var transactions = await _transRepo.GetAllByCaseId(caseId);
-        var rating = await _ratingRepo.GetByCaseIdAsync(caseId);
+        //var rating = await _ratingRepo.GetByCaseIdAsync(caseId);
 
         var customer = await _customerRepo.GetById(_case.CustomerId);
 
         ViewData[Keys.ViewData.CUSTOMER] = customer;
         ViewData[Keys.ViewData.CASE] = _case;
         ViewData[Keys.ViewData.TRANSACTIONS] = transactions;
-        ViewData[Keys.ViewData.RATING] = rating;
+        //ViewData[Keys.ViewData.RATING] = rating;
 
         return View();
       }

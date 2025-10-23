@@ -148,20 +148,20 @@ namespace CCIMS.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "SPA")]
-        public async Task<IActionResult> Ratings()
-        {
-            try
-            {
-                var results = await _ratingRepo.GetAllAsync();
-                return View(results);
-            }
-            catch (Exception ex)
-            {
-                ViewData[Keys.ViewData.ERROR] = ex.Message;
-                return View(Enumerable.Empty<RatingRowViewModel>());
-            }
-        }
+        //[Authorize(Roles = "SPA")]
+        //public async Task<IActionResult> Ratings()
+        //{
+        //    try
+        //    {
+        //        var results = await _ratingRepo.GetAllAsync();
+        //        return View(results);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewData[Keys.ViewData.ERROR] = ex.Message;
+        //        return View(Enumerable.Empty<RatingRowViewModel>());
+        //    }
+        //}
 
         private async Task InitializeValues()
         {
