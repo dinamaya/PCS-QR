@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using CCIMS.Web.Services.Implementations;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Hangfire;
+using System.Linq;
 
 namespace CCIMS.Web.Repositories.Implementations
 {
@@ -24,7 +25,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
         public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo, ILogger<TransactionRepository> logger, IConfigurationRepository configRepo)
         {
-            _mainDb = mainDb;
+            _mainDb = mainDb;   
             _opsRepo = opsRepo;
             _logger = logger;
             _configRepo = configRepo;
@@ -176,6 +177,22 @@ namespace CCIMS.Web.Repositories.Implementations
             data.Comments = editRequestDto.Remarks;
 
             await _mainDb.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<DropdownOptionViewModel>> GetAllStatus(string currentStatus)
+        {
+            var stats = await _mainDb.Statuses
+                .AsNoTracking()
+                .Where(s => s.IsActive && s.Name != currentStatus)
+                .OrderBy(s => s.Name)
+                .Select(s => new DropdownOptionViewModel()
+                {
+                    Value = s.Id,
+                    Label = s.Name,
+                }).ToListAsync();
+
+
+            return stats;
         }
     }
 }

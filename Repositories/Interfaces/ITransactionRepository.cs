@@ -8,6 +8,7 @@ namespace CCIMS.Web.Repositories.Interfaces
     Task<IEnumerable<CaseTransactionsViewModel>> GetAllByCaseId(long caseId);
     Task<IEnumerable<DropdownOptionViewModel>> GetExistingStatusByCaseId(long caseId);
     Task<IEnumerable<DropdownOptionViewModel>> GetAvailableStatusByCaseId(long caseId);
+    Task<IEnumerable<DropdownOptionViewModel>> GetAllStatus(string currentStatus);
     Task<TransactionEditResponseDto> GetById(long id);
   }
 }

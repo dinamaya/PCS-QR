@@ -30,13 +30,14 @@ namespace CCIMS.Web.Controllers.API
       try
       {
         var currStat = await _caseRepo.GetCurrentStatus(caseId);
-        var availStats = currStat.Equals("Closed") ? Enumerable.Empty<DropdownOptionViewModel>() : await _transactionRepo.GetAvailableStatusByCaseId(caseId);
+        //var availStats = currStat.Equals("Closed") ? Enumerable.Empty<DropdownOptionViewModel>() : await _transactionRepo.GetAvailableStatusByCaseId(caseId);
 
+        var statuses = await _transactionRepo.GetAllStatus(currStat);
         response.Message = "Status fetched";
         response.Result = new()
         {
           CurrentStatus = currStat,
-          AvailableStatus = DropdownOptionViewModel.InitOptions("Choose new status", availStats)
+          AvailableStatus = DropdownOptionViewModel.InitOptions("Choose new status", statuses)
         };
 
         return Ok(response);
@@ -56,6 +57,7 @@ namespace CCIMS.Web.Controllers.API
       var response = new ResponseDto();
       try
       {
+
         string createdBy = User.GetClaim(AuthClaims.ACCOUNT_ID);
         await _transactionRepo.CreateAsync(caseStatusUpdateRequest, createdBy);
 
