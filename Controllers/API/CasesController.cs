@@ -30,14 +30,23 @@ namespace CCIMS.Web.Controllers.API
       try
       {
         var currStat = await _caseRepo.GetCurrentStatus(caseId);
-        //var availStats = currStat.Equals("Closed") ? Enumerable.Empty<DropdownOptionViewModel>() : await _transactionRepo.GetAvailableStatusByCaseId(caseId);
 
-        var statuses = await _transactionRepo.GetAllStatus(currStat);
+        IEnumerable<DropdownOptionViewModel> availStats;
+
+        if (currStat != null && currStat.Equals("Closed", StringComparison.OrdinalIgnoreCase))
+        {
+            availStats = Enumerable.Empty<DropdownOptionViewModel>();
+        }
+        else
+        {
+            availStats = await _transactionRepo.GetAllStatus(currStat);
+        }
+
         response.Message = "Status fetched";
         response.Result = new()
         {
           CurrentStatus = currStat,
-          AvailableStatus = DropdownOptionViewModel.InitOptions("Choose new status", statuses)
+          AvailableStatus = DropdownOptionViewModel.InitOptions("Choose new status", availStats)
         };
 
         return Ok(response);
