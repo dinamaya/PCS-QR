@@ -25,7 +25,7 @@ namespace CCIMS.Web.Repositories.Implementations
 
         public TransactionRepository(MainDbContext mainDb, IOperationsRepository opsRepo, ILogger<TransactionRepository> logger, IConfigurationRepository configRepo)
         {
-            _mainDb = mainDb;   
+            _mainDb = mainDb;
             _opsRepo = opsRepo;
             _logger = logger;
             _configRepo = configRepo;
@@ -79,30 +79,39 @@ namespace CCIMS.Web.Repositories.Implementations
                 )
                 .FirstOrDefaultAsync();
 
-            if (status != null && status.Name.Equals("Closed", StringComparison.OrdinalIgnoreCase))
+            if (status == null)
+            {
+                _logger.LogWarning($"Status object was null for Case ID: {data.CaseId}. No email sent.");
+                return;
+            }
+
+            if (status.Name.Equals("Closed", StringComparison.OrdinalIgnoreCase))
             {
                 BackgroundJob.Enqueue<BackgroundJobsService>(
-                            (service) => service.SendCaseClosedEmail(caseDetails, spEmail));
+                    (service) => service.SendCaseClosedEmail(caseDetails, spEmail));
 
-                //BackgroundJob.Schedule<BackgroundJobsService>(
-                //            (service) => service.SendCaseFeedbackEmail(caseDetails, spEmail),
-                //            TimeSpan.FromDays(3));
+                _logger.LogInformation($"Successfully enqueued 'Closed' email for Case ID: {data.CaseId}");
+            }
+            else if (status.Name.Equals("Problem Fixed - Parts Replaced", StringComparison.OrdinalIgnoreCase))
+            {
+                BackgroundJob.Enqueue<BackgroundJobsService>(
+                    (service) => service.SendCaseStatusUpdateEmail(caseDetails, spEmail, status.Name));
 
                 BackgroundJob.Schedule<BackgroundJobsService>(
-                            (service) => service.SendCaseFeedbackReminderEmail(caseDetails, spEmail),
-                            TimeSpan.FromDays(3));
+                    (service) => service.SendCaseFeedbackReminderEmail(caseDetails, spEmail),
+                    TimeSpan.FromDays(3));
 
-
-
-                _logger.LogInformation($"Successfully sent case closed email for Case ID: {data.CaseId}, CaseNumber: {caseDetails.CaseNumber}");
+                _logger.LogInformation($"Successfully scheduled 'Feedback Reminder' email for Case ID: {data.CaseId}");
             }
             else if (!status.Name.Equals("On-Queue", StringComparison.OrdinalIgnoreCase))
             {
                 BackgroundJob.Enqueue<BackgroundJobsService>(
                     (service) => service.SendCaseStatusUpdateEmail(caseDetails, spEmail, status.Name));
+
+                _logger.LogInformation($"Sent status update '{status.Name}' for Case ID: {data.CaseId}");
             }
 
-                InsertedId = transaction.Id.ToString();
+            InsertedId = transaction.Id.ToString();
         }
 
         public async Task<IEnumerable<CaseTransactionsViewModel>> GetAllByCaseId(long caseId)
