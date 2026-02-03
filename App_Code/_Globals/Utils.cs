@@ -57,14 +57,7 @@ namespace CCIMS.Web.App_Code._Globals
 
       string humanizedTime = timeDiff.Humanize(precision: 1, maxUnit: Humanizer.Localisation.TimeUnit.Day);
 
-      if (timeDiff.TotalDays < 1)
-      {
-        if (timeDiff.TotalHours < 1)
-          return $"{message} {humanizedTime} ({dateTime:h:mmtt})";
-        else
-          return $"{message} today at {dateTime:h:mmtt}";
-      }
-      else if (timeDiff.TotalDays < 365)
+      if (timeDiff.TotalDays < 365)
         return $"{message} {humanizedTime} ago ({dateTime:MMM d, yyyy, h:mmtt})";
       else
       {
