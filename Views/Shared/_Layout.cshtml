@@ -156,8 +156,8 @@
 		$(document).on('click', 'a', function (e) {
 			const url = $(this).attr('href');
 
-			// Ignore anchor-only links, javascript:void(0), external links
-			if (!url || url.startsWith('#') || url.startsWith('javascript') || url.startsWith('http')) return;
+			// Ignore anchor-only links, javascript:void(0), external links, and download links
+			if (!url || url.startsWith('#') || url.startsWith('javascript') || url.startsWith('http') || url.startsWith('blob') || url.startsWith('data') || $(this).is('[download]')) return;
 
 			e.preventDefault();
 
