@@ -43,4 +43,6 @@ public partial class LatestCasesV
 
   public string? LastName { get; set; }
 
+  public string? Email { get; set; }
+
 }

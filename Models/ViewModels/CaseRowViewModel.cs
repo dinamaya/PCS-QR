@@ -8,6 +8,7 @@
     public string Status { get; set; }
     public string Comments { get; set; }
     public string CustomerName { get; set; }
+    public string Email { get; set; }
     public string ServicePartnerName { get; set; }
     public string SerialNumber { get; set; }
     public string DateCreated { get; set; }
