@@ -39,8 +39,10 @@ namespace CCIMS.Web.Controllers.API
       string result = string.Empty;
 
       for (int y=0; y < x; y++)
+      {
         result += _caseRepo.GenerateCaseNumber() + "\n";
-
+        await Task.Delay(10);
+      }
       return result;
     }
 

@@ -144,15 +144,16 @@ namespace CCIMS.Web.Repositories.Implementations
             worksheet.Cell(1, 2).Value = "Status";
             worksheet.Cell(1, 3).Value = "Comments / Remarks";
             worksheet.Cell(1, 4).Value = "Customer Name";
-            worksheet.Cell(1, 5).Value = "Service Partner";
-            worksheet.Cell(1, 6).Value = "Serial Number";
-            worksheet.Cell(1, 7).Value = "Date Created";
-            worksheet.Cell(1, 8).Value = "Date Updated";
-            worksheet.Cell(1, 9).Value = "Updated By";
-            worksheet.Cell(1, 10).Value = "Days Aged";
+            worksheet.Cell(1, 5).Value = "Customer Email";
+            worksheet.Cell(1, 6).Value = "Service Partner";
+            worksheet.Cell(1, 7).Value = "Serial Number";
+            worksheet.Cell(1, 8).Value = "Date Created";
+            worksheet.Cell(1, 9).Value = "Date Updated";
+            worksheet.Cell(1, 10).Value = "Updated By";
+            worksheet.Cell(1, 11).Value = "Days Aged";
 
             // Style headers
-            var headerRange = worksheet.Range("A1:J1");
+            var headerRange = worksheet.Range("A1:K1");
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
@@ -167,12 +168,13 @@ namespace CCIMS.Web.Repositories.Implementations
                 worksheet.Cell(i + 2, 2).Value = row.Status;
                 worksheet.Cell(i + 2, 3).Value = row.Comments;
                 worksheet.Cell(i + 2, 4).Value = row.CustomerName;
-                worksheet.Cell(i + 2, 5).Value = row.ServicePartner;
-                worksheet.Cell(i + 2, 6).Value = row.SerialNumber;
-                worksheet.Cell(i + 2, 7).Value = row.DateCreated;
-                worksheet.Cell(i + 2, 8).Value = row.DateUpdated;
-                worksheet.Cell(i + 2, 9).Value = row.UpdatedBy;
-                worksheet.Cell(i + 2, 10).Value = row.DaysAged;
+                worksheet.Cell(i + 2, 5).Value = row.CustomerEmail;
+                worksheet.Cell(i + 2, 6).Value = row.ServicePartner;
+                worksheet.Cell(i + 2, 7).Value = row.SerialNumber;
+                worksheet.Cell(i + 2, 8).Value = row.DateCreated;
+                worksheet.Cell(i + 2, 9).Value = row.DateUpdated;
+                worksheet.Cell(i + 2, 10).Value = row.UpdatedBy;
+                worksheet.Cell(i + 2, 11).Value = row.DaysAged;
             }
         }
 
@@ -184,7 +186,7 @@ namespace CCIMS.Web.Repositories.Implementations
             // Add borders to all cells
             if (dataCount > 0)
             {
-                var dataRange = worksheet.Range(1, 1, dataCount + 1, 10);
+                var dataRange = worksheet.Range(1, 1, dataCount + 1, 11);
                 dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
             }
@@ -198,6 +200,7 @@ namespace CCIMS.Web.Repositories.Implementations
                 Status = caseRow.Status ?? string.Empty,
                 Comments = caseRow.Comments ?? string.Empty,
                 CustomerName = caseRow.CustomerName ?? string.Empty,
+                CustomerEmail = caseRow.Email ?? string.Empty,
                 ServicePartner = caseRow.ServicePartnerName ?? string.Empty,
                 SerialNumber = caseRow.SerialNumber ?? string.Empty,
                 DateCreated = caseRow.DateCreated ?? string.Empty,
